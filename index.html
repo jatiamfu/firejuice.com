@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>แบ่งปันความรู้ — โปรแกรม & บทความฟรี</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --bg2:       #1a1d27;
+      --bg3:       #22263a;
+      --gold:      #f5c842;
+      --gold-dim:  #c9a52e;
+      --text:      #e8eaf0;
+      --muted:     #8b8fa8;
+      --border:    #2c3050;
+      --radius:    10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sarabun', 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ───── NAVBAR ───── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: auto;
+      padding: 0 1.2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 58px;
+    }
+    .logo {
+      font-size: 1.15rem; font-weight: 700; letter-spacing: .02em;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a {
+      font-size: .9rem; color: var(--muted);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-toggle {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: .3rem;
+      flex-direction: column; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 24px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: .3s;
+    }
+
+    /* ───── HERO ───── */
+    .hero {
+      max-width: 1100px; margin: auto;
+      padding: 4.5rem 1.2rem 3.5rem;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 1.2rem;
+    }
+    .hero-eyebrow {
+      font-size: .78rem; font-weight: 600; letter-spacing: .12em;
+      color: var(--gold); text-transform: uppercase;
+      border: 1px solid var(--gold-dim); border-radius: 20px;
+      padding: .25rem .85rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700; line-height: 1.25;
+      max-width: 640px;
+    }
+    .hero h1 em {
+      font-style: normal; color: var(--gold);
+      border-bottom: 2px solid var(--gold-dim);
+    }
+    .hero p {
+      max-width: 560px; color: var(--muted); font-size: 1.05rem;
+    }
+    .hero-cta {
+      display: flex; gap: .8rem; flex-wrap: wrap; margin-top: .4rem;
+    }
+    .btn-primary {
+      background: var(--gold); color: #0f1117;
+      font-weight: 700; font-size: .9rem;
+      padding: .65rem 1.5rem; border-radius: var(--radius);
+      border: none; cursor: pointer; transition: background .2s, transform .15s;
+      display: inline-flex; align-items: center; gap: .4rem;
+    }
+    .btn-primary:hover { background: #ffd94d; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      font-weight: 600; font-size: .9rem;
+      padding: .65rem 1.5rem; border-radius: var(--radius);
+      border: 1px solid var(--border); cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    .hero-stats {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      padding-top: .5rem; border-top: 1px solid var(--border);
+      width: 100%; margin-top: .5rem;
+    }
+    .stat-item { display: flex; flex-direction: column; }
+    .stat-num { font-size: 1.5rem; font-weight: 700; color: var(--gold); }
+    .stat-label { font-size: .82rem; color: var(--muted); }
+
+    /* ───── SECTION WRAPPER ───── */
+    section { padding: 3rem 1.2rem; }
+    .container { max-width: 1100px; margin: auto; }
+    .section-title {
+      font-size: 1.3rem; font-weight: 700;
+      display: flex; align-items: center; gap: .6rem;
+      margin-bottom: 1.5rem;
+    }
+    .section-title::before {
+      content: ''; display: block;
+      width: 4px; height: 1.2em;
+      background: var(--gold); border-radius: 2px;
+    }
+
+    /* ───── CATEGORIES ───── */
+    .categories { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .cat-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.2rem 1rem;
+      text-align: center; cursor: pointer;
+      transition: border-color .2s, transform .15s;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    }
+    .cat-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .cat-icon { font-size: 1.8rem; }
+    .cat-name { font-size: .9rem; font-weight: 600; }
+    .cat-count { font-size: .78rem; color: var(--muted); }
+
+    /* ───── TOOLS ───── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+    .tool-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.4rem;
+      display: flex; flex-direction: column; gap: .6rem;
+      transition: border-color .2s, transform .15s;
+    }
+    .tool-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .tool-header { display: flex; align-items: center; gap: .7rem; }
+    .tool-icon {
+      background: var(--bg3); border-radius: 8px;
+      width: 42px; height: 42px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .tool-name { font-weight: 700; font-size: .95rem; }
+    .tool-desc { font-size: .86rem; color: var(--muted); flex: 1; }
+    .tag {
+      display: inline-block;
+      background: rgba(245,200,66,.12); color: var(--gold);
+      font-size: .72rem; font-weight: 600;
+      padding: .15rem .55rem; border-radius: 20px;
+      border: 1px solid rgba(245,200,66,.25);
+      align-self: flex-start;
+    }
+    .btn-small {
+      background: var(--gold); color: #0f1117;
+      font-weight: 700; font-size: .82rem;
+      padding: .45rem 1rem; border-radius: 6px;
+      border: none; cursor: pointer;
+      transition: background .2s; align-self: flex-start;
+      margin-top: .2rem;
+    }
+    .btn-small:hover { background: #ffd94d; }
+
+    /* ───── ARTICLES ───── */
+    .articles { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.2rem;
+    }
+    .article-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: border-color .2s, transform .15s;
+      cursor: pointer;
+    }
+    .article-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .article-thumb {
+      height: 140px; background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.8rem; border-bottom: 1px solid var(--border);
+    }
+    .article-body { padding: 1.1rem; display: flex; flex-direction: column; gap: .5rem; }
+    .article-cat {
+      font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+      color: var(--gold); text-transform: uppercase;
+    }
+    .article-title { font-size: .95rem; font-weight: 700; line-height: 1.4; }
+    .article-meta { font-size: .78rem; color: var(--muted); }
+
+    /* ───── CTA BANNER ───── */
+    .cta-banner {
+      background: linear-gradient(135deg, #1a1d27 0%, #22263a 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .cta-inner {
+      max-width: 700px; margin: auto;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    }
+    .cta-inner h2 { font-size: 1.6rem; font-weight: 700; }
+    .cta-inner h2 span { color: var(--gold); }
+    .cta-inner p { color: var(--muted); }
+
+    /* ───── FOOTER ───── */
+    footer {
+      background: #0a0c12; border-top: 1px solid var(--border);
+      padding: 2.5rem 1.2rem 1.5rem;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: 2rem; margin-bottom: 2rem;
+    }
+    .footer-brand p { color: var(--muted); font-size: .86rem; margin-top: .5rem; }
+    .footer-col h4 {
+      font-size: .85rem; font-weight: 700;
+      color: var(--gold); margin-bottom: .7rem;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+    .footer-col ul li a { font-size: .85rem; color: var(--muted); transition: color .2s; }
+    .footer-col ul li a:hover { color: var(--text); }
+    .footer-bottom {
+      max-width: 1100px; margin: auto;
+      border-top: 1px solid var(--border); padding-top: 1.2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .8rem; color: var(--muted); flex-wrap: wrap; gap: .5rem;
+    }
+
+    /* ───── RESPONSIVE ───── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; }
+      .nav-links.open {
+        display: flex; position: absolute; top: 58px; left: 0; right: 0;
+        background: var(--bg2); border-bottom: 1px solid var(--border);
+        padding: 1rem 1.2rem; gap: .8rem;
+      }
+      .nav-links.open a { font-size: 1rem; color: var(--text); }
+      .nav-toggle { display: flex; }
+
+      .hero { padding: 2.5rem 1.2rem 2rem; }
+      .hero-stats { gap: 1.2rem; }
+
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      ✦ <span>FIREJUIZE
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#tools">โปรแกรม</a></li>
+      <li><a href="#articles">บทความ</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">ฟรี 100%</div>
+  <h1>ความรู้ดี ๆ<br/>และโปรแกรมที่ใช้<em>ฟรีบนเว็บ</em></h1>
+  <p>รวมบทความด้านกฎหมาย ศาสนา และความรู้รอบตัว พร้อมเครื่องมือออนไลน์สำหรับทุกคน แบ่งปันให้สังคมโดยไม่มีเงื่อนไข</p>
+  <div class="hero-cta">
+    <a href="#tools" class="btn-primary">🛠 ดูโปรแกรมทั้งหมด</a>
+    <a href="#articles" class="btn-outline">อ่านบทความ</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num">1</span>
+      <span class="stat-label">โปรแกรมฟรี</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">0</span>
+      <span class="stat-label">บทความความรู้</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="container">
+    <div class="section-title">โปรแกรมฟรีบนเว็บ</div>
+    <div class="tools-grid">
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon">👪🏻</div>
+          <div class="tool-name">FamilyTree (ผังเครือญาติ) </div>
+        </div>
+        <div class="tag">สร้างผังเครือญาติฟรี</div>
+        <p class="tool-desc">เก็บข้อมูลรายบุคคล ฐานข้อมูล กำหนดความสัมพันธ์ แผนผังเครือญาติ ข้อมูลปลอดภัย(เก็บอยู่ในเครื่องตัวเอง)</p>
+        <button class="btn-small">เปิดใช้งาน →</button>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon"></div>
+          <div class="tool-name"></div>
+        </div>
+        <div class="tag"></div>
+        <p class="tool-desc"></p>
+        <button class="btn-small"></button>
+      </div>
+
+      <div class="tool-card">
+        <div class="tool-header">
+          <div class="tool-icon"></div>
+          <div class="tool-name"></div>
+        </div>
+        <div class="tag"></div>
+        <p class="tool-desc"></p>
+        <button class="btn-small"></button>
+      </div>
+
+      
+
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLES -->
+<section class="articles" id="articles">
+  <div class="container">
+    <div class="section-title">บทความล่าสุด</div>
+    <div class="articles-grid">
+
+      <div class="article-card">
+        <div class="article-thumb"></div>
+        <div class="article-body">
+          <div class="article-cat"></div>
+          <div class="article-title"></div>
+          <div class="article-meta"></div>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="article-thumb"></div>
+        <div class="article-body">
+          <div class="article-cat"></div>
+          <div class="article-title"></div>
+          <div class="article-meta"></div>
+        </div>
+      </div>
+
+      <div class="article-card">
+        <div class="article-thumb"></div>
+        <div class="article-body">
+          <div class="article-cat"></div>
+          <div class="article-title"></div>
+          <div class="article-meta"></div>
+        </div>
+      </div>
+
+      
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner" id="about">
+  <div class="container">
+    <div class="cta-inner">
+      <h2>ทุกอย่างนี้ <span>ฟรีสำหรับทุกคน</span></h2>
+      <p>เว็บไซต์นี้จัดทำขึ้นเพื่อแบ่งปันความรู้และเครื่องมือที่เป็นประโยชน์ให้กับสังคม โดยไม่มีค่าใช้จ่าย ไม่ต้องสมัครสมาชิก</p>
+      <a href="#tools" class="btn-primary">🚀 เริ่มใช้งานได้เลย</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">✦ <span style="color:var(--gold)">รู้รอบ</span>แบ่งปัน</div>
+      <p>รวมความรู้และโปรแกรมออนไลน์ฟรี<br/>เพื่อสังคมไทยที่เท่าเทียม</p>
+    </div>
+    <div class="footer-col">
+      <h4>สำรวจ</h4>
+      <ul>
+        <li><a href="#tools">โปรแกรมฟรี</a></li>
+        <li><a href="#articles">บทความ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>อื่น ๆ</h4>
+      <ul>
+        <li><a href="#">เกี่ยวกับเรา</a></li>
+        <li><a href="#">ติดต่อ</a></li>
+        <li><a href="#">แนะนำโปรแกรม</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2568 รู้รอบแบ่งปัน — ทำด้วยใจเพื่อสังคมไทย</span>
+    <span>ฟรี · ไม่มีโฆษณา · ไม่มีเงื่อนไข</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu toggle
+  const toggle = document.getElementById('navToggle');
+  const links  = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => links.classList.remove('open'))
+  );
+</script>
+
+</body>
+</html>
