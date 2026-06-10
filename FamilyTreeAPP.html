@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>โปรแกรมจัดการข้อมูลและผังเครือญาติ Interactive</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.default.min.css" rel="stylesheet">
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-border-primary: #378add;
+  --color-border-secondary: #e2e8f0;
+  --color-border-tertiary: #cbd5e1;
+  --border-radius-md: 6px;
+  --border-radius-lg: 12px;
+}
+*{box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Helvetica Neue', 'Arial', sans-serif;}
+body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; padding: 15px; }
+.container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+
+/* Top Action Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-background-secondary);
+  padding: 12px 20px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: 20px;
+  border: 1px solid var(--color-border-secondary);
+}
+.logo-area { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-text-primary); }
+.file-actions { display: flex; gap: 8px; }
+.btn-top {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  background: white;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.btn-top:hover { background: #f1f5f9; color: var(--color-text-primary); }
+.btn-save { border-color: #bbf7d0; color: #16a34a; }
+.btn-save:hover { background: #f0fdf4; }
+.btn-export { border-color: #fed7aa; color: #ea580c; }
+.btn-export:hover { background: #fff7ed; }
+.btn-pdf { border-color: #fca5a5; color: #dc2626; }
+.btn-pdf:hover { background: #fef2f2; }
+
+/* Tabs Navigation */
+.tabs-nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--color-border-secondary);
+  padding-bottom: 4px;
+}
+.tab-btn {
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+  position: relative;
+  bottom: -6px;
+}
+.tab-btn:hover { color: var(--color-border-primary); }
+.tab-btn.active {
+  color: var(--color-border-primary);
+  border-bottom: 3px solid var(--color-border-primary);
+}
+
+/* Tab Contents Area */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Form Styles */
+.form-container { background: #fafafa; border: 1px solid var(--color-border-secondary); padding: 20px; border-radius: var(--border-radius-lg); }
+.form-title { font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; color: var(--color-text-primary); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
+.form-control { padding: 8px 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 14px; outline: none; transition: border-color 0.2s; background: white; color: var(--color-text-primary); min-height: 38px;}
+.form-control:focus { border-color: var(--color-border-primary); }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-submit { padding: 10px 20px; background: var(--color-border-primary); color: white; border: none; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; }
+.btn-submit:hover { background: #2b74be; }
+.btn-cancel { padding: 10px 20px; background: white; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); cursor: pointer; }
+.btn-cancel:hover { background: #f1f5f9; }
+
+/* Tom Select Custom Styles */
+.ts-wrapper { width: 100%; }
+.ts-control {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  font-size: 14px;
+  background: white;
+  color: var(--color-text-primary);
+  box-shadow: none !important;
+  transition: border-color 0.2s;
+  min-height: 38px;
+}
+.ts-control.focus { border-color: var(--color-border-primary); }
+.ts-control > input { font-size: 14px; font-family: inherit; }
+.ts-dropdown {
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border-tertiary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-size: 14px;
+  margin-top: 4px;
+}
+.ts-dropdown .option { padding: 8px 12px; cursor: pointer; }
+.ts-dropdown .option:hover, .ts-dropdown .option.active { background-color: var(--color-background-secondary); color: var(--color-text-primary); }
+
+/* List Styles */
+.list-search-wrap { position: relative; margin-bottom: 15px; }
+.list-search-input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 14px; }
+.relative-table-container { overflow-x: auto; border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); }
+.relative-table { width: 100%; border-collapse: collapse; background: white; font-size: 13.5px; text-align: left; }
+.relative-table th, .relative-table td { padding: 12px 14px; border-bottom: 1px solid var(--color-border-secondary); }
+.relative-table th { background: var(--color-background-secondary); color: var(--color-text-secondary); font-weight: 600; }
+.relative-table tr:hover { background: #f8fafc; }
+.action-btn { padding: 5px 10px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); background: white; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; margin-right: 4px; }
+.action-btn.edit { color: #2563eb; border-color: #bfdbfe; }
+.action-btn.edit:hover { background: #eff6ff; }
+.action-btn.delete { color: #dc2626; border-color: #fca5a5; }
+.action-btn.delete:hover { background: #fef2f2; }
+
+/* Tree View Layout Styles */
+.sticky-header-panel { position: -webkit-sticky; position: sticky; top: 0; background: #ffffff; z-index: 100; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-secondary); margin-bottom: 16px; }
+.search-box-wrap { position: relative; margin-top: 8px; }
+.search-input-field { width: 100%; font-size: 14px; padding: 10px 14px 10px 38px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); transition: all 0.2s; }
+.search-input-field:focus { outline: none; border-color: var(--color-border-primary); box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15); }
+.search-icon-inside { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); max-height: 220px; overflow-y: auto; z-index: 110; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.search-item { padding: 10px 14px; cursor: pointer; font-size: 13.5px; border-bottom: 1px solid var(--color-background-secondary); transition: background 0.15s; }
+.search-item:hover { background: var(--color-background-secondary); }
+.tree-container-box { position: relative; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-border-tertiary); background: #f8fafc; overflow: hidden; }
+.zoom-controls { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; background: white; padding: 4px; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; }
+.zoom-btn { width: 32px; height: 32px; padding: 0; font-size: 16px; border: 1px solid var(--color-border-secondary); background: white; border-radius: 4px; cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; }
+.tree-wrap { width: 100%; height: 600px; cursor: grab; overflow: hidden; position: relative; }
+.tree-svg-container { position: absolute; top: 0; left: 0; transform-origin: 0 0; transform: translate(0px, 0px) scale(1); will-change: transform; }
+.node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-name { font-size: 12px; font-weight: 600; fill: var(--color-text-primary); }
+.node-detail { font-size: 11px; fill: var(--color-text-secondary); }
+.edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+.empty-state { text-align: center; padding: 40px 0; color: var(--color-text-tertiary); font-size: 14px; }
+.btn { padding: 4px 8px; font-size: 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <div class="logo-area">
+      <i class="ti ti-components" style="font-size: 24px; color: var(--color-border-primary);"></i>
+      <span>ระบบจัดการข้อมูลและผังเครือญาติ Interactive</span>
+    </div>
+    <div class="file-actions">
+      <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="handleFileImport(event)">
+      <button class="btn-top" onclick="document.getElementById('import-file-input').click()"><i class="ti ti-folder-open"></i> เปิดไฟล์ฐานข้อมูล</button>
+      <button class="btn-top btn-save" onclick="exportJSON()"><i class="ti ti-device-floppy"></i> บันทึกข้อมูล</button>
+      <button class="btn-top btn-export" onclick="exportViewerHTML()"><i class="ti ti-share"></i> Export ผังเครือญาติ (HTML)</button>
+      <button class="btn-top btn-pdf" onclick="exportPDF()"><i class="ti ti-file-type-pdf"></i> Export ผังเครือญาติ (PDF)</button>
+    </div>
+  </div>
+
+  <div class="tabs-nav">
+    <button class="tab-btn active" id="btn-tab-form" onclick="switchTab('tab-form')"><i class="ti ti-user-plus"></i> เพิ่มข้อมูลบุคคล</button>
+    <button class="tab-btn" id="btn-tab-list" onclick="switchTab('tab-list')"><i class="ti ti-users"></i> ฐานข้อมูล</button>
+    <button class="tab-btn" id="btn-tab-tree" onclick="switchTab('tab-tree')"><i class="ti ti-chart-tree"></i> ผังเครือญาติ</button>
+  </div>
+
+  <div id="tab-form" class="tab-content active">
+    <div class="form-container">
+      <h3 id="form-title" class="form-title"><i class="ti ti-user-plus" style="color: var(--color-border-primary);"></i> เพิ่มข้อมูลบุคคล</h3>
+      <form id="member-form" onsubmit="saveMember(event)">
+        <input type="hidden" id="member-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="member-pid">รหัสประจำตัว (ลำดับในผัง) *</label>
+            <input type="text" id="member-pid" class="form-control" placeholder="เช่น A01, 001, AB3" required>
+          </div>
+          <div class="form-group">
+            <label for="member-prefix">คำนำหน้าชื่อ</label>
+            <input type="text" id="member-prefix" class="form-control" placeholder="นาย / นาง / นางสาว / เด็กชาย">
+          </div>
+          <div class="form-group">
+            <label for="member-firstname">ชื่อจริง *</label>
+            <input type="text" id="member-firstname" class="form-control" placeholder="กรอกชื่อจริง" required>
+          </div>
+          <div class="form-group">
+            <label for="member-lastname">นามสกุล *</label>
+            <input type="text" id="member-lastname" class="form-control" placeholder="กรอกนามสกุล" required>
+          </div>
+          <div class="form-group">
+            <label for="member-maidenname">นามสกุลเดิม (ถ้ามี)</label>
+            <input type="text" id="member-maidenname" class="form-control" placeholder="สำหรับกรณีเปลี่ยนนามสกุล">
+          </div>
+          <div class="form-group">
+            <label for="member-nick">ชื่อเล่น</label>
+            <input type="text" id="member-nick" class="form-control" placeholder="กรอกชื่อเล่น">
+          </div>
+          <div class="form-group">
+            <label for="member-gender">เพศ</label>
+            <select id="member-gender" class="form-control">
+              <option value="ชาย">ชาย</option>
+              <option value="หญิง">หญิง</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-dob">วันเดือนปีเกิด</label>
+            <input type="text" id="member-dob" class="form-control" placeholder="เช่น 01/01/2500">
+          </div>
+          <div class="form-group">
+            <label for="member-age">อายุ (ปี)</label>
+            <input type="number" id="member-age" class="form-control" placeholder="เช่น 18">
+          </div>
+          <div class="form-group">
+            <label for="member-status">สถานะชีวิต</label>
+            <select id="member-status" class="form-control">
+              <option value="มีชีวิต">มีชีวิต</option>
+              <option value="เสียชีวิต">เสียชีวิต</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-father">บิดา (พ่อ)</label>
+            <select id="member-father" class="form-control">
+              <option value="">-- เลือกบิดา (พ่อ) --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-mother">มารดา (แม่)</label>
+            <select id="member-mother" class="form-control">
+              <option value="">-- เลือกมารดา (แม่) --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-spouse">คู่สมรส (สามี/ภรรยา)</label>
+            <select id="member-spouse" class="form-control">
+              <option value="">-- เลือกคู่สมรส --</option>
+            </select>
+          </div>
+          <div class="form-group" id="spouse-order-group" style="display: none;">
+            <label for="member-spouseOrder">ลำดับคู่สมรสคนที่ *</label>
+            <select id="member-spouseOrder" class="form-control">
+              <option value="2">คนที่ 2</option>
+              <option value="3">คนที่ 3</option>
+              <option value="4">คนที่ 4</option>
+              <option value="5">คนที่ 5</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-phone">เบอร์โทรศัพท์</label>
+            <input type="text" id="member-phone" class="form-control" placeholder="กรอกเบอร์โทรศัพท์">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="member-addr">ที่อยู่ปัจจุบัน</label>
+            <input type="text" id="member-addr" class="form-control" placeholder="กรอกที่อยู่">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="member-note">บันทึกเพิ่มเติม</label>
+            <input type="text" id="member-note" class="form-control" placeholder="ข้อมูลอื่นๆ">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="clearForm()">ล้างฟอร์ม / ยกเลิก</button>
+          <button type="submit" class="btn-submit" id="btn-submit-text">บันทึกข้อมูลบุคคล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="tab-list" class="tab-content">
+    <div class="list-search-wrap">
+      <i class="ti ti-search search-icon-inside" style="left:14px; top:50%; transform:translateY(-50%); position:absolute; color:var(--color-text-tertiary);"></i>
+      <input type="text" id="list-search-input" class="list-search-input" placeholder="🔍 ค้นหารายชื่อเครือญาติ (พิมพ์ชื่อ นามสกุล หรือชื่อเล่น)..." oninput="renderTableList()">
+    </div>
+    <div class="relative-table-container">
+      <table class="relative-table">
+        <thead>
+          <tr>
+            <th>รหัสประจำตัว</th>
+            <th>ชื่อ-นามสกุล</th>
+            <th>เพศ</th>
+            <th>อายุ (สถานะ)</th>
+            <th>บิดา (พ่อ)</th>
+            <th>มารดา (แม่)</th>
+            <th>คู่สมรส</th>
+            <th>จัดการข้อมูล</th>
+          </tr>
+        </thead>
+        <tbody id="member-table-body">
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-tree" class="tab-content">
+    <div class="sticky-header-panel">
+      <div id="detail-panel" style="display:none; background:var(--color-background-secondary); border-radius:var(--border-radius-lg); padding:14px; font-size:13px; border:1px solid var(--color-border-tertiary); margin-bottom:10px;"></div>
+      
+      <div class="search-box-wrap">
+        <i class="ti ti-search search-icon-inside"></i>
+        <input type="text" id="tree-search-input" class="search-input-field" placeholder="🔍 ค้นหาบุคคลในผัง (พิมพ์ชื่อเล่น ชื่อ นามสกุล หรือรหัสประจำตัว)..." oninput="handleTreeSearch()">
+        <div id="tree-search-results" class="search-dropdown-list" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div id="tree-container"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+// ชุดข้อมูลปัจจุบันเริ่มต้น
+let members = [];
+
+let tsFather, tsMother, tsSpouse;
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById(tabId).classList.add('active');
+  document.getElementById('btn-' + tabId).classList.add('active');
+  
+  if (tabId === 'tab-list') {
+    renderTableList();
+  } else if (tabId === 'tab-tree') {
+    renderTree();
+    resetZoom();
+  }
+}
+
+function updateFormDropdowns() {
+  const fatherSelect = document.getElementById('member-father');
+  const motherSelect = document.getElementById('member-mother');
+  const spouseSelect = document.getElementById('member-spouse');
+  
+  if(!fatherSelect || !motherSelect || !spouseSelect) return;
+
+  if (tsFather) { tsFather.destroy(); tsFather = null; }
+  if (tsMother) { tsMother.destroy(); tsMother = null; }
+  if (tsSpouse) { tsSpouse.destroy(); tsSpouse = null; }
+  
+  let fatherOptions = '<option value="">-- เลือกบิดา (พ่อ) --</option>';
+  let motherOptions = '<option value="">-- เลือกมารดา (แม่) --</option>';
+  let spouseOptions = '<option value="">-- เลือกคู่สมรส --</option>';
+  
+  members.forEach(m => {
+    const text = `[${m.pid || '-'}] ${m.prefix || ''}${m.firstname} ${m.lastname} ${m.nick ? `(${m.nick})` : ''}`;
+    if (m.gender === 'ชาย') {
+      fatherOptions += `<option value="${m.id}">${text}</option>`;
+    } else {
+      motherOptions += `<option value="${m.id}">${text}</option>`; // 🛠 แก้ไขบั๊กเครื่องหมาย Quote ตรงจุดนี้
+    }
+    spouseOptions += `<option value="${m.id}">${text}</option>`;
+  });
+  
+  fatherSelect.innerHTML = fatherOptions;
+  motherSelect.innerHTML = motherOptions;
+  spouseSelect.innerHTML = spouseOptions;
+
+  const tsConfig = { 
+    create: false, 
+    maxOptions: 1000, 
+    sortField: false
+  };
+  
+  tsFather = new TomSelect("#member-father", tsConfig);
+  tsMother = new TomSelect("#member-mother", tsConfig);
+  tsSpouse = new TomSelect("#member-spouse", { 
+    ...tsConfig,
+    onChange: function() { toggleSpouseOrderVisibility(); }
+  });
+}
+
+function toggleSpouseOrderVisibility() {
+  const spouseSelect = document.getElementById('member-spouse');
+  const spouseOrderGroup = document.getElementById('spouse-order-group');
+  const currentId = document.getElementById('member-id').value;
+  const selectedSpouseId = spouseSelect.value;
+  
+  if (!selectedSpouseId) {
+    spouseOrderGroup.style.display = 'none';
+    return;
+  }
+  
+  const target = members.find(x => x.id === selectedSpouseId);
+  const hasExistingSpouse = (target && target.spouse && target.spouse !== currentId) || 
+                            members.some(m => m.spouse === selectedSpouseId && m.id !== currentId);
+  
+  if (hasExistingSpouse) {
+    spouseOrderGroup.style.display = 'flex';
+  } else {
+    spouseOrderGroup.style.display = 'none';
+  }
+}
+
+function saveMember(event) {
+  event.preventDefault();
+  
+  const idInput = document.getElementById('member-id').value;
+  const pid = document.getElementById('member-pid').value.trim();
+  
+  const isDuplicate = members.some(m => m.pid.toLowerCase() === pid.toLowerCase() && m.id !== idInput);
+  
+  if (isDuplicate) {
+    alert('รหัสประจำตัว (ลำดับในผัง) นี้ถูกใช้งานไปแล้ว กรุณาใช้รหัสอื่นครับ');
+    document.getElementById('member-pid').focus();
+    return;
+  }
+
+  const prefix = document.getElementById('member-prefix').value.trim();
+  const firstname = document.getElementById('member-firstname').value.trim();
+  const lastname = document.getElementById('member-lastname').value.trim();
+  const maidenname = document.getElementById('member-maidenname').value.trim();
+  const nick = document.getElementById('member-nick').value.trim();
+  const gender = document.getElementById('member-gender').value;
+  const dob = document.getElementById('member-dob').value.trim();
+  const status = document.getElementById('member-status').value;
+  const age = document.getElementById('member-age').value.trim();
+  const father = document.getElementById('member-father').value;
+  const mother = document.getElementById('member-mother').value;
+  const spouse = document.getElementById('member-spouse').value;
+  
+  const spouseOrderGroup = document.getElementById('spouse-order-group');
+  let spouseOrder = 1;
+  if (spouseOrderGroup.style.display !== 'none') {
+    spouseOrder = parseInt(document.getElementById('member-spouseOrder').value) || 2;
+  }
+  
+  const generatedId = idInput || 'ID-' + Date.now() + Math.floor(Math.random() * 1000);
+  
+  const memberData = {
+    id: generatedId,
+    pid, prefix, firstname, lastname, maidenname, name: `${firstname} ${lastname}`.trim(),
+    nick, gender, dob, status, age, father, mother, spouse,
+    spouseOrder: spouse ? spouseOrder : 1,
+    phone: document.getElementById('member-phone').value.trim(),
+    addr: document.getElementById('member-addr').value.trim(),
+    note: document.getElementById('member-note').value.trim()
+  };
+  
+  if (idInput) {
+    const idx = members.findIndex(x => x.id === idInput);
+    if (idx !== -1) {
+      const oldSpouseId = members[idx].spouse;
+      if (oldSpouseId && oldSpouseId !== spouse) {
+        const oldSpouse = members.find(x => x.id === oldSpouseId);
+        if (oldSpouse && oldSpouse.spouse === idInput) oldSpouse.spouse = '';
+      }
+      members[idx] = memberData;
+    }
+    alert('แก้ไขข้อมูลบุคคลเรียบร้อยแล้ว');
+  } else {
+    members.push(memberData);
+    alert('เพิ่มข้อมูลบุคคลใหม่เสร็จสิ้น');
+  }
+  
+  if (spouse) {
+    const targetSpouse = members.find(x => x.id === spouse);
+    if (targetSpouse) {
+      targetSpouse.spouse = generatedId;
+    }
+  }
+  
+  clearForm();
+  updateFormDropdowns();
+  switchTab('tab-list');
+}
+
+function clearForm() {
+  document.getElementById('member-form').reset();
+  document.getElementById('member-id').value = '';
+  
+  if (tsFather) tsFather.setValue('');
+  if (tsMother) tsMother.setValue('');
+  if (tsSpouse) tsSpouse.setValue('');
+
+  document.getElementById('spouse-order-group').style.display = 'none';
+  document.getElementById('form-title').innerHTML = '<i class="ti ti-user-plus" style="color: var(--color-border-primary);"></i> เพิ่มข้อมูลบุคคลใหม่';
+  document.getElementById('btn-submit-text').innerText = 'บันทึกข้อมูลบุคคล';
+}
+
+function editMember(id) {
+  const m = members.find(x => x.id === id);
+  if (!m) return;
+  
+  document.getElementById('member-id').value = m.id;
+  document.getElementById('member-pid').value = m.pid || '';
+  document.getElementById('member-prefix').value = m.prefix || '';
+  document.getElementById('member-firstname').value = m.firstname || '';
+  document.getElementById('member-lastname').value = m.lastname || '';
+  document.getElementById('member-maidenname').value = m.maidenname || '';
+  document.getElementById('member-nick').value = m.nick || '';
+  document.getElementById('member-gender').value = m.gender || 'ชาย';
+  document.getElementById('member-dob').value = m.dob || '';
+  document.getElementById('member-status').value = m.status || 'มีชีวิต';
+  document.getElementById('member-age').value = m.age || '';
+  
+  if (tsFather) tsFather.setValue(m.father || '');
+  if (tsMother) tsMother.setValue(m.mother || '');
+  if (tsSpouse) tsSpouse.setValue(m.spouse || '');
+  
+  toggleSpouseOrderVisibility();
+  if (m.spouseOrder && m.spouseOrder >= 2 && m.spouseOrder <= 5) {
+    document.getElementById('member-spouseOrder').value = m.spouseOrder;
+  } else {
+    document.getElementById('member-spouseOrder').value = '2';
+  }
+  
+  document.getElementById('member-phone').value = m.phone || '';
+  document.getElementById('member-addr').value = m.addr || '';
+  document.getElementById('member-note').value = m.note || '';
+  
+  document.getElementById('form-title').innerHTML = '<i class="ti ti-edit" style="color: var(--color-border-primary);"></i> แก้ไขข้อมูลบุคคล';
+  document.getElementById('btn-submit-text').innerText = 'อัปเดตข้อมูลบุคคล';
+  
+  switchTab('tab-form');
+}
+
+function deleteMember(id) {
+  const m = members.find(x => x.id === id);
+  if (!m) return;
+  if (confirm(`คุณต้องการลบรายชื่อ [${m.pid}] ${m.firstname} ${m.lastname} ใช่หรือไม่?`)) {
+    members = members.filter(x => x.id !== id);
+    members.forEach(x => {
+      if(x.father === id) x.father = '';
+      if(x.mother === id) x.mother = '';
+      if(x.spouse === id) x.spouse = '';
+    });
+    alert('ลบข้อมูลเสร็จสิ้น');
+    updateFormDropdowns();
+    renderTableList();
+  }
+}
+
+function renderTableList() {
+  const tbody = document.getElementById('member-table-body');
+  if(!tbody) return;
+  const query = document.getElementById('list-search-input').value.trim().toLowerCase();
+  
+  const filtered = members.filter(m => 
+    (m.firstname && m.firstname.toLowerCase().includes(query)) ||
+    (m.lastname && m.lastname.toLowerCase().includes(query)) ||
+    (m.nick && m.nick.toLowerCase().includes(query)) ||
+    (m.pid && m.pid.toLowerCase().includes(query))
+  );
+  
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--color-text-tertiary);">❌ ไม่พบรายชื่อที่ค้นหา</td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = filtered.map(m => {
+    const f = m.father ? members.find(x => x.id === m.father) : null;
+    const mo = m.mother ? members.find(x => x.id === m.mother) : null;
+    const s = m.spouse ? members.find(x => x.id === m.spouse) : null;
+    return `<tr>
+      <td><b>[${m.pid || '-'}]</b></td>
+      <td>${m.prefix || ''}${m.firstname} ${m.lastname} ${m.nick ? `(${m.nick})` : ''}</td>
+      <td>${m.gender || '-'}</td>
+      <td>${m.age ? `${m.age} ปี` : '-'} (${m.status || 'มีชีวิต'})</td>
+      <td>${f ? `[${f.pid}] ${f.firstname}` : '-'}</td>
+      <td>${mo ? `[${mo.pid}] ${mo.firstname}` : '-'}</td>
+      <td>${s ? `[${s.pid}] ${s.firstname} ${m.spouseOrder && m.spouseOrder > 1 ? `(คนที่ ${m.spouseOrder})` : ''}` : '-'}</td>
+      <td>
+        <button class="action-btn edit" onclick="editMember('${m.id}')"><i class="ti ti-edit"></i> แก้ไข</button>
+        <button class="action-btn delete" onclick="deleteMember('${m.id}')"><i class="ti ti-trash"></i> ลบ</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        members = data;
+        alert('📂 โหลดฐานข้อมูลสำเร็จ! ตรวจพบเครือญาติรวม ' + members.length + ' คน');
+        updateFormDropdowns();
+        renderTableList();
+        if(document.getElementById('tab-tree').classList.contains('active')) renderTree();
+      } else {
+        alert('รูปแบบไฟล์ฐานข้อมูล JSON ไม่ถูกต้อง');
+      }
+    } catch (err) {
+      alert('เกิดปัญหาในการอ่านไฟล์ข้อมูล: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; 
+}
+
+function exportJSON() {
+  if (!members.length) { alert('ไม่มีข้อมูลที่สามารถบันทึกได้'); return; }
+  const blob = new Blob([JSON.stringify(members, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'family_tree_data.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// =======================================================
+// 📌 เอนจิ้นคำนวณกราฟิกผังเครือญาติ Interactive Engine
+// =======================================================
+let scale = 1; let transformX = 0; let transformY = 0; let isDragging = false; let startX, startY;
+let initialDistance = null; let initialScale = 1;
+
+const W = 90; 
+const H = 54; 
+const VGAP = 110; 
+const SIBLING_GAP = 25; 
+const SPOUSE_GAP = 20;
+const EXTRA_SPOUSE_DY = 65; 
+const EXTRA_SPOUSE_DX = 25;
+
+const SPOUSE_COLORS = { 1: "#e11d48", 2: "#2563eb", 3: "#16a34a", 4: "#ea580c", 5: "#8b5cf6" };
+
+function getGeneration(id, memo={}){
+  if(memo[id]!==undefined)return memo[id]; const m=members.find(x=>x.id===id); if(!m){memo[id]=0;return 0;}
+  const fg=m.father?getGeneration(m.father,memo):-1; const mg=m.mother?getGeneration(m.mother,memo):-1;
+  if(fg===-1 && mg===-1) { memo[id]=0; return 0; }
+  memo[id] = Math.max(fg,mg)+1; return memo[id];
+}
+
+function applyZoomTransform() { const t = document.getElementById('tree-transform-layer'); if(t) t.style.transform = `translate(${transformX}px, ${transformY}px) scale(${scale})`; }
+function zoom(dir) { scale = dir==='in' ? Math.min(scale+0.1, 3) : Math.max(scale-0.1, 0.3); applyZoomTransform(); }
+function resetZoom() { scale = 1; transformX = 0; transformY = 0; applyZoomTransform(); }
+
+function initPanEvents() {
+  const w = document.getElementById('tree-drag-wrapper'); if(!w) return;
+  w.addEventListener('mousedown', (e) => { if(e.target.closest('g[onclick]')) return; isDragging=true; startX=e.clientX-transformX; startY=e.clientY-transformY; });
+  window.addEventListener('mousemove', (e) => { if(!isDragging) return; transformX=e.clientX-startX; transformY=e.clientY-startY; applyZoomTransform(); });
+  window.addEventListener('mouseup', () => { isDragging=false; });
+  
+  w.addEventListener('touchstart', (e) => {
+    if(e.target.closest('g[onclick]')) return;
+    if (e.touches.length === 2) {
+      isDragging = false; initialDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      initialScale = scale;
+    } else if (e.touches.length === 1) {
+      isDragging = true; startX = e.touches[0].clientX - transformX; startY = e.touches[0].clientY - transformY;
+    }
+  });
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2 && initialDistance !== null) {
+      e.preventDefault();
+      const currentDistance = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      const factor = currentDistance / initialDistance;
+      scale = Math.min(Math.max(initialScale * factor, 0.3), 3); applyZoomTransform();
+    } else if (e.touches.length === 1 && isDragging) {
+      transformX = e.touches[0].clientX - startX; transformY = e.touches[0].clientY - startY; applyZoomTransform();
+    }
+  }, { passive: false });
+  window.addEventListener('touchend', (e) => { if (e.touches.length < 2) initialDistance = null; if (e.touches.length === 0) isDragging = false; });
+}
+
+function showMemberDetail(id){
+  const m=members.find(x=>x.id===id); if(!m)return;
+  const panel=document.getElementById('detail-panel');
+  const father=m.father&&members.find(x=>x.id===m.father);
+  const mother=m.mother&&members.find(x=>x.id===m.mother);
+  const spouse=m.spouse&&members.find(x=>x.id===m.spouse);
+  const children=members.filter(x=>x.father===id||x.mother===id);
+  panel.style.display='block';
+  panel.innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px; border-bottom: 1px solid var(--color-border-secondary); padding-bottom: 10px;">
+      <div style="width:38px;height:38px;border-radius:50%;background:${m.gender==='ชาย'?'#e6f1fb':'#fbeaf0'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:${m.gender==='ชาย'?'#0c447c':'#72243e'}"><i class="ti ti-user"></i></div>
+      <div>
+        <div style="font-weight:600; font-size:15px;">${m.prefix || ''}${m.firstname} ${m.lastname}${m.maidenname?' (เดิม: '+m.maidenname+')':''}${m.nick?' ('+m.nick+')':''}</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">เพศ: ${m.gender} · สถานะ: ${m.status}${m.dob?' · วันเกิด: '+m.dob:''}</div>
+      </div>
+      <button class="btn" style="margin-left:auto;padding:0;border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('detail-panel').style.display='none'">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:13px;">
+      ${father?`<div><span style="color:var(--color-text-tertiary); font-weight:500;">บิดา (พ่อ): </span>${father.prefix || ''}${father.firstname} ${father.lastname}</div>`:''}
+      ${mother?`<div><span style="color:var(--color-text-tertiary); font-weight:500;">มารดา (แม่): </span>${mother.prefix || ''}${mother.firstname} ${mother.lastname}</div>`:''}
+      ${spouse?`<div><span style="color:var(--color-text-tertiary); font-weight:500;">คู่สมรส: </span>${spouse.prefix || ''}${spouse.firstname} ${spouse.lastname} ${m.spouseOrder && m.spouseOrder > 1 ? `(คนที่ ${m.spouseOrder})` : ''}</div>`:''}
+      ${children.length?`<div style="grid-column:span 2"><span style="color:var(--color-text-tertiary); font-weight:500;">ทายาทบุตร (${children.length} คน เรียงตามอายุ): </span>${children.map(c=>`${c.prefix || ''}${c.firstname} ${c.lastname}`).join(', ')}</div>`:''}
+    </div>`;
+}
+
+function handleTreeSearch() {
+  const query = document.getElementById('tree-search-input').value.trim().toLowerCase();
+  const resultsDiv = document.getElementById('tree-search-results');
+  if (!query) { resultsDiv.style.display = 'none'; resultsDiv.innerHTML = ''; return; }
+  
+  const matches = members.filter(m => 
+    (m.firstname && m.firstname.toLowerCase().includes(query)) ||
+    (m.lastname && m.lastname.toLowerCase().includes(query)) ||
+    (m.nick && m.nick.toLowerCase().includes(query)) ||
+    (m.pid && m.pid.toLowerCase().includes(query))
+  );
+  
+  if (matches.length === 0) {
+    resultsDiv.innerHTML = '<div class="search-item" style="color:var(--color-text-tertiary); cursor:default;">❌ ไม่พบบุคคลที่ตรงกัน</div>';
+    resultsDiv.style.display = 'block'; return;
+  }
+  
+  resultsDiv.innerHTML = matches.map(m => `
+    <div class="search-item" onclick="focusMember('${m.id}')">
+      <b style="color:var(--color-border-primary);">[${m.pid || '-'}]</b> ${m.prefix || ''}${m.firstname} ${m.lastname} ${m.nick ? `(${m.nick})` : ''}
+    </div>
+  `).join('');
+  resultsDiv.style.display = 'block';
+}
+
+function focusMember(id) {
+  document.getElementById('tree-search-results').style.display = 'none';
+  if (!window.treePositions || !window.treePositions[id]) return;
+  const p = window.treePositions[id];
+  const wrapper = document.getElementById('tree-drag-wrapper'); if (!wrapper) return;
+  
+  scale = 1.2;
+  const nodeCenterX = p.x + W / 2; const nodeCenterY = p.y + H / 2;
+  transformX = (wrapper.clientWidth / 2) - (nodeCenterX * scale);
+  transformY = (wrapper.clientHeight / 2) - (nodeCenterY * scale);
+  
+  applyZoomTransform(); showMemberDetail(id);
+}
+
+document.addEventListener('click', function(e) {
+  const box = document.getElementById('tree-search-input'); const results = document.getElementById('tree-search-results');
+  if (results && e.target !== box && !results.contains(e.target)) { results.style.display = 'none'; }
+});
+
+function renderTree(){
+  const el=document.getElementById('tree-container'); if(!el) return;
+  if(!members.length){el.innerHTML='<div class="empty-state">กรุณากรอกข้อมูลหรือโหลดไฟล์ข้อมูลเพื่อดูผัง</div>';return;}
+
+  const treeMembers = members.filter(m => !!m.father || !!m.mother || !!m.spouse || members.some(x => x.spouse === m.id || x.father === m.id || x.mother === m.id));
+  if(!treeMembers.length){el.innerHTML='<div class="empty-state">ไม่มีความเชื่อมโยงสายสัมพันธ์ในระบบ</div>';return;}
+
+  const genMap={}; treeMembers.forEach(m=>getGeneration(m.id,genMap));
+  for(let i=0;i<5;i++){
+    treeMembers.forEach(m=>{
+      let allSps = [m.spouse, ...treeMembers.filter(x=>x.spouse===m.id).map(x=>x.id)].filter(Boolean);
+      allSps.forEach(spId => { let mx = Math.max(genMap[m.id]||0, genMap[spId]||0); genMap[m.id] = mx; genMap[spId] = mx; });
+      if(m.father && m.mother) { let mx = Math.max(genMap[m.father]||0, genMap[m.mother]||0); genMap[m.father] = mx; genMap[m.mother] = mx; }
+    });
+  }
+
+  const headMap = {}; const spouseBlocks = {}; 
+  treeMembers.forEach(m => {
+    if(headMap[m.id]) return;
+    let sps = treeMembers.filter(x => x.id === m.spouse || x.spouse === m.id);
+    let implicitSpouseIds = treeMembers.filter(c => (c.father === m.id && c.mother) || (c.mother === m.id && c.father)).map(c => c.father === m.id ? c.mother : c.father);
+        
+    implicitSpouseIds.forEach(id => {
+        if(!sps.find(x => x.id === id)) { let impNode = treeMembers.find(x => x.id === id); if(impNode) { impNode.isImplicit = true; sps.push(impNode); } }
+    });
+    
+    let group = [m, ...sps]; group = [...new Map(group.map(item => [item.id, item])).values()];
+    group.sort((a,b) => {
+        if(a.gender === 'ชาย' && b.gender !== 'ชาย') return -1; if(b.gender === 'ชาย' && a.gender !== 'ชาย') return 1;
+        let orderA = a.isImplicit ? 99 : (parseInt(a.spouseOrder)||1); let orderB = b.isImplicit ? 99 : (parseInt(b.spouseOrder)||1);
+        return orderA - orderB;
+    });
+    let head = group[0]; spouseBlocks[head.id] = group; group.forEach(x => headMap[x.id] = head.id);
+  });
+
+  const childrenOfHead = {};
+  treeMembers.forEach(m => {
+      let parentHead = null; if(m.father && headMap[m.father]) parentHead = headMap[m.father]; else if(m.mother && headMap[m.mother]) parentHead = headMap[m.mother];
+      if(parentHead) { if(!childrenOfHead[parentHead]) childrenOfHead[parentHead] = []; childrenOfHead[parentHead].push(m); }
+  });
+
+  const subtreeWidth = {};
+  function calcWidth(hId) {
+      if(subtreeWidth[hId]) return subtreeWidth[hId];
+      let block = spouseBlocks[hId]; let baseW = W; if(block.length > 1) baseW = W + SPOUSE_GAP + W + (block.length - 2) * EXTRA_SPOUSE_DX;
+      let children = childrenOfHead[hId] || []; if(children.length === 0) { subtreeWidth[hId] = baseW; return baseW; }
+      let cHeads = [...new Set(children.map(c => headMap[c.id]))];
+      let childrenW = cHeads.reduce((sum, ch) => sum + calcWidth(ch), 0) + (cHeads.length - 1) * SIBLING_GAP;
+      subtreeWidth[hId] = Math.max(baseW, childrenW); return subtreeWidth[hId];
+  }
+  Object.keys(spouseBlocks).forEach(h => calcWidth(h));
+
+  const positions = {};
+  function placeBlock(hId, centerX) {
+      if(positions[hId]) return;
+      let block = spouseBlocks[hId]; let gen = genMap[hId] || 0; let y = gen * (H + VGAP);
+      let baseW = W; if(block.length > 1) baseW = W + SPOUSE_GAP + W + (block.length - 2) * EXTRA_SPOUSE_DX;
+      let startX = centerX - baseW/2; positions[hId] = { x: startX, y: y };
+      for(let i=1; i<block.length; i++) {
+          let sp = block[i]; let spX = startX + W + SPOUSE_GAP + (i-1)*EXTRA_SPOUSE_DX;
+          let spY = (i === 1) ? y : y + (i-1)*EXTRA_SPOUSE_DY; positions[sp.id] = { x: spX, y: spY };
+      }
+      let children = childrenOfHead[hId] || [];
+      if(children.length > 0) {
+          let cHeads = [...new Set(children.map(c => headMap[c.id]))];
+          cHeads.sort((a,b) => {
+              let childA = children.find(c => headMap[c.id] === a); let childB = children.find(c => headMap[c.id] === b);
+              let ageA = childA.age ? parseInt(childA.age) : 0; let ageB = childB.age ? parseInt(childB.age) : 0; return ageB - ageA; 
+          });
+          let totalCW = cHeads.reduce((sum, ch) => sum + subtreeWidth[ch], 0) + (cHeads.length - 1) * SIBLING_GAP;
+          let currX = centerX - totalCW/2;
+          cHeads.forEach(ch => { let w = subtreeWidth[ch]; placeBlock(ch, currX + w/2); currX += w + SIBLING_GAP; });
+      }
+  }
+
+  let allHeads = Object.keys(spouseBlocks); let childHeads = new Set(); Object.values(childrenOfHead).flat().forEach(c => childHeads.add(headMap[c.id]));
+  let rootHeads = allHeads.filter(h => !childHeads.has(h)); let currRootX = 50;
+  rootHeads.forEach(rh => { let w = subtreeWidth[rh]; placeBlock(rh, currRootX + w/2); currRootX += w + 80; });
+
+  window.treePositions = positions;
+  let edges='', nodes='', hearts=''; const jointPoints={};
+
+  Object.values(spouseBlocks).forEach(block => {
+      let head = block[0];
+      for(let i=1; i<block.length; i++) {
+          let sp = block[i]; let p1 = positions[head.id]; let p2 = positions[sp.id]; let pairKey = [head.id, sp.id].sort().join('-');
+          let color = sp.isImplicit ? "#94a3b8" : (SPOUSE_COLORS[i] || "#64748b");
+          if(i === 1) {
+              let midX = (p1.x + W + p2.x) / 2; let midY = p1.y + H/2; jointPoints[pairKey] = { x: midX, y: midY, color: color };
+              if(sp.isImplicit) { edges += `<line x1="${p1.x+W}" y1="${midY}" x2="${p2.x}" y2="${midY}" class="edge" style="stroke:${color}; stroke-width:2; stroke-dasharray:4,3;"/>`; } 
+              else { edges += `<line x1="${p1.x+W}" y1="${midY}" x2="${p2.x}" y2="${midY}" class="edge" style="stroke:${color}; stroke-width:2.5;"/>`;
+                  hearts += `<g transform="translate(${midX-8},${midY-8})"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${color}" transform="scale(0.7)"/></g>`; }
+          } else {
+              let dropY = p2.y + H/2; jointPoints[pairKey] = { x: p2.x - 15, y: dropY, color: color };
+              if(sp.isImplicit) { edges += `<path d="M${p1.x+W/2},${p1.y+H} L${p1.x+W/2},${dropY} L${p2.x},${dropY}" class="edge" style="stroke:${color}; stroke-width:2; stroke-dasharray:4,3; fill:none;"/>`; } 
+              else { edges += `<path d="M${p1.x+W/2},${p1.y+H} L${p1.x+W/2},${dropY} L${p2.x},${dropY}" class="edge" style="stroke:${color}; stroke-width:2.5; fill:none;"/>`;
+                  hearts += `<g transform="translate(${p2.x-22},${dropY-7})"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${color}" transform="scale(0.6)"/></g>`; }
+          }
+      }
+  });
+
+  treeMembers.forEach(m => {
+      const p = positions[m.id]; if(!p) return; const cx = p.x + W/2;
+      if(m.father && m.mother) {
+          const pairKey = [m.father, m.mother].sort().join('-'); const joint = jointPoints[pairKey];
+          if(joint) { const midY = joint.y + (p.y - joint.y) * 0.45; edges += `<path d="M${joint.x},${joint.y} L${joint.x},${midY} L${cx},${midY} L${cx},${p.y}" class="edge" style="stroke:${joint.color}; stroke-width:2; fill:none;"/>`; }
+      } else if(m.father || m.mother) {
+          const parentId = m.father || m.mother; const pp = positions[parentId];
+          if(pp) { const midY = pp.y + H + (p.y - (pp.y + H)) * 0.45; edges += `<path d="M${pp.x+W/2},${pp.y+H} L${pp.x+W/2},${midY} L${cx},${midY} L${cx},${p.y}" class="edge" style="stroke:#94a3b8; stroke-width:2; fill:none;"/>`; }
+      }
+  });
+
+  treeMembers.forEach(m=>{
+    const p=positions[m.id]; if(!p)return; const cls=m.gender==='ชาย'?'node-male':'node-female';
+    
+    let rawLine1 = m.firstname || '';
+    let rawLine2 = m.lastname || '';
+    let rawLine3 = m.nick ? `(${m.nick})` : '';
+    
+    const line1 = rawLine1.length > 12 ? rawLine1.slice(0, 10)+'…' : rawLine1;
+    const line2 = rawLine2.length > 12 ? rawLine2.slice(0, 10)+'…' : rawLine2;
+    const line3 = rawLine3.length > 12 ? rawLine3.slice(0, 10)+'…' : rawLine3;
+    
+    nodes+=`<g style="cursor:pointer" onclick="showMemberDetail('${m.id}')">
+      <rect x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="6" class="${cls}"/>
+      <text x="${p.x+W/2}" y="${p.y+16}" text-anchor="middle" class="node-name">${line1}</text>
+      <text x="${p.x+W/2}" y="${p.y+31}" text-anchor="middle" class="node-detail" style="font-weight: 500; font-size: 11px;">${line2}</text>
+      <text x="${p.x+W/2}" y="${p.y+46}" text-anchor="middle" class="node-detail" style="font-weight: 500; font-size: 11px;">${line3}</text>
+      ${m.status==='เสียชีวิต'?`<text x="${p.x+W-6}" y="${p.y+13}" text-anchor="end" style="font-size:11px;fill:var(--color-text-tertiary); font-weight:bold;">†</text>`:''}
+    </g>`;
+  });
+
+  const allX=Object.values(positions).map(p=>p.x); const allY=Object.values(positions).map(p=>p.y);
+  const svgW=Math.max(...allX, 500)+W+150; const svgH=Math.max(...allY, 500)+H+150;
+
+  el.innerHTML=`
+    <div class="tree-container-box">
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="zoom('in')" title="ขยายผัง"><i class="ti ti-zoom-in"></i></button>
+        <button class="zoom-btn" onclick="zoom('out')" title="ย่อผัง"><i class="ti ti-zoom-out"></i></button>
+        <button class="zoom-btn" onclick="resetZoom()" title="รีเซ็ตผัง"><i class="ti ti-refresh"></i></button>
+      </div>
+      <div class="tree-wrap" id="tree-drag-wrapper">
+        <div class="tree-svg-container" id="tree-transform-layer">
+          <svg width="${svgW}" height="${svgH}" style="display:block;">${edges}${hearts}${nodes}</svg>
+        </div>
+      </div>
+    </div>`;
+  initPanEvents();
+}
+
+function exportPDF() {
+  if (!members.length) { alert('ไม่มีข้อมูลสำหรับการส่งออก'); return; }
+  
+  renderTree();
+  const svgEl = document.querySelector('#tree-container svg');
+  if (!svgEl) { alert('ไม่พบผังเครือญาติในขณะนี้ครับ'); return; }
+  
+  const svgHtml = svgEl.outerHTML;
+  const printWindow = window.open('', '_blank');
+  
+  printWindow.document.write(`
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ผังเครือญาติ (PDF Export)</title>
+<style>
+  body { margin: 0; padding: 20px; background: #ffffff; display: flex; flex-direction: column; align-items: center; }
+  h2 { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: #1e293b; font-size: 18px; margin-bottom: 15px; text-align: center; }
+  svg { display: block; max-width: 100%; height: auto; }
+  .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; }
+  .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; }
+  .node-name { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 12px; font-weight: 600; fill: #1e293b; }
+  .node-detail { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; font-size: 11px; fill: #475569; }
+  .edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+  @media print {
+    @page { size: auto; margin: 12mm 10mm; }
+    body { padding: 0; }
+  }
+</style>
+</head>
+<body>
+  <h2>ผังเครือญาติ</h2>
+  <div>${svgHtml}</div>
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+        window.close();
+      }, 400);
+    };
+  <\/script>
+</body>
+</html>`);
+
+  printWindow.document.close();
+}
+
+function exportViewerHTML() {
+  if (!members.length) { alert('ไม่มีข้อมูลสำหรับการส่งออก'); return; }
+  
+  const exportedHTML = `<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ผังเครือญาติ (Interactive Viewer)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-border-primary: #378add;
+  --color-border-secondary: #e2e8f0;
+  --color-border-tertiary: #cbd5e1;
+  --border-radius-md: 6px;
+  --border-radius-lg: 12px;
+}
+*{box-sizing:border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Helvetica Neue', 'Arial', sans-serif;}
+body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; padding: 15px; }
+.container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+h2 { font-size: 20px; margin-top: 0; margin-bottom: 15px; color: var(--color-text-primary); text-align: center; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.sticky-header-panel { position: -webkit-sticky; position: sticky; top: 0; background: #ffffff; z-index: 100; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-secondary); margin-bottom: 16px; }
+.search-box-wrap { position: relative; margin-top: 8px; }
+.search-input-field { width: 100%; font-size: 14px; padding: 10px 14px 10px 38px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); transition: all 0.2s; }
+.search-input-field:focus { outline: none; border-color: var(--color-border-primary); box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15); }
+.search-icon-inside { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); max-height: 220px; overflow-y: auto; z-index: 110; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.search-item { padding: 10px 14px; cursor: pointer; font-size: 13.5px; border-bottom: 1px solid var(--color-background-secondary); transition: background 0.15s; }
+.search-item:hover { background: var(--color-background-secondary); }
+.tree-container-box { position: relative; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-border-tertiary); background: #f8fafc; overflow: hidden; }
+.zoom-controls { position: absolute; top: 12px; right: 12px; display: flex; gap: 4px; background: white; padding: 4px; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; }
+.zoom-btn { width: 32px; height: 32px; padding: 0; font-size: 16px; border: 1px solid var(--color-border-secondary); background: white; border-radius: 4px; cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; }
+.tree-wrap { width: 100%; height: 700px; cursor: grab; overflow: hidden; position: relative; }
+.tree-svg-container { position: absolute; top: 0; left: 0; transform-origin: 0 0; transform: translate(0px, 0px) scale(1); will-change: transform; }
+.node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-name { font-size: 12px; font-weight: 600; fill: var(--color-text-primary); }
+.node-detail { font-size: 11px; font-weight: 500; fill: var(--color-text-secondary); }
+.edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+.empty-state { text-align: center; padding: 40px 0; color: var(--color-text-tertiary); font-size: 14px; }
+.btn { padding: 4px 8px; font-size: 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2><i class="ti ti-chart-tree" style="color: #378add;"></i>ผังเครือญาติ</h2>
+  <div class="sticky-header-panel">
+    <div id="detail-panel" style="display:none; background:var(--color-background-secondary); border-radius:var(--border-radius-lg); padding:14px; font-size:13px; border:1px solid var(--color-border-tertiary); margin-bottom:10px;"></div>
+    <div class="search-box-wrap">
+      <i class="ti ti-search search-icon-inside"></i>
+      <input type="text" id="tree-search-input" class="search-input-field" placeholder="🔍 ค้นหาบุคคลในผัง (พิมพ์ชื่อเล่น ชื่อ นามสกุล หรือรหัสประจำตัว)..." oninput="handleTreeSearch()">
+      <div id="tree-search-results" class="search-dropdown-list" style="display:none;"></div>
+    </div>
+  </div>
+  <div id="tree-container"></div>
+</div>
+<script>
+const members = ${JSON.stringify(members)};
+let scale = 1; let transformX = 0; let transformY = 0; let isDragging = false; let startX, startY;
+let initialDistance = null; let initialScale = 1;
+const W = 90; const H = 54; const VGAP = 110; const SIBLING_GAP = 25; const SPOUSE_GAP = 20;
+const EXTRA_SPOUSE_DY = 65; const EXTRA_SPOUSE_DX = 25;
+const SPOUSE_COLORS = { 1: "#e11d48", 2: "#2563eb", 3: "#16a34a", 4: "#ea580c", 5: "#8b5cf6" };
+
+${getGeneration.toString()}
+${applyZoomTransform.toString()}
+${zoom.toString()}
+${resetZoom.toString()}
+${initPanEvents.toString()}
+${showMemberDetail.toString()}
+${handleTreeSearch.toString()}
+${focusMember.toString()}
+
+document.addEventListener('click', function(e) {
+  const box = document.getElementById('tree-search-input'); const results = document.getElementById('tree-search-results');
+  if (results && e.target !== box && !results.contains(e.target)) { results.style.display = 'none'; }
+});
+
+${renderTree.toString()}
+
+window.onload = function() { renderTree(); resetZoom(); };
+<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([exportedHTML], { type: 'text/html;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'family_tree_viewer.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+window.onload = function() {
+  updateFormDropdowns();
+  renderTableList();
+  renderTree();
+  resetZoom();
+};
+</script>
+</body>
+</html>
