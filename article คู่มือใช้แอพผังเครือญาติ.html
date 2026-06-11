@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>วิธีใช้งานโปรแกรมผังเครือญาติ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f1117;
+      --bg2:      #1a1d27;
+      --bg3:      #22263a;
+      --gold:     #f5c842;
+      --gold-dim: #c9a52e;
+      --text:     #e8eaf0;
+      --muted:    #8b8fa8;
+      --border:   #2c3050;
+      --radius:   10px;
+      --content:  680px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Sarabun', 'Inter', sans-serif;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ───── NAVBAR ───── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: auto;
+      padding: 0 1.2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 58px;
+    }
+    .logo {
+      font-size: 1.1rem; font-weight: 700;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a { font-size: .9rem; color: var(--muted); transition: color .2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-toggle {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: .3rem;
+      flex-direction: column; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 24px; height: 2px;
+      background: var(--text); border-radius: 2px;
+    }
+
+    /* ───── LAYOUT ───── */
+    .page-wrap {
+      max-width: 1100px; margin: auto;
+      padding: 2.5rem 1.2rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* ───── BREADCRUMB ───── */
+    .breadcrumb {
+      display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+      font-size: .82rem; color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .breadcrumb a:hover { color: var(--gold); }
+    .breadcrumb .sep { color: var(--border); }
+
+    /* ───── ARTICLE HEADER ───── */
+    .article-cat {
+      display: inline-block;
+      background: rgba(245,200,66,.12); color: var(--gold);
+      font-size: .75rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .2rem .7rem; border-radius: 20px;
+      border: 1px solid rgba(245,200,66,.25);
+      margin-bottom: .9rem;
+    }
+    .article-title {
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      font-weight: 700; line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+    .article-meta {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      font-size: .83rem; color: var(--muted);
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.8rem;
+    }
+    .article-meta .author {
+      display: flex; align-items: center; gap: .4rem; color: var(--text);
+      font-weight: 600;
+    }
+    .author-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--bg3); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+    }
+
+    .view-counter { display: flex; align-items: center; gap: .35rem; }
+    .view-counter img { height: 18px; vertical-align: middle; }
+
+    /* ───── ARTICLE BODY ───── */
+    .article-body { color: var(--text); }
+
+    .article-body p { margin-bottom: 1.3rem; }
+
+    .article-body h2 {
+      font-size: 1.25rem; font-weight: 700;
+      margin: 2rem 0 .8rem;
+      padding-left: .8rem;
+      border-left: 3px solid var(--gold);
+      line-height: 1.4;
+    }
+    .article-body h3 {
+      font-size: 1.05rem; font-weight: 700;
+      margin: 1.5rem 0 .6rem;
+      color: var(--gold);
+    }
+
+    .article-body ul,
+    .article-body ol {
+      padding-left: 1.4rem;
+      margin-bottom: 1.3rem;
+      display: flex; flex-direction: column; gap: .4rem;
+    }
+    .article-body li { padding-left: .3rem; }
+
+    .article-body strong { color: #fff; font-weight: 700; }
+
+    /* Callout box */
+    .callout {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      margin: 1.5rem 0;
+      font-size: .93rem;
+    }
+    .callout-title {
+      font-weight: 700; color: var(--gold);
+      margin-bottom: .3rem; font-size: .88rem;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+
+    /* Warning box */
+    .callout.warn {
+      border-left-color: #e05c5c;
+    }
+    .callout.warn .callout-title { color: #e05c5c; }
+
+    /* Divider */
+    .article-body hr {
+      border: none; border-top: 1px solid var(--border);
+      margin: 2rem 0;
+    }
+
+    /* ───── TAGS ───── */
+    .article-tags {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .tag {
+      background: var(--bg2); border: 1px solid var(--border);
+      color: var(--muted); font-size: .78rem;
+      padding: .25rem .7rem; border-radius: 20px;
+      transition: border-color .2s, color .2s; cursor: pointer;
+    }
+    .tag:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ───── SHARE ───── */
+    .share-bar {
+      display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+      margin-top: 1.5rem; padding: 1rem 1.2rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .share-label { font-size: .85rem; color: var(--muted); margin-right: .2rem; }
+    .share-btn {
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-size: .82rem; font-weight: 600;
+      padding: .35rem .9rem; border-radius: 6px;
+      cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .share-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ───── RELATED ARTICLES ───── */
+    .related { margin-top: 3rem; }
+    .section-title {
+      font-size: 1.1rem; font-weight: 700;
+      display: flex; align-items: center; gap: .6rem;
+      margin-bottom: 1.2rem;
+    }
+    .section-title::before {
+      content: ''; display: block; width: 4px; height: 1.1em;
+      background: var(--gold); border-radius: 2px;
+    }
+    .related-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .related-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: border-color .2s, transform .15s; cursor: pointer;
+    }
+    .related-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .related-thumb {
+      height: 80px; background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; border-bottom: 1px solid var(--border);
+    }
+    .related-body { padding: .8rem; }
+    .related-cat { font-size: .7rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: .07em; margin-bottom: .3rem; }
+    .related-title { font-size: .85rem; font-weight: 600; line-height: 1.4; }
+
+    /* ───── SIDEBAR ───── */
+    .sidebar { display: flex; flex-direction: column; gap: 1.2rem; }
+
+    .sidebar-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem;
+    }
+    .sidebar-card h4 {
+      font-size: .82rem; font-weight: 700;
+      color: var(--gold); text-transform: uppercase;
+      letter-spacing: .07em; margin-bottom: .9rem;
+    }
+
+    /* TOC */
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: .3rem; }
+    .toc-list li a {
+      font-size: .84rem; color: var(--muted);
+      display: block; padding: .25rem .5rem;
+      border-left: 2px solid var(--border);
+      transition: color .2s, border-color .2s;
+    }
+    .toc-list li a:hover,
+    .toc-list li a.active {
+      color: var(--gold); border-left-color: var(--gold);
+    }
+
+    /* Recent posts sidebar */
+    .sidebar-posts { display: flex; flex-direction: column; gap: .7rem; }
+    .sidebar-post {
+      display: flex; gap: .7rem; align-items: flex-start;
+      padding-bottom: .7rem; border-bottom: 1px solid var(--border);
+    }
+    .sidebar-post:last-child { border-bottom: none; padding-bottom: 0; }
+    .sidebar-post-icon {
+      font-size: 1.4rem; flex-shrink: 0;
+      width: 38px; height: 38px;
+      background: var(--bg3); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .sidebar-post-info { display: flex; flex-direction: column; gap: .15rem; }
+    .sidebar-post-title { font-size: .83rem; font-weight: 600; line-height: 1.35; }
+    .sidebar-post-date { font-size: .73rem; color: var(--muted); }
+
+    /* ───── FOOTER ───── */
+    footer {
+      background: #0a0c12; border-top: 1px solid var(--border);
+      padding: 2rem 1.2rem 1.5rem;
+    }
+    .footer-bottom {
+      max-width: 1100px; margin: auto;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .8rem; color: var(--muted); flex-wrap: wrap; gap: .5rem;
+    }
+
+    /* ───── RESPONSIVE ───── */
+    @media (max-width: 900px) {
+      .page-wrap {
+        grid-template-columns: 1fr;
+      }
+      .sidebar { order: -1; }
+      .toc-card { display: block; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; }
+      .nav-links.open {
+        display: flex; position: absolute; top: 58px; left: 0; right: 0;
+        background: var(--bg2); border-bottom: 1px solid var(--border);
+        padding: 1rem 1.2rem; gap: .8rem;
+      }
+      .nav-links.open a { font-size: 1rem; color: var(--text); }
+      .nav-toggle { display: flex; }
+      .page-wrap { padding: 1.5rem 1rem 3rem; gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">✦ <span>FIREJUIZE </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#tools">โปรแกรม</a></li>
+      <li><a href="index.html#articles">บทความ</a></li>
+      
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- PAGE CONTENT -->
+<div class="page-wrap">
+
+  <!-- MAIN ARTICLE -->
+  <main>
+
+   
+
+    <!-- Header -->
+    <div class="article-cat">HOW TO</div>
+    <h1 class="article-title">วิธีใช้งานโปรแกรมผังเครือญาติ</h1>
+
+    <div class="article-meta">
+      <div class="author">
+        <div class="author-avatar">👨‍💻</div>
+        ADMIN
+      </div>
+      <span>11 มิถุนายน 2568</span>    
+      <span class="view-counter">
+        👁
+        <img
+          src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fyourdomain.com%2Farticle-1&labelColor=%231a1d27&countColor=%23f5c842&style=flat&labelStyle=none"
+          alt="จำนวนผู้เข้าชม"
+          loading="lazy"
+        />
+      </span>
+    </div>
+
+    <!-- Body -->
+    <div class="article-body">
+
+      <p>ในยุคดิจิทัลการเก็บรวบรวมประวัติครอบครัวทำได้ง่ายขึ้นด้วยโปรแกรมสร้างผังเครือญาติแบบออนไลน์ ซึ่งมีจุดเด่นคือใช้งานฟรี ไม่ต้องติดตั้งโปรแกรมลงเครื่อง ที่สำคัญที่สุดคือมีความเป็นส่วนตัวสูง เนื่องจากข้อมูลทั้งหมดจะถูกเก็บไว้ในเครื่องคอมพิวเตอร์ของคุณเอง ไม่มีการอัปโหลดไปยังเซิร์ฟเวอร์ภายนอก </p>
+
+      <div class="callout">
+        <div class="callout-title">📽️ ดูคู่มือการใช้งานแบบวีดีโอ</div>
+        <p>ท่านสามารถดูคู่มือการใช้งานแบบวีดีโอได้ที่ <a class="callout-title" href="https://www.youtube.com/watch?v=ZDdpUmP6ldc&t=411s" target="_blank" class="btn-primary"> วีดีโอ▶YouTube🔴</a>
+      </div>
+
+      <h2 id="s1">1. การเตรียมตัวก่อนใช้งาน</h2>
+      <p>คุณสามารถเข้าใช้งานโปรแกรมได้ผ่านเว็บไซต์ <a class="callout-title" href="https://firejuize.com/FamilyTreeAPP.html" target="_blank" class="btn-primary">👨🏻‍👩🏻‍👧🏻‍👦🏻 โปรแกรมผังคือญาติ</a> โดยหน้าจอหลักจะแบ่งออกเป็น 4 ส่วนสำคัญ</p>
+      <ul>
+        <li>ส่วนกรอกข้อมูล: สำหรับใส่รายละเอียดของสมาชิกแต่ละคน</li>
+        <li>ฐานข้อมูล: รายชื่อสมาชิกทั้งหมดที่ถูกบันทึกไว้</li>
+        <li>ผังเครือญาติ: ส่วนแสดงผลแผนผังที่ระบบสร้างให้โดยอัตโนมัติ</li>
+        <li>การจัดการไฟล์: ปุ่มสำหรับเปิดไฟล์เดิม (Open) และบันทึกข้อมูล (Save)</li>
+      </ul>
+      
+
+      <h2 id="s2">2. ขั้นตอนการเพิ่มสมาชิกในครอบครัว</h2>
+      <p>การเริ่มต้นสร้างผังต้องเริ่มจากการกรอกข้อมูลบุคคลในแถบ "ฐานข้อมูล" โดยเลือก "เพิ่มข้อมูลบุคคล"</p>
+      <ul>
+        <li>ข้อมูลที่จำเป็น (ต้องกรอก): รหัสประจำตัว (ID), ชื่อ และนามสกุล</li>
+        <div class="callout">
+        <div class="callout-title">💡แนะนำ</div>
+        รหัสประจำตัวช่วยป้องกันความสับสนในกรณีที่สมาชิกมีชื่อและนามสกุลซ้ำกัน
+      </div>
+        <li>ข้อมูลเพิ่มเติม:นามสกุลเดิม (สำหรับผู้หญิงที่เปลี่ยนนามสกุลตามสามี), ชื่อเล่น, เพศ, วันเกิด, อายุ และสถานภาพ (มีชีวิต/เสียชีวิต)</li>
+        <li>การบันทึก: เมื่อกรอกข้อมูลเสร็จให้กดปุ่ม "บันทึกข้อมูล" ที่ด้านบน ระบบจะบันทึกเป็นฐานข้อมูลไว้เป็นไฟล์ .json ไฟล์จะถูกเก็บไว้ที่ download</li>
+        
+      </ul>
+
+    
+
+      <h2 id="s3">3. การสร้างความเชื่อมโยง (พ่อ-แม่-ลูก และคู่สมรส)</h2>
+      <p>หัวใจของการสร้างผังคือการเชื่อมโยงความสัมพันธ์</p>
+      <ul>
+        <li>การเพิ่มลูก: ในการกรอกข้อมูลลูก ให้เลือกชื่อ "บิดา" และ "มารดา" จากรายชื่อที่เคยกรอกไว้ในฐานข้อมูลก่อนหน้านี้ (หากกรอกเป็นรายชื่อแรกจะยังไม่มีให้เลือก)</li>
+        <li>การจัดการคู่สมรส: หากสมาชิกคนหนึ่งมีคู่สมรสหลายคน โปรแกรมสามารถรองรับได้ โดยระบบจะจัดลำดับคู่สมรสคนที่ 1 และ 2 ให้ และแยกกิ่งก้านในผังเครือญาติให้อัตโนมัติ</li>
+        <li>ระบบค้นหา: หากมีสมาชิกในฐานข้อมูลจำนวนมาก คุณสามารถพิมพ์ชื่อในช่องค้นหาเพื่อความรวดเร็วในการเลือก พ่อ, แม่ หรือคู่สมรสได้</li>
+      </ul>
+
+      <h2 id="s4">4. การดูและแก้ไขผังเครือญาติ</h2>
+      <ul>
+        <li>การดูผัง: เมื่อกรอกข้อมูลความสัมพันธ์เสร็จ ระบบจะสร้าง "ผังเครือญาติ" ให้โดยอัตโนมัติ (Auto)</li>
+        <li>การตรวจสอบ: คุณสามารถคลิกที่ชื่อในแผนผังเพื่อดูรายละเอียดข้อมูลของบุคคลนั้นที่ด้านบนของหน้าจอได้ทันที</li>
+        <li>การแก้ไข: หากกรอกข้อมูลผิด ให้ไปที่แถบฐานข้อมูลแล้วเลือกปุ่ม "แก้ไข" เพื่ออัปเดตข้อมูลใหม่</li>
+      </ul>
+
+      <h2 id="s5">5. การบันทึกและการนำไปใช้งาน (Export)</h2>
+      <div class="callout warn">
+        <div class="callout-title">⚠️อย่าลืมเซฟ</div>
+        เนื่องจากข้อมูลไม่ได้เก็บไว้บนเว็บ อย่าลืมกดเซฟทุกครั้ง เพื่อไม่ให้ข้อมูลสูญหาย
+      </div>    
+      <ul>
+        <li>การบันทึก (Save): กดปุ่ม "เซฟ" (สีเขียว) ไฟล์จะถูกเก็บไว้ในโฟลเดอร์ Download ของเครื่อง</li>
+        <li>การเรียกคืนข้อมูล (Open): เมื่อกลับมาใช้งานครั้งใหม่ ให้กดปุ่ม "Open" เพื่อเลือกไฟล์ที่เซฟไว้กลับมาแก้ไขต่อ</li>        
+      </ul>
+      <p>เมื่อกรอกข้อมูลเสร็จแล้ว สำหรับผังเครือญาติ สามารถส่งต่อให้ญาติๆดูได้ 2 รูปแบบ</p>
+      <li>ไฟล์ HTML: เหมาะสำหรับส่ง Line ดูในมือถือ ดูในคอมพิวเตอร์ เปิดไฟล์ด้วย web browser สามารถซูมขยายและค้นหาชื่อได้ง่าย</li>
+      <li>ไฟล์ PDF: เหมาะสำหรับการสั่งพิมพ์ หรือจะส่งทางไลน์ก็สะดวก หากสมาชิกเยอะมาก สามารถเลือกตั้งค่าขนาดกระดาษ (Paper Size) ให้เหมาะสมได้ก่อนบันทึก</li>
+
+      <hr />
+
+      <p>ด้วยขั้นตอนง่ายๆ เหล่านี้ คุณก็สามารถสร้างบันทึกประวัติครอบครัวที่สวยงามและเป็นระเบียบไว้ส่งต่อให้ลูกหลานได้แล้ว</p>
+
+    </div><!-- /article-body -->
+
+   
+
+    <!-- Share -->
+    <div class="share-bar">
+      <span class="share-label">แชร์บทความ:</span>
+      <button class="share-btn" onclick="copyLink()">🔗 คัดลอกลิงก์</button>
+      
+    </div>
+
+    <!-- Related -->
+    <div class="related">
+      <div class="section-title">บทความที่เกี่ยวข้อง</div>
+      <div class="related-grid">
+        <a href="#" class="related-card">
+          <div class="related-thumb"></div>
+          <div class="related-body">
+            <div class="related-cat"></div>
+            <div class="related-title"></div>
+          </div>
+        
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    
+
+    
+
+    
+  </aside>
+
+</div><!-- /page-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-bottom">
+    <span>© 2568 รู้รอบแบ่งปัน — ทำด้วยใจเพื่อสังคมไทย</span>
+    <span>ฟรี · ไม่มีโฆษณา · ไม่มีเงื่อนไข</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  const toggle = document.getElementById('navToggle');
+  const links  = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => links.classList.remove('open'))
+  );
+
+  // Copy link
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert('คัดลอกลิงก์แล้ว!');
+    });
+  }
+
+  // Highlight active TOC on scroll
+  const headings = document.querySelectorAll('.article-body h2[id]');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    headings.forEach(h => {
+      if (window.scrollY >= h.offsetTop - 100) current = h.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
