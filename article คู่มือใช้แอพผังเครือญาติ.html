@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วิธีใช้งานโปรแกรมผังเครือญาติ</title>
+  <title>Family Tree User Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
@@ -55,6 +55,39 @@
     .nav-links { display: flex; gap: 1.6rem; list-style: none; }
     .nav-links a { font-size: .9rem; color: var(--muted); transition: color .2s; }
     .nav-links a:hover { color: var(--gold); }
+    
+    /* ───── LANGUAGE SWITCHER STYLING ───── */
+    .lang-switch {
+      display: flex;
+      background: var(--bg2);
+      border: 2px solid var(--border);
+      border-radius: 30px;
+      padding: 3px;
+      gap: 4px;
+      margin-left: auto;
+      margin-right: 1rem;
+    }
+    @media (max-width: 768px) {
+      .lang-switch { margin-right: 0.5rem; }
+    }
+    .lang-btn {
+      padding: .3rem .8rem;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .lang-btn:hover { color: var(--text); }
+    .lang-btn.active {
+      background: var(--gold);
+      color: #0f1117;
+      box-shadow: 0 2px 8px rgba(245, 200, 66, 0.4);
+    }
+
     .nav-toggle {
       display: none; background: none; border: none;
       cursor: pointer; padding: .3rem;
@@ -122,9 +155,7 @@
 
     /* ───── ARTICLE BODY ───── */
     .article-body { color: var(--text); }
-
     .article-body p { margin-bottom: 1.3rem; }
-
     .article-body h2 {
       font-size: 1.25rem; font-weight: 700;
       margin: 2rem 0 .8rem;
@@ -137,7 +168,6 @@
       margin: 1.5rem 0 .6rem;
       color: var(--gold);
     }
-
     .article-body ul,
     .article-body ol {
       padding-left: 1.4rem;
@@ -145,7 +175,6 @@
       display: flex; flex-direction: column; gap: .4rem;
     }
     .article-body li { padding-left: .3rem; }
-
     .article-body strong { color: #fff; font-weight: 700; }
 
     /* Callout box */
@@ -165,9 +194,7 @@
     }
 
     /* Warning box */
-    .callout.warn {
-      border-left-color: #e05c5c;
-    }
+    .callout.warn { border-left-color: #e05c5c; }
     .callout.warn .callout-title { color: #e05c5c; }
 
     /* Divider */
@@ -239,46 +266,6 @@
     /* ───── SIDEBAR ───── */
     .sidebar { display: flex; flex-direction: column; gap: 1.2rem; }
 
-    .sidebar-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.1rem;
-    }
-    .sidebar-card h4 {
-      font-size: .82rem; font-weight: 700;
-      color: var(--gold); text-transform: uppercase;
-      letter-spacing: .07em; margin-bottom: .9rem;
-    }
-
-    /* TOC */
-    .toc-list { list-style: none; display: flex; flex-direction: column; gap: .3rem; }
-    .toc-list li a {
-      font-size: .84rem; color: var(--muted);
-      display: block; padding: .25rem .5rem;
-      border-left: 2px solid var(--border);
-      transition: color .2s, border-color .2s;
-    }
-    .toc-list li a:hover,
-    .toc-list li a.active {
-      color: var(--gold); border-left-color: var(--gold);
-    }
-
-    /* Recent posts sidebar */
-    .sidebar-posts { display: flex; flex-direction: column; gap: .7rem; }
-    .sidebar-post {
-      display: flex; gap: .7rem; align-items: flex-start;
-      padding-bottom: .7rem; border-bottom: 1px solid var(--border);
-    }
-    .sidebar-post:last-child { border-bottom: none; padding-bottom: 0; }
-    .sidebar-post-icon {
-      font-size: 1.4rem; flex-shrink: 0;
-      width: 38px; height: 38px;
-      background: var(--bg3); border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .sidebar-post-info { display: flex; flex-direction: column; gap: .15rem; }
-    .sidebar-post-title { font-size: .83rem; font-weight: 600; line-height: 1.35; }
-    .sidebar-post-date { font-size: .73rem; color: var(--muted); }
-
     /* ───── FOOTER ───── */
     footer {
       background: #0a0c12; border-top: 1px solid var(--border);
@@ -292,11 +279,8 @@
 
     /* ───── RESPONSIVE ───── */
     @media (max-width: 900px) {
-      .page-wrap {
-        grid-template-columns: 1fr;
-      }
+      .page-wrap { grid-template-columns: 1fr; }
       .sidebar { order: -1; }
-      .toc-card { display: block; }
     }
 
     @media (max-width: 768px) {
@@ -314,39 +298,40 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <div class="nav-inner">
-    <a href="index.html" class="logo">✦ <span>FIREJUIZE </a>
+    <a href="index.html" class="logo">
+  <img src="logoFJ.png" style="height: 32px; width: auto;">
+  <span>FIREJUIZE
+</a>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html#tools">โปรแกรม</a></li>
-      <li><a href="index.html#articles">บทความ</a></li>
-      
+      <br/><li><a href="index.html#tools" id="nav-tools">App / Tools</a></li>
+      <li><a href="index.html#articles" id="nav-articles">Articles</a></li>
     </ul>
+    
+    <div class="lang-switch">
+      <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">ENGLISH</button>
+      <button class="lang-btn" onclick="setLanguage('th')" id="btn-th">ภาษาไทย</button>
+    </div>
+
     <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
-<!-- PAGE CONTENT -->
 <div class="page-wrap">
 
-  <!-- MAIN ARTICLE -->
   <main>
-
-   
-
-    <!-- Header -->
-    <div class="article-cat">HOW TO</div>
-    <h1 class="article-title">วิธีใช้งานโปรแกรมผังเครือญาติ</h1>
+    <div class="article-cat">เปลี่ยนภาษาไทยมุมขวาบน</div>
+    <h1 class="article-title" id="article-title">How to Use the Family Tree Program</h1>
 
     <div class="article-meta">
       <div class="author">
         <div class="author-avatar">👨‍💻</div>
         ADMIN
       </div>
-      <span>11 มิถุนายน 2568</span>    
+      <span id="article-date">11 June 2026</span>    
       <span class="view-counter">
         👁
         <img
@@ -357,87 +342,47 @@
       </span>
     </div>
 
-    <!-- Body -->
     <div class="article-body">
 
-      <p>ในยุคดิจิทัลการเก็บรวบรวมประวัติครอบครัวทำได้ง่ายขึ้นด้วยโปรแกรมสร้างผังเครือญาติแบบออนไลน์ ซึ่งมีจุดเด่นคือใช้งานฟรี ไม่ต้องติดตั้งโปรแกรมลงเครื่อง ที่สำคัญที่สุดคือมีความเป็นส่วนตัวสูง เนื่องจากข้อมูลทั้งหมดจะถูกเก็บไว้ในเครื่องคอมพิวเตอร์ของคุณเอง ไม่มีการอัปโหลดไปยังเซิร์ฟเวอร์ภายนอก </p>
+      <p id="main-intro">In the digital age, gathering family history is easier with online lineage tools. Key features include free use, zero installation, and complete privacy since data stays securely on your PC without third-party server uploads.</p>
 
-      <div class="callout">
-        <div class="callout-title">📽️ ดูคู่มือการใช้งานแบบวีดีโอ</div>
-        <p>ท่านสามารถดูคู่มือการใช้งานแบบวีดีโอได้ที่ <a class="callout-title" href="https://www.youtube.com/watch?v=ZDdpUmP6ldc&t=411s" target="_blank" class="btn-primary"> วีดีโอ▶YouTube🔴</a>
-      </div>
+      <div id="callout-video" class="callout">
+        </div>
 
-      <h2 id="s1">1. การเตรียมตัวก่อนใช้งาน</h2>
-      <p>คุณสามารถเข้าใช้งานโปรแกรมได้ผ่านเว็บไซต์ <a class="callout-title" href="https://firejuize.com/FamilyTreeAPP.html" target="_blank" class="btn-primary">👨🏻‍👩🏻‍👧🏻‍👦🏻 โปรแกรมผังเครือญาติ</a> โดยหน้าจอหลักจะแบ่งออกเป็น 4 ส่วนสำคัญ</p>
-      <ul>
-        <li>ส่วนกรอกข้อมูล: สำหรับใส่รายละเอียดของสมาชิกแต่ละคน</li>
-        <li>ฐานข้อมูล: รายชื่อสมาชิกทั้งหมดที่ถูกบันทึกไว้</li>
-        <li>ผังเครือญาติ: ส่วนแสดงผลแผนผังที่ระบบสร้างให้โดยอัตโนมัติ</li>
-        <li>การจัดการไฟล์: ปุ่มสำหรับเปิดไฟล์เดิม (Open) และบันทึกข้อมูล (Save)</li>
-      </ul>
+      <h2 id="s1">1. Preparation Before Use</h2>
+      <p id="s1-p"></p>
+      <ul id="s1-ul">
+        </ul>
       
+      <h2 id="s2">2. Steps to Add Family Members</h2>
+      <p id="s2-p"></p>
+      <div id="s2-content">
+        </div>
 
-      <h2 id="s2">2. ขั้นตอนการเพิ่มสมาชิกในครอบครัว</h2>
-      <p>การเริ่มต้นสร้างผังต้องเริ่มจากการกรอกข้อมูลบุคคลในแถบ "ฐานข้อมูล" โดยเลือก "เพิ่มข้อมูลบุคคล"</p>
-      <ul>
-        <li>ข้อมูลที่จำเป็น (ต้องกรอก): รหัสประจำตัว (ID), ชื่อ และนามสกุล</li>
-        <div class="callout">
-        <div class="callout-title">💡แนะนำ</div>
-        รหัสประจำตัวช่วยป้องกันความสับสนในกรณีที่สมาชิกมีชื่อและนามสกุลซ้ำกัน
-      </div>
-        <li>ข้อมูลเพิ่มเติม:นามสกุลเดิม (สำหรับผู้หญิงที่เปลี่ยนนามสกุลตามสามี), ชื่อเล่น, เพศ, วันเกิด, อายุ และสถานภาพ (มีชีวิต/เสียชีวิต)</li>
-        <li>การบันทึก: เมื่อกรอกข้อมูลเสร็จให้กดปุ่ม "บันทึกข้อมูล" ที่ด้านบน ระบบจะบันทึกเป็นฐานข้อมูลไว้เป็นไฟล์ .json ไฟล์จะถูกเก็บไว้ที่ download</li>
-        
-      </ul>
+      <h2 id="s3">3. Connecting Relationships (Parents-Children and Spouses)</h2>
+      <p id="s3-p"></p>
+      <ul id="s3-ul">
+        </ul>
 
-    
+      <h2 id="s4">4. Viewing and Editing the Family Tree</h2>
+      <ul id="s4-ul">
+        </ul>
 
-      <h2 id="s3">3. การสร้างความเชื่อมโยง (พ่อ-แม่-ลูก และคู่สมรส)</h2>
-      <p>หัวใจของการสร้างผังคือการเชื่อมโยงความสัมพันธ์</p>
-      <ul>
-        <li>การเพิ่มลูก: ในการกรอกข้อมูลลูก ให้เลือกชื่อ "บิดา" และ "มารดา" จากรายชื่อที่เคยกรอกไว้ในฐานข้อมูลก่อนหน้านี้ (หากกรอกเป็นรายชื่อแรกจะยังไม่มีให้เลือก)</li>
-        <li>การจัดการคู่สมรส: หากสมาชิกคนหนึ่งมีคู่สมรสหลายคน โปรแกรมสามารถรองรับได้ โดยระบบจะจัดลำดับคู่สมรสคนที่ 1 และ 2 ให้ และแยกกิ่งก้านในผังเครือญาติให้อัตโนมัติ</li>
-        <li>ระบบค้นหา: หากมีสมาชิกในฐานข้อมูลจำนวนมาก คุณสามารถพิมพ์ชื่อในช่องค้นหาเพื่อความรวดเร็วในการเลือก พ่อ, แม่ หรือคู่สมรสได้</li>
-      </ul>
-
-      <h2 id="s4">4. การดูและแก้ไขผังเครือญาติ</h2>
-      <ul>
-        <li>การดูผัง: เมื่อกรอกข้อมูลความสัมพันธ์เสร็จ ระบบจะสร้าง "ผังเครือญาติ" ให้โดยอัตโนมัติ (Auto)</li>
-        <li>การตรวจสอบ: คุณสามารถคลิกที่ชื่อในแผนผังเพื่อดูรายละเอียดข้อมูลของบุคคลนั้นที่ด้านบนของหน้าจอได้ทันที</li>
-        <li>การแก้ไข: หากกรอกข้อมูลผิด ให้ไปที่แถบฐานข้อมูลแล้วเลือกปุ่ม "แก้ไข" เพื่ออัปเดตข้อมูลใหม่</li>
-      </ul>
-
-      <h2 id="s5">5. การบันทึกและการนำไปใช้งาน (Export)</h2>
-      <div class="callout warn">
-        <div class="callout-title">⚠️อย่าลืมเซฟ</div>
-        เนื่องจากข้อมูลไม่ได้เก็บไว้บนเว็บ อย่าลืมกดเซฟทุกครั้ง เพื่อไม่ให้ข้อมูลสูญหาย
-      </div>    
-      <ul>
-        <li>การบันทึก (Save): กดปุ่ม "เซฟ" (สีเขียว) ไฟล์จะถูกเก็บไว้ในโฟลเดอร์ Download ของเครื่อง</li>
-        <li>การเรียกคืนข้อมูล (Open): เมื่อกลับมาใช้งานครั้งใหม่ ให้กดปุ่ม "Open" เพื่อเลือกไฟล์ที่เซฟไว้กลับมาแก้ไขต่อ</li>        
-      </ul>
-      <p>เมื่อกรอกข้อมูลเสร็จแล้ว สำหรับผังเครือญาติ สามารถส่งต่อให้ญาติๆดูได้ 2 รูปแบบ</p>
-      <li>ไฟล์ HTML: เหมาะสำหรับส่ง Line ดูในมือถือ ดูในคอมพิวเตอร์ เปิดไฟล์ด้วย web browser สามารถซูมขยายและค้นหาชื่อได้ง่าย</li>
-      <li>ไฟล์ PDF: เหมาะสำหรับการสั่งพิมพ์ หรือจะส่งทางไลน์ก็สะดวก หากสมาชิกเยอะมาก สามารถเลือกตั้งค่าขนาดกระดาษ (Paper Size) ให้เหมาะสมได้ก่อนบันทึก</li>
+      <h2 id="s5">5. Saving and Exporting Your Tree</h2>
+      <div id="s5-content">
+        </div>
 
       <hr />
 
-      <p>ด้วยขั้นตอนง่ายๆ เหล่านี้ คุณก็สามารถสร้างบันทึกประวัติครอบครัวที่สวยงามและเป็นระเบียบไว้ส่งต่อให้ลูกหลานได้แล้ว</p>
+      <p id="closing-p"></p>
 
-    </div><!-- /article-body -->
-
-   
-
-    <!-- Share -->
-    <div class="share-bar">
-      <span class="share-label">แชร์บทความ:</span>
-      <button class="share-btn" onclick="copyLink()">🔗 คัดลอกลิงก์</button>
-      
+    </div><div class="share-bar">
+      <span class="share-label" id="share-label">Share Article:</span>
+      <button class="share-btn" id="share-btn" onclick="copyLink()">🔗 Copy Link</button>
     </div>
 
-    <!-- Related -->
     <div class="related">
-      <div class="section-title">บทความที่เกี่ยวข้อง</div>
+      <div class="section-title" id="related-title">Related Articles</div>
       <div class="related-grid">
         <a href="#" class="related-card">
           <div class="related-thumb"></div>
@@ -445,34 +390,23 @@
             <div class="related-cat"></div>
             <div class="related-title"></div>
           </div>
-        
+        </a>
       </div>
     </div>
 
   </main>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
+  <aside class="sidebar"></aside>
 
-    
-
-    
-
-    
-  </aside>
-
-</div><!-- /page-wrap -->
-
-<!-- FOOTER -->
-<footer>
+</div><footer>
   <div class="footer-bottom">
-    <span>© 2568 รู้รอบแบ่งปัน — ทำด้วยใจเพื่อสังคมไทย</span>
-    <span>ฟรี · ไม่มีโฆษณา · ไม่มีเงื่อนไข</span>
+    <span id="footer-copy">© 2026 FireJuize</span>
+    <span id="footer-meta">Free · No Ads · No Strings Attached</span>
   </div>
 </footer>
 
 <script>
-  // Mobile menu
+  // Mobile menu toggle
   const toggle = document.getElementById('navToggle');
   const links  = document.getElementById('navLinks');
   toggle.addEventListener('click', () => links.classList.toggle('open'));
@@ -480,24 +414,118 @@
     a.addEventListener('click', () => links.classList.remove('open'))
   );
 
-  // Copy link
+  // Translation Database
+  let currentLang = 'en';
+  let alertMsg = 'Link copied!';
+
+  const langData = {
+    en: {
+      nav_tools: "Applications",
+      nav_articles: "Articles",
+      article_title: "How to Use the Family Tree Program",
+      article_date: "11 June 2026",
+      main_intro: "In the digital age, gathering family history is easier with online lineage tools. Key features include free use, zero installation, and complete privacy since data stays securely on your PC without third-party server uploads.",
+      callout_video: `<div class="callout-title">📽️ Video Guide</div><p>You can watch the video manual at <a class="callout-title" href="https://www.youtube.com/watch?v=ZDdpUmP6ldc&t=411s" target="_blank">Video ▶ YouTube 🔴</a></p>`,
+      s1: "1. Preparation Before Use",
+      s1_p: `You can access the program via the website <a class="callout-title" href="https://firejuize.com/FamilyTreeAPP.html" target="_blank">👨🏻‍👩🏻‍👧🏻‍👦🏻 Family Tree Program</a>. The main screen is divided into 4 key sections:`,
+      s1_ul: `<li>Data Entry: For adding details of each family member.</li><li>Database: A complete list of all saved members.</li><li>Family Tree: The interactive chart automatically generated by the system.</li><li>File Management: Buttons to open existing files (Open) and save current data (Save).</li>`,
+      s2: "2. Steps to Add Family Members",
+      s2_p: `To start building your tree, you must first input individual information in the "Database" section by clicking "Add Person".`,
+      s2_content: `<ul><li>Required Info (Must Fill): Unique ID, First Name, and Last Name.</li><div class="callout"><div class="callout-title">💡 Tip</div>A unique ID prevents confusion if multiple members share the exact same first and last name.</div><li>Additional Info: Maiden Name (for wives who changed their surname), Nickname, Gender, Birthday, Age, and Status (Alive/Deceased).</li><li>Saving: Once details are filled, click the "Save Data" button at the top. The system will download the database as a .json file to your device's Downloads folder.</li></ul>`,
+      s3: "3. Connecting Relationships (Parents-Children and Spouses)",
+      s3_p: "The core of creating a lineage chart is establishing relationship connections.",
+      s3_ul: `<li>Adding Children: When entering a child's details, select the "Father" and "Mother" from the names previously saved in the database (the very first entry won't have options available yet).</li><li>Managing Spouses: The program supports multiple spouses per individual. The system automatically numbers them (Spouse 1, 2, etc.) and branches out the tree automatically.</li><li>Search System: If you have a large database, you can type names in the search box to quickly locate and select Fathers, Mothers, or Spouses.</li>`,
+      s4: "4. Viewing and Editing the Family Tree",
+      s4_ul: `<li>Viewing the Tree: Once relationships are established, the system automatically builds the "Family Tree".</li><li>Inspection: You can click any name in the chart to immediately review their full details at the top of the screen.</li><li>Editing: If you make a mistake, navigate to the Database tab and click the "Edit" button to update the profile.</li>`,
+      s5: "5. Saving and Exporting Your Tree",
+      s5_content: `<div class="callout warn"><div class="callout-title">⚠️ Don't Forget to Save</div>Since your data is fully private and not stored on the web server, remember to click save frequently to prevent data loss.</div><ul><li>Saving (Save): Click the green "Save" button. The database file will be stored directly in your device's Downloads folder.</li><li>Restoring Data (Open): When returning for a new session, click "Open" and select your previously saved file to resume editing.</li></ul><p>Once your family tree is complete, you can export and share it with relatives in 2 versatile formats:</p><ul><li>HTML File: Perfect for sending via Line or viewing on mobile/computer. Open it with any web browser to easily zoom, pan, and search for names dynamically.</li><li>PDF File: Ideal for printing or sending as a static document. If your family tree is very large, you can adjust the Paper Size setting appropriately before saving.</li></ul>`,
+      closing_p: "With these simple steps, you can create a beautiful and structured family history record to pass down to future generations.",
+      share_label: "Share Article:",
+      share_btn: "🔗 Copy Link",
+      related_title: "Related Articles",
+      footer_copy: "© 2026 FireJuize",
+      footer_meta: "Free · No Ads · No Strings Attached",
+      alert_msg: "Link copied!"
+    },
+    th: {
+      nav_tools: "โปรแกรม",
+      nav_articles: "บทความ",
+      article_title: "วิธีใช้งานโปรแกรมผังเครือญาติ",
+      article_date: "11 มิถุนายน 2569",
+      main_intro: "ในยุคดิจิทัลการเก็บรวบรวมประวัติครอบครัวทำได้ง่ายขึ้นด้วยโปรแกรมสร้างผังเครือญาติแบบออนไลน์ ซึ่งมีจุดเด่นคือใช้งานฟรี ไม่ต้องติดตั้งโปรแกรมลงเครื่อง ที่สำคัญที่สุดคือมีความเป็นส่วนตัวสูง เนื่องจากข้อมูลทั้งหมดจะถูกเก็บไว้ในเครื่องคอมพิวเตอร์ของคุณเอง ไม่มีการอัปโหลดไปยังเซิร์ฟเวอร์ภายนอก",
+      callout_video: `<div class="callout-title">📽️ ดูคู่มือการใช้งานแบบวีดีโอ</div><p>ท่านสามารถดูคู่มือการใช้งานแบบวีดีโอได้ที่ <a class="callout-title" href="https://www.youtube.com/watch?v=ZDdpUmP6ldc&t=411s" target="_blank"> วีดีโอ▶YouTube🔴</a></p>`,
+      s1: "1. การเตรียมตัวก่อนใช้งาน",
+      s1_p: `คุณสามารถเข้าใช้งานโปรแกรมได้ผ่านเว็บไซต์ <a class="callout-title" href="https://firejuize.com/FamilyTreeAPP.html" target="_blank">👨🏻‍👩🏻‍👧🏻‍👦🏻 โปรแกรมผังเครือญาติ</a> โดยหน้าจอหลักจะแบ่งออกเป็น 4 ส่วนสำคัญ`,
+      s1_ul: `<li>ส่วนกรอกข้อมูล: สำหรับใส่รายละเอียดของสมาชิกแต่ละคน</li><li>ฐานข้อมูล: รายชื่อสมาชิกทั้งหมดที่ถูกบันทึกไว้</li><li>ผังเครือญาติ: ส่วนแสดงผลแผนผังที่ระบบสร้างให้โดยอัตโนมัติ</li><li>การจัดการไฟล์: ปุ่มสำหรับเปิดไฟล์เดิม (Open) และบันทึกข้อมูล (Save)</li>`,
+      s2: "2. ขั้นตอนการเพิ่มสมาชิกในครอบครัว",
+      s2_p: `การเริ่มต้นสร้างผังต้องเริ่มจากการกรอกข้อมูลบุคคลในแถบ "ฐานข้อมูล" โดยเลือก "เพิ่มข้อมูลบุคคล"`,
+      s2_content: `<ul><li>ข้อมูลที่จำเป็น (ต้องกรอก): รหัสประจำตัว (ID), ชื่อ และนามสกุล</li><div class="callout"><div class="callout-title">💡แนะนำ</div>รหัสประจำตัวช่วยป้องกันความสับสนในกรณีที่สมาชิกมีชื่อและนามสกุลซ้ำกัน</div><li>ข้อมูลเพิ่มเติม:นามสกุลเดิม (สำหรับผู้หญิงที่เปลี่ยนนามสกุลตามสามี), ชื่อเล่น, เพศ, วันเกิด, อายุ และสถานภาพ (มีชีวิต/เสียชีวิต)</li><li>การบันทึก: เมื่อกรอกข้อมูลเสร็จให้กดปุ่ม "บันทึกข้อมูล" ที่ด้านบน ระบบจะบันทึกเป็นฐานข้อมูลไว้เป็นไฟล์ .json ไฟล์จะถูกเก็บไว้ที่ download</li></ul>`,
+      s3: "3. การสร้างความเชื่อมโยง (พ่อ-แม่-ลูก และคู่สมรส)",
+      s3_p: "หัวใจของการสร้างผังคือการเชื่อมโยงความสัมพันธ์",
+      s3_ul: `<li>การเพิ่มลูก: ในการกรอกข้อมูลลูก ให้เลือกชื่อ "บิดา" และ "มารดา" จากรายชื่อที่เคยกรอกไว้ในฐานข้อมูลก่อนหน้านี้ (หากกรอกเป็นรายชื่อแรกจะยังไม่มีให้เลือก)</li><li>การจัดการคู่สมรส: หากสมาชิกคนหนึ่งมีคู่สมรสหลายคน โปรแกรมสามารถรองรับได้ โดยระบบจะจัดลำดับคู่สมรสคนที่ 1 และ 2 ให้ และแยกกิ่งก้านในผังเครือญาติให้อัตโนมัติ</li><li>ระบบค้นหา: หากมีสมาชิกในฐานข้อมูลจำนวนมาก คุณสามารถพิมพ์ชื่อในช่องค้นหาเพื่อความรวดเร็วในการเลือก พ่อ, แม่ หรือคู่สมรสได้</li>`,
+      s4: "4. การดูและแก้ไขผังเครือญาติ",
+      s4_ul: `<li>การดูผัง: เมื่อกรอกข้อมูลความสัมพันธ์เสร็จ ระบบจะสร้าง "ผังเครือญาติ" ให้โดยอัตโนมัติ (Auto)</li><li>การตรวจสอบ: คุณสามารถคลิกที่ชื่อในแผนผังเพื่อดูรายละเอียดข้อมูลของบุคคลนั้นที่ด้านบนของหน้าจอได้ทันที</li><li>การแก้ไข: หากกรอกข้อมูลผิด ให้ไปที่แถบฐานข้อมูลแล้วเลือกปุ่ม "แก้ไข" เพื่ออัปเดตข้อมูลใหม่</li>`,
+      s5: "5. การบันทึกและการนำไปใช้งาน (Export)",
+      s5_content: `<div class="callout warn"><div class="callout-title">⚠️อย่าลืมเซฟ</div>เนื่องจากข้อมูลไม่ได้เก็บไว้บนเว็บ อย่าลืมกดเซฟทุกครั้ง เพื่อไม่ให้ข้อมูลสูญหาย</div><ul><li>การบันทึก (Save): กดปุ่ม "เซฟ" (สีเขียว) ไฟล์จะถูกเก็บไว้ในโฟลเดอร์ Download ของเครื่อง</li><li>การเรียกคืนข้อมูล (Open): เมื่อกลับมาใช้งานครั้งใหม่ ให้กดปุ่ม "Open" เพื่อเลือกไฟล์ที่เซฟไว้กลับมาแก้ไขต่อ</li></ul><p>เมื่อกรอกข้อมูลเสร็จแล้ว สำหรับผังเครือญาติ สามารถส่งต่อให้ญาติๆดูได้ 2 รูปแบบ</p><ul><li>ไฟล์ HTML: เหมาะสำหรับส่ง Line ดูในมือถือ ดูในคอมพิวเตอร์ เปิดไฟล์ด้วย web browser สามารถซูมขยายและค้นหาชื่อได้ง่าย</li><li>ไฟล์ PDF: เหมาะสำหรับการสั่งพิมพ์ หรือจะส่งทางไลน์ก็สะดวก หากสมาชิกเยอะมาก สามารถเลือกตั้งค่าขนาดกระดาษ (Paper Size) ให้เหมาะสมได้ก่อนบันทึก</li></ul>`,
+      closing_p: "ด้วยขั้นตอนง่ายๆ เหล่านี้ คุณก็สามารถสร้างบันทึกประวัติครอบครัวที่สวยงามและเป็นระเบียบไว้ส่งต่อให้ลูกหลานได้แล้ว",
+      share_label: "แชร์บทความ:",
+      share_btn: "🔗 คัดลอกลิงก์",
+      related_title: "บทความที่เกี่ยวข้อง",
+      footer_copy: "© 2569 FireJuize",
+      footer_meta: "ฟรี · ไม่มีโฆษณา · ไม่มีเงื่อนไข",
+      alert_msg: "คัดลอกลิงก์แล้ว!"
+    }
+  };
+
+  function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    
+    // Toggle Button UI Classes
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-th').classList.toggle('active', lang === 'th');
+    
+    // Swap Content Text
+    const data = langData[lang];
+    document.getElementById('nav-tools').textContent = data.nav_tools;
+    document.getElementById('nav-articles').textContent = data.nav_articles;
+    document.getElementById('article-title').textContent = data.article_title;
+    document.getElementById('article-date').textContent = data.article_date;
+    document.getElementById('main-intro').textContent = data.main_intro;
+    document.getElementById('callout-video').innerHTML = data.callout_video;
+    document.getElementById('s1').textContent = data.s1;
+    document.getElementById('s1-p').innerHTML = data.s1_p;
+    document.getElementById('s1-ul').innerHTML = data.s1_ul;
+    document.getElementById('s2').textContent = data.s2;
+    document.getElementById('s2-p').textContent = data.s2_p;
+    document.getElementById('s2-content').innerHTML = data.s2_content;
+    document.getElementById('s3').textContent = data.s3;
+    document.getElementById('s3-p').textContent = data.s3_p;
+    document.getElementById('s3-ul').innerHTML = data.s3_ul;
+    document.getElementById('s4').textContent = data.s4;
+    document.getElementById('s4-ul').innerHTML = data.s4_ul;
+    document.getElementById('s5').textContent = data.s5;
+    document.getElementById('s5-content').innerHTML = data.s5_content;
+    document.getElementById('closing-p').textContent = data.closing_p;
+    document.getElementById('share-label').textContent = data.share_label;
+    document.getElementById('share-btn').textContent = data.share_btn;
+    document.getElementById('related-title').textContent = data.related_title;
+    document.getElementById('footer-copy').textContent = data.footer_copy;
+    document.getElementById('footer-meta').textContent = data.footer_meta;
+    
+    alertMsg = data.alert_msg;
+  }
+
+  // Copy Link alert logic
   function copyLink() {
     navigator.clipboard.writeText(window.location.href).then(() => {
-      alert('คัดลอกลิงก์แล้ว!');
+      alert(alertMsg);
     });
   }
 
-  // Highlight active TOC on scroll
-  const headings = document.querySelectorAll('.article-body h2[id]');
-  const tocLinks = document.querySelectorAll('.toc-list a');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    headings.forEach(h => {
-      if (window.scrollY >= h.offsetTop - 100) current = h.id;
-    });
-    tocLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
-    });
+  // Initialize Default Language (English)
+  window.addEventListener('DOMContentLoaded', () => {
+    setLanguage('en');
   });
 </script>
 
