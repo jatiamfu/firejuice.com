@@ -1,0 +1,2822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRIMEZEEN V.1.0</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.default.min.css" rel="stylesheet">
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-border-primary: #378add;
+  --color-border-secondary: #e2e8f0;
+  --color-border-tertiary: #cbd5e1;
+  --border-radius-md: 6px;
+  --border-radius-lg: 12px;
+}
+*{box-sizing:border-box; font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;}
+body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; padding: 15px; }
+.container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+
+/* Top Action Bar */
+.top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--color-background-secondary); padding: 12px 20px; border-radius: var(--border-radius-md); margin-bottom: 20px; border: 1px solid var(--color-border-secondary); }
+.logo-area { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-text-primary); }
+.file-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-top { padding: 8px 14px; font-size: 13px; font-weight: 600; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: white; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s; }
+.btn-top:hover { background: #f1f5f9; color: var(--color-text-primary); }
+.btn-save { border-color: #bbf7d0; color: #16a34a; }
+.btn-save:hover { background: #f0fdf4; }
+.btn-export { border-color: #fed7aa; color: #ea580c; }
+.btn-export:hover { background: #fff7ed; }
+.btn-pdf { border-color: #fca5a5; color: #dc2626; }
+.btn-pdf:hover { background: #fef2f2; }
+.btn-jpeg { border-color: #6ee7b7; color: #059669; }
+.btn-jpeg:hover { background: #ecfdf5; }
+.btn-lang { border-color: var(--color-border-primary); color: var(--color-border-primary); }
+.btn-lang:hover { background: #eff6ff; }
+
+/* Tabs Navigation */
+.tabs-nav { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 2px solid var(--color-border-secondary); padding-bottom: 4px; }
+.tab-btn { padding: 10px 16px; border: none; background: none; font-size: 14px; font-weight: 600; color: var(--color-text-secondary); cursor: pointer; border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; display: flex; align-items: center; gap: 6px; transition: all 0.15s; position: relative; bottom: -6px; }
+.tab-btn:hover { color: var(--color-border-primary); }
+.tab-btn.active { color: var(--color-border-primary); border-bottom: 3px solid var(--color-border-primary); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Form Styles */
+.form-container { background: #fafafa; border: 1px solid var(--color-border-secondary); padding: 20px; border-radius: var(--border-radius-lg); }
+.form-title { font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; color: var(--color-text-primary); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
+.form-control { padding: 8px 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 14px; outline: none; transition: border-color 0.2s; background: white; color: var(--color-text-primary); min-height: 38px;}
+.form-control:focus { border-color: var(--color-border-primary); }
+.form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-submit { padding: 10px 20px; background: var(--color-border-primary); color: white; border: none; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; }
+.btn-submit:hover { background: #2b74be; }
+.btn-cancel { padding: 10px 20px; background: white; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); cursor: pointer; }
+.btn-cancel:hover { background: #f1f5f9; }
+
+/* Extra Relations Styles */
+#\*-target-vis-wrap .ts-wrapper { width: 100%; }
+[id$="-target-vis-wrap"] .ts-wrapper { width: 100%; }
+[id$="-target-vis-wrap"] .ts-control { background: #ffe4e6 !important; border-color: #fca5a5 !important; color: #b91c1c !important; font-size: 12px !important; font-weight: 600 !important; min-height: 36px !important; border-radius: 6px !important; }
+[id$="-target-vis-wrap"] .ts-control input { color: #b91c1c !important; }
+[id$="-target-vis-wrap"] .ts-control input::placeholder { color: #f87171 !important; opacity: 1; }
+[id$="-target-vis-wrap"] .ts-dropdown { border-color: #fca5a5; }
+.extra-rel-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: flex-start; background: #fff; padding: 8px; border: 1px dashed var(--color-border-tertiary); border-radius: var(--border-radius-md); }
+.btn-add-rel { padding: 6px 12px; font-size: 13px; font-weight: 600; border: 1px dashed var(--color-border-primary); color: var(--color-border-primary); background: #eff6ff; border-radius: var(--border-radius-md); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; width: fit-content; }
+.btn-add-rel:hover { background: #dbeafe; }
+
+/* Tom Select Custom Styles */
+.ts-wrapper { width: 100%; }
+.ts-control { padding: 8px 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 14px; background: white; color: var(--color-text-primary); box-shadow: none !important; transition: border-color 0.2s; min-height: 38px; }
+.ts-control.focus { border-color: var(--color-border-primary); }
+.ts-control > input { font-size: 14px; font-family: inherit; }
+.ts-dropdown { border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-size: 14px; margin-top: 4px; }
+.ts-dropdown .option { padding: 8px 12px; cursor: pointer; }
+.ts-dropdown .option:hover, .ts-dropdown .option.active { background-color: var(--color-background-secondary); color: var(--color-text-primary); }
+
+/* List Styles */
+.list-search-wrap { position: relative; margin-bottom: 15px; }
+.list-search-input { width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 14px; }
+.relative-table-container { overflow-x: auto; border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); }
+.relative-table { width: 100%; border-collapse: collapse; background: white; font-size: 13.5px; text-align: left; }
+.relative-table th, .relative-table td { padding: 12px 14px; border-bottom: 1px solid var(--color-border-secondary); }
+.relative-table th { background: var(--color-background-secondary); color: var(--color-text-secondary); font-weight: 600; }
+.relative-table tr:hover { background: #f8fafc; }
+.action-btn { padding: 5px 10px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); background: white; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 4px; margin-right: 4px; }
+.action-btn.edit { color: #2563eb; border-color: #bfdbfe; }
+.action-btn.edit:hover { background: #eff6ff; }
+.action-btn.delete { color: #dc2626; border-color: #fca5a5; }
+.action-btn.delete:hover { background: #fef2f2; }
+
+/* Tree View Layout Styles */
+.sticky-header-panel { position: -webkit-sticky; position: sticky; top: 0; background: #ffffff; z-index: 100; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-secondary); margin-bottom: 16px; }
+.search-box-wrap { position: relative; margin-top: 8px; }
+.search-input-field { width: 100%; font-size: 14px; padding: 10px 14px 10px 38px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); transition: all 0.2s; }
+.search-input-field:focus { outline: none; border-color: var(--color-border-primary); box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15); }
+.search-icon-inside { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); max-height: 220px; overflow-y: auto; z-index: 110; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.search-item { padding: 10px 14px; cursor: pointer; font-size: 13.5px; border-bottom: 1px solid var(--color-background-secondary); transition: background 0.15s; }
+.search-item:hover { background: var(--color-background-secondary); }
+.tree-container-box { position: relative; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-border-tertiary); background: #f8fafc; overflow: hidden; }
+.zoom-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 4px; background: white; padding: 4px; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; max-width: 340px; justify-content: flex-end; }
+.zoom-btn { min-width: 32px; height: 32px; padding: 0 6px; font-size: 13px; border: 1px solid var(--color-border-secondary); background: white; border-radius: 4px; cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; gap: 4px; font-weight: 600; }
+.zoom-btn.arrange-btn-active { background: var(--color-border-primary); color: #fff; border-color: var(--color-border-primary); }
+.arrange-hint { position: absolute; top: 12px; left: 12px; right: 60px; background: rgba(55,138,221,0.95); color: #fff; font-size: 12.5px; padding: 8px 12px; border-radius: var(--border-radius-md); z-index: 10; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.tree-wrap [data-node-id] { cursor: grab; }
+.tree-wrap [data-node-id]:active { cursor: grabbing; }
+.tree-wrap { width: 100%; height: 600px; cursor: grab; overflow: hidden; position: relative; touch-action: none; }
+.tree-svg-container { position: absolute; top: 0; left: 0; transform-origin: 0 0; transform: translate(0px, 0px) scale(1); will-change: transform; }
+.node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-item { fill: #fefce8; stroke: #ca8a04; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06)); }
+.node-name { font-size: 12px; font-weight: 600; fill: var(--color-text-primary); }
+.node-detail { font-size: 11px; fill: var(--color-text-secondary); }
+.edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+.empty-state { text-align: center; padding: 40px 0; color: var(--color-text-tertiary); font-size: 14px; }
+.btn { padding: 4px 8px; font-size: 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+
+/* Item form & table */
+.item-rel-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; background: #fffbeb; padding: 8px; border: 1px dashed #fbbf24; border-radius: var(--border-radius-md); }
+.badge-item { display:inline-flex; align-items:center; gap:4px; background:#fef9c3; color:#854d0e; border:1px solid #fde68a; border-radius:4px; padding:2px 7px; font-size:11px; font-weight:700; }
+.badge-person { display:inline-flex; align-items:center; gap:4px; background:#e0f2fe; color:#075985; border:1px solid #bae6fd; border-radius:4px; padding:2px 7px; font-size:11px; font-weight:700; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <div class="logo-area">
+      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABPAE4DASIAAhEBAxEB/8QAHQAAAQUAAwEAAAAAAAAAAAAACAAEBQYHAQMJAv/EADQQAAIBAwMDAgUCBQQDAAAAAAECAwQFEQASIQYHMRNBCBQiUWEVMjNCUmJxCRaBkSRDU//EABoBAAIDAQEAAAAAAAAAAAAAAAQFAgMGAQD/xAAsEQABAwMCBQMDBQAAAAAAAAABAAIDBBEhMfAFEkFRcYGhsRMUwRUiYZHx/9oADAMBAAIRAxEAPwAw9LS0tSUUtDT3I779R9FfEJcbPWPFN0nb5qSimoo6Tc+yWCKZ6gOPrMymQgL+xlXG0OQ2iW0FvxT2A0feq/T1YlaC/U9LVwMq7dpSEQEA+5Uwo24eDIox4JGqnujZzN7hG0ETJpeR3UH4RkWi5W+8WqlutqrIa2gq4xLT1ELbkkQjIIOnWgu+GbvLbegPUs3Vc9UtluiiaF6eFpvlKtSUlxEgLCOXAYbQfr3ZH1ZG23D4mO1FPbqmporndK+piU+lTJaKqMyyY+mPe8YVSTgZYgDOpxzte0OvZVS0z43ltrrKfi57gQdQ9Vx9EW2oSqtdoLG4IkxVJasDLK+08iFMHzw7jzt43L4busJOse1NvqK2uNbdbczW64yMxLvLHwsjEgEl0KPnx9R5OgepKs1vW1xqqhvVrJi0jyO4kaaSWRpJCzfz8nbu9wut7+BSuSn6o6wsyvH6VVSUtbTl2zJKiPLFuHuVC7B+CfbOhYJ+ecm+Dp+PZMaulEVK3GRr8H3RXaWlpaYJMkOTgajU6gsD1Yo0vlrapaT0xCKyMuXzjbtznOeMawzr7qfq3uX3Fqu23SQhpbTCs0NxeZnUSRK3py1EhUq+wPmOOFCpkZXZmCLgx9d8Odh9B4IOoaA1OwJ6o6Yo1TcMZO5FEg9/qV9wPIbPOuZOi4XAIliMHnQ9/GzY/X6WsvUkJj+ZpahrcEeUJvFQV2EH7q8aE8gbN+dNOz/cHqjpDrul7a9dxzmGeVaSnmlcyLRSbCYBHOeZ6acKQjNl0cFH9tS3xqxTDoTpuuaConoaS/o1VHTuFlbfTzRoF9ySzhcAH93PAJFUwDo3AjoiKZ5bK0g9d64QvQ21rNB+jxLMlRPIfnJT/ElYckjb4ByAijgBs+cnUgjxxMKZGVGAyI1Pga6KWmmpKCijFXI1wpol3VIYHZKBjCnHKquE/OCffTSGmWkt9LT01XcVr43dqkRjfHWMxyPpYbY1UcDByfJ51jXASEkuz65/nwt628QaGtx6Y99U1vFDDSVKXKCJ0IIDNEdrRnOQR+CfIPB0QnwR9KQ1VXdu4fzDrHTRv0/QUobO1AySzPJx+4vtxg8Dd9xjC+qYZaK0MkkqSOdrMFkDEZydrY4z+NX74E+r2tPXCdLzyyfKdTUksyqSWHzsOXyP6Q0RYE+5RBpvwk81nOzbA34SbjQIYQzyfFx+bf0jX0tLS1oVlEPfwyyU6WnqIQPEaspbY3IfdKsTUaPySc4LvK2T5LNrWY0HgaH+oiuPYvu9UK1slqOk71iGFovpT5fezRRq7YBqafMoEZY74SADuGNawO5fbwR7v9328NjPolZBPn+n09u7f7bcZzxrrCLWVTwbrLfjSY0fT1kuVMfSrEirVWZeGGz0ZUGf7XAcfYjOqF8U/WlRU93r1abjc70i9PbIKGOkMPoxpLBG7SFXG5nLMQzDnaQoxk5t9yq5u+vd+l6coqOWLp+2kJcd5BMdEGEjPIM4jlndVjVBllQNuHPFl+KLsHd+t7yvV3RUlvW5CNPnaKoUBqpohhGjdvpD7TtIbAO1eRjVMo5wRa4RNMeRwJNkO9urDPaqarqAkMksId0UH6T/AI8/b/GdcXeulo4I6eljpZq+qkVKeGoT1EIB+tmXP7QOS3tjVU6mrepukb5U2S+U9BBXW99kpiQTmNgB9IdHKMVyFIJODkHwRpun6pJPNJVSy08kq+nOZG3Tsg/9ZPAjX8LrM/pzo38zrAdt9N41W0bxNszOSO5PffXedE+6nubzyehRxiSYkx08KNuDFuN3P8o55PtgajLuKmw0EUdBVSw1lvqYWp54nKSLKp4KsOQcknj7as9qho7VbJL1VKkZC7939vhR+WPge+qnd/WNL+q3BdjOWenpieU/vb7sSRj7aMoQXv5WD9revc7+UHxKVsURLzdzhYDsN/HlHT8HHX/UHcDthWVHUtX8/W2q5PQLWMAHnQIjqXwANw34z74yec62vQzf6di+n2q6jhLqzp1A+4A8/wACHnHkDOf+jomdPgsomHUNltHUVnns1+tlLc7dUACamqYw6Pg5BwfcEAg+QQCNZWfhu7dGpytV1WlGW4oFvkwpwn/yAzu2Y4xuzj31seonrW7x9P8ARl9v8sUs0dsttRWPHEwV3EcTOQpPAJxwdesuIKemesh2G73V1iiSh/SbfUPQXNI13VNbRF2lim4O31YhJjzub6tw8YIbub1vees+zFRe+z9wSaN5HiulSHEFZb4FUmQqshXZIOP3YIU7l52nQUmKKvtVMlbLXTQiGOplprfD6iRll9TfK7Al3OdxyeDnT7py7dYVPQ89ht97ijslXVitmppqVl+cZFCIJZQPr4CkpkrlQSDjS5le3Jfgbt033KbycLfgR5Pp69d9gVU+p57e9rge1oTEYsNK5yXlzzt9wPcA8+5znJ0GChguNptddVRP6tTSRys7Pl2Iyrbm98lSTn76z2/U00bIlzp5Y6yoqo/WLjKSjP8AIRxgDjHn76vPU08tHa4LTb2CzVMrR05J/hbv3Nn+kYLH/n76E4mfqmNkRydCjeDt+g2V8osBa4KiamtivV82splttFKBDTLketKOC5wOFB4H/Om/XdAf06GWOsMkm6JZZArbC7s30LuA/aFXxqJu9kojRyV1NPTpHS7VWnmlIlnTnLL7cYyTxjcPOdPOnrPaEdL1IrtTQRCX0JPMjn9qcnke5x7A6awwthYGN6JJUVD6iQyP1Kme1PUl/wCmq2nm6Prlsd6oQfmtruVuC7s/+ShOx41yQCACN3JBwdGj2P762LrunltN9EXT/U9BCGraeeRVp5sEK0kDk8rkjKnld2OcZ0EFzVb7WUzUGLfU0yCeuuG7Bh3Dx9OOT4WMeAcHk6q/VNDFa0jegNTDltuXc+oRjPOPGeONXAqhes+uGVXUo6h1YYZSMgj7HXOkNSUV5zd/enKLpbuJeOirDfIquhR3qoRAPTWnd2LSUkm0Y3IGH7fCsoIBBGqzaOpVhX1K+lr3q0QLWSyH6IgOFCoOFXA8gY/POrJ33lt694ur4q6CRR/uKreGeKQxsG2RbgCAT485GDnzrLGqpAaiSlqp4/VHpTMGJMqnggk8+NLpqJklxbB2d903p+JuiDb3uMdxYaY7jTwtMjudmvFO1HI0VRFJgPG+GUE+OR4P2Oq7NR1dGlbcaKqmuUFC8lM0UmC0dOQmSreQQTtJ+2qmrvSzxmi2xziVSjexU5BVvuMgf96l0uUk1LFbg5ieVjEZU43IxLSEjnz4x48ajS0AppCQbj8rtbxP7uINLbOvnx/qXqm63Qx1waGKD6Fp24JxyFb8DJI+/nUje6torR6ZAUBmOR5OfJP+AMD/ADrokgi6luNxrC/oXBqgJTbExEyqmCpH5IznUDc55wssNSStTGgTGcjB8YP/AD76YJSp7o9/VhKVdQYo5m+bnJOSQPB48fYfk59tfF4rYrxMKhYkp6VSVjfb9Bx/KD5Yj3b3Ou+wQUq2kU1LBSzTtw5qwzI7AeMD3H5yPbjUdcaqpqK0/OSK8kahBtXCgfYD215eX//Z" style="height:32px; width:32px; object-fit:contain; border-radius:4px;" alt="CRIMEZEEN logo">
+      <span data-i18n="app_title">Interactive Family Tree Manager</span>
+    </div>
+    <div class="file-actions">
+      <input type="file" id="import-file-input" accept=".json" style="display:none;" onchange="handleFileImport(event)">
+      <button class="btn-top btn-lang" onclick="toggleLanguage()"><i class="ti ti-language"></i> <span id="lang-btn-text">🇹🇭 TH</span></button>
+      <button class="btn-top" onclick="document.getElementById('import-file-input').click()"><i class="ti ti-folder-open"></i> <span data-i18n="btn_open">Open Database</span></button>
+      <button class="btn-top btn-save" onclick="exportJSON()"><i class="ti ti-device-floppy"></i> <span data-i18n="btn_save">Save Data</span></button>
+      <button class="btn-top btn-export" onclick="exportViewerHTML()"><i class="ti ti-share"></i> <span data-i18n="btn_export">Export Tree (HTML)</span></button>
+      <button class="btn-top btn-pdf" onclick="exportPDF()"><i class="ti ti-file-type-pdf"></i> <span data-i18n="btn_export_pdf">Export Tree (PDF)</span></button>
+      <button class="btn-top btn-jpeg" onclick="exportJPEG()"><i class="ti ti-file-type-jpg"></i> <span data-i18n="btn_export_jpeg">Export Tree (JPEG)</span></button>
+    </div>
+  </div>
+
+  <div class="tabs-nav">
+    <button class="tab-btn active" id="btn-tab-form" onclick="switchTab('tab-form')"><i class="ti ti-user-plus"></i> <span data-i18n="tab_add">Add Member</span></button>
+    <button class="tab-btn" id="btn-tab-item-form" onclick="switchTab('tab-item-form')"><i class="ti ti-package"></i> <span data-i18n="tab_item_add">Add Object/Circumstance</span></button>
+    <button class="tab-btn" id="btn-tab-list" onclick="switchTab('tab-list')"><i class="ti ti-users"></i> <span data-i18n="tab_db">Database</span></button>
+    <button class="tab-btn" id="btn-tab-item-list" onclick="switchTab('tab-item-list')"><i class="ti ti-database"></i> <span data-i18n="tab_item_db">Object/Circumstance Database</span></button>
+    <button class="tab-btn" id="btn-tab-tree" onclick="switchTab('tab-tree')"><i class="ti ti-chart-tree"></i> <span data-i18n="tab_tree">Family Tree</span></button>
+  </div>
+
+  <div id="tab-form" class="tab-content active">
+    <div class="form-container">
+      <h3 id="form-title-wrapper" class="form-title"><i class="ti ti-user-plus" style="color: var(--color-border-primary);"></i> <span id="form-title-text" data-i18n="form_title_add">Add New Member</span></h3>
+      <form id="member-form" onsubmit="saveMember(event)">
+        <input type="hidden" id="member-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="member-pid" data-i18n="lbl_pid">ID (Sequence) *</label>
+            <input type="text" id="member-pid" class="form-control" data-i18n-ph="ph_pid" placeholder="e.g. A01, 001" required>
+          </div>
+          <div class="form-group">
+            <label for="member-prefix" data-i18n="lbl_prefix">Prefix</label>
+            <input type="text" id="member-prefix" class="form-control" data-i18n-ph="ph_prefix" placeholder="Mr. / Ms. / Mrs.">
+          </div>
+          <div class="form-group">
+            <label for="member-firstname" data-i18n="lbl_fname">First Name *</label>
+            <input type="text" id="member-firstname" class="form-control" data-i18n-ph="ph_fname" placeholder="First Name" required>
+          </div>
+          <div class="form-group">
+            <label for="member-lastname" data-i18n="lbl_lname">Last Name *</label>
+            <input type="text" id="member-lastname" class="form-control" data-i18n-ph="ph_lname" placeholder="Last Name" required>
+          </div>
+          <div class="form-group">
+            <label for="member-maidenname" data-i18n="lbl_maiden">Maiden Name</label>
+            <input type="text" id="member-maidenname" class="form-control" data-i18n-ph="ph_maiden" placeholder="If applicable">
+          </div>
+          <div class="form-group">
+            <label for="member-nick" data-i18n="lbl_nick">Nickname</label>
+            <input type="text" id="member-nick" class="form-control" data-i18n-ph="ph_nick" placeholder="Nickname">
+          </div>
+          <div class="form-group">
+            <label for="member-gender" data-i18n="lbl_gender">Gender</label>
+            <select id="member-gender" class="form-control">
+              <option value="Male" data-i18n="opt_male">Male</option>
+              <option value="Female" data-i18n="opt_female">Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-dob" data-i18n="lbl_dob">Date of Birth</label>
+            <input type="text" id="member-dob" class="form-control" data-i18n-ph="ph_dob" placeholder="e.g. 01/01/1990">
+          </div>
+          <div class="form-group">
+            <label for="member-age" data-i18n="lbl_age">Age (Years)</label>
+            <input type="number" id="member-age" class="form-control" data-i18n-ph="ph_age" placeholder="e.g. 18">
+          </div>
+          <div class="form-group">
+            <label for="member-status" data-i18n="lbl_status">Status</label>
+            <select id="member-status" class="form-control">
+              <option value="Alive" data-i18n="opt_alive">Alive</option>
+              <option value="Deceased" data-i18n="opt_deceased">Deceased</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-father" data-i18n="lbl_father">Father</label>
+            <select id="member-father" class="form-control">
+              <option value="">-- Select Father --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-mother" data-i18n="lbl_mother">Mother</label>
+            <select id="member-mother" class="form-control">
+              <option value="">-- Select Mother --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-spouse" data-i18n="lbl_spouse">Spouse</label>
+            <select id="member-spouse" class="form-control">
+              <option value="">-- Select Spouse --</option>
+            </select>
+          </div>
+          <div class="form-group" id="spouse-order-group" style="display: none;">
+            <label for="member-spouseOrder" data-i18n="lbl_spouse_order">Spouse Order *</label>
+            <select id="member-spouseOrder" class="form-control">
+              <option value="1" data-i18n="opt_sp1">1st Spouse</option>
+              <option value="2" data-i18n="opt_sp2">2nd Spouse</option>
+              <option value="3" data-i18n="opt_sp3">3rd Spouse</option>
+              <option value="4" data-i18n="opt_sp4">4th Spouse</option>
+              <option value="5" data-i18n="opt_sp5">5th Spouse</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="member-phone" data-i18n="lbl_phone">Phone Number</label>
+            <input type="text" id="member-phone" class="form-control" data-i18n-ph="ph_phone" placeholder="Enter phone number">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="member-addr" data-i18n="lbl_address">Current Address</label>
+            <input type="text" id="member-addr" class="form-control" data-i18n-ph="ph_address" placeholder="Enter address">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="member-note" data-i18n="lbl_note">Additional Notes</label>
+            <input type="text" id="member-note" class="form-control" data-i18n-ph="ph_note" placeholder="Other information">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="member-case-status" data-i18n="lbl_case_status">สถานะในคดี</label>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="member-case-status" class="form-control" data-i18n-ph="ph_case_status" placeholder="เช่น ผู้ต้องหา, พยาน..." style="flex:1;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0;">
+                <label style="font-size:10px; color:var(--color-text-tertiary); margin:0;" data-i18n="lbl_case_status_color">สีป้าย</label>
+                <input type="color" id="member-case-status-color" value="#3b82f6" style="width:36px; height:32px; padding:2px; border:1px solid var(--color-border-secondary); border-radius:6px; cursor:pointer; background:white;">
+              </div>
+              <div id="member-case-status-preview" style="flex-shrink:0; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; border:1.5px solid #93c5fd; background:#eff6ff; color:#1d4ed8; display:none;">ตัวอย่าง</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="member-photo" data-i18n="lbl_photo">Photo</label>
+            <input type="file" id="member-photo" class="form-control" accept="image/*" onchange="handleImageUpload(event, 'member')">
+            <input type="hidden" id="member-photo-data">
+            <div id="member-photo-preview" style="margin-top: 5px; display: none; align-items: center; gap: 10px;">
+              <img id="member-photo-img" src="" style="max-height: 80px; border-radius: 4px; border: 1px solid var(--color-border-tertiary);">
+              <button type="button" class="action-btn delete" onclick="removeImage('member')" style="margin:0;"><i class="ti ti-trash"></i></button>
+            </div>
+          </div>
+          <!-- ส่วนเพิ่มความสัมพันธ์ทางคดี / นอกครอบครัว -->
+          <div class="form-group" style="grid-column: span 2;">
+            <label data-i18n="lbl_extra_rel">ความสัมพันธ์อื่น</label>
+            <div id="extra-relations-container"></div>
+            <button type="button" class="btn-add-rel" onclick="addExtraRelationRow()"><i class="ti ti-plus"></i> <span data-i18n="btn_add_extra_rel">เพิ่มความสัมพันธ์</span></button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="clearForm()" data-i18n="btn_cancel">Clear / Cancel</button>
+          <button type="submit" class="btn-submit" id="btn-submit-text" data-i18n="btn_submit">Save Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════ แท็ป: วัตถุ/พฤติการณ์ (ฟอร์มเพิ่ม) ══════════════ -->
+  <div id="tab-item-form" class="tab-content">
+    <div class="form-container">
+      <h3 class="form-title"><i class="ti ti-package" style="color:#ca8a04;"></i> <span id="item-form-title-text" data-i18n="item_form_title_add">Add Object/Circumstance</span></h3>
+      <form id="item-form" onsubmit="saveItem(event)">
+        <input type="hidden" id="item-id">
+        <div class="form-grid">
+          <div class="form-group">
+            <label data-i18n="lbl_item_pid">Code (Object/Circumstance) *</label>
+            <input type="text" id="item-pid" class="form-control" data-i18n-ph="ph_item_pid" placeholder="e.g. EV-001, OBJ-01" required>
+          </div>
+          <div class="form-group" style="grid-column:span 2;">
+            <label data-i18n="lbl_item_name">Item Name *</label>
+            <input type="text" id="item-name" class="form-control" data-i18n-ph="ph_item_name" placeholder="Object / Event name" required>
+          </div>
+          <div class="form-group" style="grid-column:span 2;">
+            <label data-i18n="lbl_item_detail">Details</label>
+            <input type="text" id="item-detail" class="form-control" data-i18n-ph="ph_item_detail" placeholder="Additional description">
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="item-case-status" data-i18n="lbl_item_case_status">สถานะในคดี</label>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="item-case-status" class="form-control" data-i18n-ph="ph_item_case_status" placeholder="เช่น พยานหลักฐาน, สถานที่เกิดเหตุ..." style="flex:1;">
+              <div style="display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0;">
+                <label style="font-size:10px; color:var(--color-text-tertiary); margin:0;" data-i18n="lbl_item_case_status_color">สีป้าย</label>
+                <input type="color" id="item-case-status-color" value="#ca8a04" style="width:36px; height:32px; padding:2px; border:1px solid var(--color-border-secondary); border-radius:6px; cursor:pointer; background:white;">
+              </div>
+              <div id="item-case-status-preview" style="flex-shrink:0; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; border:1.5px solid #fcd34d; background:#fefce8; color:#854d0e; display:none;">ตัวอย่าง</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="item-photo" data-i18n="lbl_item_photo">Photo</label>
+            <input type="file" id="item-photo" class="form-control" accept="image/*" onchange="handleImageUpload(event, 'item')">
+            <input type="hidden" id="item-photo-data">
+            <div id="item-photo-preview" style="margin-top: 5px; display: none; align-items: center; gap: 10px;">
+              <img id="item-photo-img" src="" style="max-height: 80px; border-radius: 4px; border: 1px solid var(--color-border-tertiary);">
+              <button type="button" class="action-btn delete" onclick="removeImage('item')" style="margin:0;"><i class="ti ti-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ส่วนความสัมพันธ์ -->
+        <div style="margin-bottom:20px;">
+          <label style="font-size:13px;font-weight:600;color:var(--color-text-secondary);display:block;margin-bottom:8px;">
+            <i class="ti ti-link" style="color:#ca8a04;"></i> <span data-i18n="lbl_item_relations">Relations</span>
+            <span style="font-size:11px;font-weight:400;color:var(--color-text-tertiary);margin-left:6px;" data-i18n="hint_item_relations">
+              (Select a person or object/circumstance to link)
+            </span>
+          </label>
+          <div id="item-relations-container"></div>
+          <button type="button" class="btn-add-rel" style="border-color:#ca8a04;color:#ca8a04;background:#fffbeb;" onclick="addItemRelRow()">
+            <i class="ti ti-plus"></i> <span data-i18n="btn_add_item_rel">Add Relation</span>
+          </button>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="clearItemForm()" data-i18n="btn_item_cancel">Clear / Cancel</button>
+          <button type="submit" class="btn-submit" id="item-submit-btn" style="background:#ca8a04;"><span id="item-submit-btn-text" data-i18n="btn_item_submit">Save Item</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════════ แท็ป: ฐานข้อมูล วัตถุ/พฤติการณ์ ══════════════ -->
+  <div id="tab-item-list" class="tab-content">
+    <div class="list-search-wrap">
+      <i class="ti ti-search search-icon-inside" style="left:14px;top:50%;transform:translateY(-50%);position:absolute;color:var(--color-text-tertiary);"></i>
+      <input type="text" id="item-list-search" class="list-search-input" data-i18n-ph="ph_search_item" placeholder="🔍 Search Object/Circumstance..." oninput="renderItemTable()">
+    </div>
+    <div class="relative-table-container">
+      <table class="relative-table">
+        <thead>
+          <tr>
+            <th data-i18n="th_item_pid">Code</th>
+            <th data-i18n="th_item_name">Item</th>
+            <th data-i18n="th_item_detail">Details</th>
+            <th data-i18n="th_item_relations">Relations</th>
+            <th data-i18n="th_item_manage">Manage</th>
+          </tr>
+        </thead>
+        <tbody id="item-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-list" class="tab-content">
+    <div class="list-search-wrap">
+      <i class="ti ti-search search-icon-inside" style="left:14px; top:50%; transform:translateY(-50%); position:absolute; color:var(--color-text-tertiary);"></i>
+      <input type="text" id="list-search-input" class="list-search-input" data-i18n-ph="ph_search_list" placeholder="🔍 Search database..." oninput="renderTableList()">
+    </div>
+    <div class="relative-table-container">
+      <table class="relative-table">
+        <thead>
+          <tr>
+            <th data-i18n="th_id">ID</th>
+            <th data-i18n="th_name">Full Name</th>
+            <th data-i18n="th_gender">Gender</th>
+            <th data-i18n="th_age">Age (Status)</th>
+            <th data-i18n="th_father">Father</th>
+            <th data-i18n="th_mother">Mother</th>
+            <th data-i18n="th_spouse">Spouse</th>
+            <th data-i18n="th_manage">Manage</th>
+          </tr>
+        </thead>
+        <tbody id="member-table-body">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="tab-tree" class="tab-content">
+    <div class="sticky-header-panel">
+      <div id="detail-panel" style="display:none; background:var(--color-background-secondary); border-radius:var(--border-radius-lg); padding:14px; font-size:13px; border:1px solid var(--color-border-tertiary); margin-bottom:10px;"></div>
+      
+      <div class="search-box-wrap">
+        <i class="ti ti-search search-icon-inside"></i>
+        <input type="text" id="tree-search-input" class="search-input-field" data-i18n-ph="ph_search_tree" placeholder="🔍 Search member in tree..." oninput="handleTreeSearch()">
+        <div id="tree-search-results" class="search-dropdown-list" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div id="tree-container"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+// =======================================================
+// 🌐 i18n Translation Setup
+// =======================================================
+const i18n = {
+  en: {
+    app_title: "CRIMEZEEN V.1.0", btn_open: "Open Database", btn_save: "Save Data", btn_export: "Export Tree (HTML)", btn_export_pdf: "Export Tree (PDF)", btn_export_jpeg: "Export Tree (JPEG)",
+    tab_add: "Add Member", tab_db: "Database", tab_tree: "Diagram", form_title_add: "Add New Member", form_title_edit: "Edit Member",
+    lbl_pid: "ID (Sequence) *", ph_pid: "e.g. A01, 001", lbl_prefix: "Prefix", ph_prefix: "Mr. / Ms. / Mrs.", lbl_fname: "First Name *", ph_fname: "First Name",
+    lbl_lname: "Last Name *", ph_lname: "Last Name", lbl_maiden: "Maiden Name", ph_maiden: "If applicable", lbl_nick: "Nickname", ph_nick: "Nickname",
+    lbl_gender: "Gender", opt_male: "Male", opt_female: "Female", lbl_dob: "Date of Birth", ph_dob: "e.g. 01/01/1990", lbl_age: "Age (Years)", ph_age: "e.g. 18",
+    lbl_status: "Status", opt_alive: "Alive", opt_deceased: "Deceased", lbl_father: "Father", lbl_mother: "Mother", lbl_spouse: "Spouse",
+    sel_father: "-- Select Father --", sel_mother: "-- Select Mother --", sel_spouse: "-- Select Spouse --",
+    lbl_spouse_order: "Spouse Order *", opt_sp1: "1st Spouse",opt_sp2: "2nd Spouse", opt_sp3: "3rd Spouse", opt_sp4: "4th Spouse", opt_sp5: "5th Spouse",
+    lbl_phone: "Phone Number", ph_phone: "Enter phone number", lbl_address: "Current Address", ph_address: "Enter address", lbl_note: "Additional Notes", ph_note: "Other information", lbl_case_status: "Case Status", ph_case_status: "e.g. Suspect, Witness...", lbl_case_status_color: "Badge Color", lbl_photo: "Photo", lbl_item_photo: "Photo",
+    lbl_extra_rel: "Other Relations", btn_add_extra_rel: "Add Relation", ph_extra_rel: "Relation", ph_extra_rel_reverse: "Reverse relation", opt_rel_direct: "Same", opt_rel_inverse: "Reciprocal", sel_person: "-- Select Person --", msg_max_rel: "Maximum limit of 10 relationships reached.",lbl_rel_side: "The relation above is from the perspective of", val_this_person: "Self",
+    btn_cancel: "Clear / Cancel", btn_submit: "Save Member", btn_update: "Update Member",
+    ph_search_list: "🔍 Search database...", ph_search_tree: "🔍 Search member in tree...",
+    th_id: "ID", th_name: "Full Name", th_gender: "Gender", th_age: "Age (Status)", th_father: "Father", th_mother: "Mother", th_spouse: "Spouse", th_manage: "Manage",
+    msg_dup_id: "This ID is already in use. Please use another.", msg_edit_success: "Member updated successfully.", msg_add_success: "New member added successfully.",
+    msg_delete_confirm: "Are you sure you want to delete", msg_delete_success: "Deleted successfully.", msg_no_data_save: "No data to save.", msg_no_data_export: "No data to export.",
+    msg_load_success: "📂 Database loaded! Total members found: ", msg_invalid_json: "Invalid JSON format.", msg_load_err: "Error reading file: ",
+    tbl_no_results: "❌ No members found", tbl_btn_edit: "Edit", tbl_btn_delete: "Delete",
+    tree_no_results: "❌ No matching persons found", tree_empty: "Please enter data or load a file to view the tree.", tree_no_rel: "No relationship links found in the system.",
+    dtl_gender: "Gender", dtl_status: "Status", dtl_dob: "DOB", dtl_father: "Father", dtl_mother: "Mother", dtl_spouse: "Spouse", dtl_children: "Children", dtl_formerly: "Formerly", dtl_years: "years old",
+    val_male: "Male", val_female: "Female", val_alive: "Alive", val_deceased: "Deceased", val_person: "person",
+    btn_arrange_on: "Edit", btn_arrange_off: "Exit Arrange Mode", btn_arrange_reset: "Reset Layout", hint_arrange: "Drag boxes to reposition. Use +/− buttons on box edges to resize width/height.",
+    tab_item_add: "Add Object/Circumstance", tab_item_db: "Object/Circumstance Database",
+    item_form_title_add: "Add Object/Circumstance", item_form_title_edit: "Edit Object/Circumstance",
+    lbl_item_pid: "Code (Object/Circumstance) *", ph_item_pid: "e.g. EV-001, OBJ-01",
+    lbl_item_name: "Item Name *", ph_item_name: "Object / Event name",
+    lbl_item_detail: "Details", ph_item_detail: "Additional description",
+    lbl_item_case_status: "Case Status", ph_item_case_status: "e.g. Key Evidence, Scene...", lbl_item_case_status_color: "Badge Color",
+    lbl_item_relations: "Relations", hint_item_relations: "(Select a person or object/circumstance to link)",
+    btn_add_item_rel: "Add Relation", ph_item_rel_label: "Relation description (will appear on the diagram line)",
+    btn_item_cancel: "Clear / Cancel", btn_item_submit: "Save Item", btn_item_update: "Update Item",
+    ph_search_item: "🔍 Search Object/Circumstance...",
+    th_item_pid: "Code", th_item_name: "Item", th_item_detail: "Details", th_item_relations: "Relations", th_item_manage: "Manage",
+    sel_combined: "-- Select Person or Object/Circumstance --", grp_persons: "👤 Persons", grp_items: "📦 Objects / Circumstances",
+    msg_item_dup_id: "This code is already in use. Please use another.", msg_item_update_success: "Item updated successfully.", msg_item_add_success: "Item added successfully.",
+    msg_item_delete_confirm: "Do you want to delete", tbl_item_no_results: "❌ No items found",
+    badge_person: "👤 Person", badge_item: "📦 Object", dtl_relations: "Relations",
+    btn_add_waypoint: "Add Waypoint", btn_del_waypoint: "Delete Waypoint", hint_waypoint_add: "Click on any relation line to add a waypoint.", hint_waypoint_del: "Click on a waypoint (diamond) to delete it."
+  },
+  th: {
+    app_title: "CRIMEZEEN V.1.0", btn_open: "เปิดไฟล์ฐานข้อมูล", btn_save: "บันทึกข้อมูล", btn_export: "Export ผัง (HTML)", btn_export_pdf: "Export ผัง (PDF)", btn_export_jpeg: "Export ผัง (JPEG)",
+    tab_add: "เพิ่มข้อมูลบุคคล", tab_db: "ฐานข้อมูลบุคคล", tab_tree: "แผนผัง", form_title_add: "เพิ่มข้อมูลบุคคลใหม่", form_title_edit: "แก้ไขข้อมูลบุคคล",
+    lbl_pid: "รหัสประจำตัว (ลำดับในผัง) *", ph_pid: "เช่น A01, 001", lbl_prefix: "คำนำหน้าชื่อ", ph_prefix: "นาย / นาง / นางสาว", lbl_fname: "ชื่อจริง *", ph_fname: "กรอกชื่อจริง",
+    lbl_lname: "นามสกุล *", ph_lname: "กรอกนามสกุล", lbl_maiden: "นามสกุลเดิม (ถ้ามี)", ph_maiden: "สำหรับกรณีเปลี่ยนนามสกุล", lbl_nick: "ชื่อเล่น", ph_nick: "กรอกชื่อเล่น",
+    lbl_gender: "เพศ", opt_male: "ชาย", opt_female: "หญิง", lbl_dob: "วันเดือนปีเกิด", ph_dob: "เช่น 01/01/2500", lbl_age: "อายุ (ปี)", ph_age: "เช่น 18",
+    lbl_status: "สถานะชีวิต", opt_alive: "มีชีวิต", opt_deceased: "เสียชีวิต", lbl_father: "บิดา (พ่อ)", lbl_mother: "มารดา (แม่)", lbl_spouse: "คู่สมรส",
+    sel_father: "-- เลือกบิดา (พ่อ) --", sel_mother: "-- เลือกมารดา (แม่) --", sel_spouse: "-- เลือกคู่สมรส --",
+    lbl_spouse_order: "ลำดับคู่สมรสคนที่ *", opt_sp1: "คนที่ 1", opt_sp2: "คนที่ 2", opt_sp3: "คนที่ 3", opt_sp4: "คนที่ 4", opt_sp5: "คนที่ 5",
+    lbl_phone: "เบอร์โทรศัพท์", ph_phone: "กรอกเบอร์โทร", lbl_address: "ที่อยู่ปัจจุบัน", ph_address: "กรอกที่อยู่", lbl_note: "บันทึกเพิ่มเติม", ph_note: "ข้อมูลอื่นๆ", lbl_case_status: "สถานะในคดี", ph_case_status: "เช่น ผู้ต้องหา, พยาน...", lbl_case_status_color: "สีป้าย", lbl_photo: "รูปภาพประกอบ", lbl_item_photo: "รูปภาพประกอบ",
+    lbl_extra_rel: "ความสัมพันธ์อื่น", btn_add_extra_rel: "เพิ่มความสัมพันธ์", ph_extra_rel: "ความสัมพันธ์", ph_extra_rel_reverse: "ความสัมพันธ์ย้อนกลับ", opt_rel_direct: "ตรงตัว", opt_rel_inverse: "ผกผัน", sel_person: "-- เลือกบุคคล --", msg_max_rel: "จำกัดสูงสุด 10 ความสัมพันธ์",lbl_rel_side: "ความสัมพันธ์ข้างต้นเป็นมุมมองของ", val_this_person: "เจ้าตัว",
+    btn_cancel: "ล้างฟอร์ม / ยกเลิก", btn_submit: "บันทึกข้อมูล", btn_update: "อัปเดตข้อมูล",
+    ph_search_list: "🔍 ค้นหารายชื่อ (พิมพ์ชื่อ นามสกุล หรือชื่อเล่น)...", ph_search_tree: "🔍 ค้นหาบุคคลในผัง...",
+    th_id: "รหัส", th_name: "ชื่อ-นามสกุล", th_gender: "เพศ", th_age: "อายุ (สถานะ)", th_father: "บิดา", th_mother: "มารดา", th_spouse: "คู่สมรส", th_manage: "จัดการ",
+    msg_dup_id: "รหัสประจำตัวนี้ถูกใช้งานแล้ว กรุณาใช้รหัสอื่น", msg_edit_success: "แก้ไขข้อมูลเรียบร้อยแล้ว", msg_add_success: "เพิ่มข้อมูลใหม่เสร็จสิ้น",
+    msg_delete_confirm: "คุณต้องการลบรายชื่อ", msg_delete_success: "ลบข้อมูลเสร็จสิ้น", msg_no_data_save: "ไม่มีข้อมูลที่สามารถบันทึกได้", msg_no_data_export: "ไม่มีข้อมูลสำหรับการส่งออก",
+    msg_load_success: "📂 โหลดฐานข้อมูลสำเร็จ! ตรวจพบรวม ", msg_invalid_json: "รูปแบบไฟล์ JSON ไม่ถูกต้อง", msg_load_err: "เกิดปัญหาในการอ่านไฟล์: ",
+    tbl_no_results: "❌ ไม่พบรายชื่อที่ค้นหา", tbl_btn_edit: "แก้ไข", tbl_btn_delete: "ลบ",
+    tree_no_results: "❌ ไม่พบบุคคลที่ตรงกัน", tree_empty: "กรุณากรอกข้อมูลหรือโหลดไฟล์ข้อมูลเพื่อดูผัง", tree_no_rel: "ไม่มีความเชื่อมโยงสายสัมพันธ์ในระบบ",
+    dtl_gender: "เพศ", dtl_status: "สถานะ", dtl_dob: "วันเกิด", dtl_father: "บิดา", dtl_mother: "มารดา", dtl_spouse: "คู่สมรส", dtl_children: "ทายาทบุตร", dtl_formerly: "เดิม", dtl_years: "ปี",
+    val_male: "ชาย", val_female: "หญิง", val_alive: "มีชีวิต", val_deceased: "เสียชีวิต", val_person: "คน",
+    btn_arrange_on: "แก้ไข", btn_arrange_off: "ออกจากโหมดจัดเรียง", btn_arrange_reset: "รีเซ็ตตำแหน่ง", hint_arrange: "ลากกล่องข้อมูลเพื่อจัดตำแหน่งใหม่ | กดปุ่ม +/− ที่ขอบกล่องเพื่อปรับความกว้าง/ความสูง",
+    tab_item_add: "เพิ่ม วัตถุ/พฤติการณ์", tab_item_db: "ฐานข้อมูล วัตถุ/พฤติการณ์",
+    item_form_title_add: "เพิ่มวัตถุ/พฤติการณ์", item_form_title_edit: "แก้ไขวัตถุ/พฤติการณ์",
+    lbl_item_pid: "รหัส วัตถุ/พฤติการณ์ *", ph_item_pid: "เช่น EV-001, OBJ-01",
+    lbl_item_name: "รายการ *", ph_item_name: "ชื่อวัตถุ/เหตุการณ์",
+    lbl_item_detail: "รายละเอียด", ph_item_detail: "คำอธิบายเพิ่มเติม",
+    lbl_item_case_status: "สถานะในคดี", ph_item_case_status: "เช่น พยานหลักฐาน, สถานที่เกิดเหตุ...", lbl_item_case_status_color: "สีป้าย",
+    lbl_item_relations: "ความสัมพันธ์", hint_item_relations: "(เลือกบุคคล หรือ วัตถุ/พฤติการณ์ ที่ต้องการเชื่อมโยง)",
+    btn_add_item_rel: "เพิ่มความสัมพันธ์", ph_item_rel_label: "คำอธิบายความสัมพันธ์ (จะปรากฎบนเส้นในผัง)",
+    btn_item_cancel: "ล้าง / ยกเลิก", btn_item_submit: "บันทึกรายการ", btn_item_update: "อัปเดตรายการ",
+    ph_search_item: "🔍 ค้นหา วัตถุ/พฤติการณ์...",
+    th_item_pid: "รหัส", th_item_name: "รายการ", th_item_detail: "รายละเอียด", th_item_relations: "ความสัมพันธ์", th_item_manage: "จัดการ",
+    sel_combined: "-- เลือกบุคคล หรือ วัตถุ/พฤติการณ์ --", grp_persons: "👤 บุคคล", grp_items: "📦 วัตถุ/พฤติการณ์",
+    msg_item_dup_id: "รหัสนี้ถูกใช้แล้ว กรุณาใช้รหัสอื่น", msg_item_update_success: "อัปเดตรายการสำเร็จ", msg_item_add_success: "เพิ่มรายการสำเร็จ",
+    msg_item_delete_confirm: "ต้องการลบ", tbl_item_no_results: "❌ ไม่พบรายการ",
+    badge_person: "👤 บุคคล", badge_item: "📦 วัตถุ", dtl_relations: "ความสัมพันธ์",
+    btn_add_waypoint: "เพิ่มจุดหมุน", btn_del_waypoint: "ลบจุดหมุน", hint_waypoint_add: "คลิกบนเส้นความสัมพันธ์เพื่อเพิ่มจุดหมุน", hint_waypoint_del: "คลิกที่จุดหมุน (รูปเพชร) เพื่อลบ"
+  }
+};
+
+let currentLang = 'en';
+
+function t(key) { return i18n[currentLang][key] || key; }
+
+function mapDataVal(val, type) {
+  if(!val) return val;
+  if(type === 'gender') return val === 'Male' || val === 'ชาย' ? t('val_male') : t('val_female');
+  if(type === 'status') return val === 'Alive' || val === 'มีชีวิต' ? t('val_alive') : t('val_deceased');
+  return val;
+}
+
+function updateUILanguage() {
+  document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = t(el.getAttribute('data-i18n')));
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.getAttribute('data-i18n-ph')));
+  
+  document.getElementById('lang-btn-text').innerText = currentLang === 'en' ? 'ภาษาไทย' : 'English';
+  
+  if(document.getElementById('member-id').value) {
+    document.getElementById('form-title-text').innerText = t('form_title_edit');
+    document.getElementById('btn-submit-text').innerText = t('btn_update');
+  }
+
+  if(document.getElementById('item-id').value) {
+    document.getElementById('item-form-title-text').innerText = t('item_form_title_edit');
+    document.getElementById('item-submit-btn-text').innerText = t('btn_item_update');
+  }
+
+  updateFormDropdowns();
+  if(document.getElementById('tab-list').classList.contains('active')) renderTableList();
+  if(document.getElementById('tab-item-list').classList.contains('active')) renderItemTable();
+  if(document.getElementById('tab-tree').classList.contains('active')) renderTree();
+}
+
+function toggleLanguage() {
+  currentLang = currentLang === 'en' ? 'th' : 'en';
+  updateUILanguage();
+}
+
+function handleImageUpload(event, type) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Data = e.target.result;
+    document.getElementById(`${type}-photo-data`).value = base64Data;
+    document.getElementById(`${type}-photo-img`).src = base64Data;
+    document.getElementById(`${type}-photo-preview`).style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(type) {
+  document.getElementById(`${type}-photo-data`).value = '';
+  document.getElementById(`${type}-photo-img`).src = '';
+  document.getElementById(`${type}-photo-preview`).style.display = 'none';
+  const fileInput = document.getElementById(`${type}-photo`);
+  if (fileInput) fileInput.value = '';
+}
+
+// ══════════════════════════════════════════════
+// ชุดข้อมูล วัตถุ/พฤติการณ์
+// ══════════════════════════════════════════════
+let items = []; // [{id, pid, name, detail, relations:[{relId,targetType,targetId,label}]}]
+let tsItemRelations = []; // tom-select instances สำหรับ dropdown ในแถวความสัมพันธ์
+
+/** สร้าง options รวม persons + items สำหรับ dropdown ความสัมพันธ์ */
+function buildCombinedOptions(excludeItemId = '') {
+  let html = `<option value="">${t('sel_combined')}</option>`;
+  if (members.length) {
+    html += `<optgroup label="${t('grp_persons')}">`;
+    members.forEach(m => {
+      html += `<option value="P::${m.id}">[${m.pid||'-'}] ${m.prefix||''}${m.firstname} ${m.lastname}</option>`;
+    });
+    html += `</optgroup>`;
+  }
+  const otherItems = items.filter(it => it.id !== excludeItemId);
+  if (otherItems.length) {
+    html += `<optgroup label="${t('grp_items')}">`;
+    otherItems.forEach(it => {
+      html += `<option value="I::${it.id}">[${it.pid||'-'}] ${it.name}</option>`;
+    });
+    html += `</optgroup>`;
+  }
+  return html;
+}
+
+function addItemRelRow(targetType='', targetId='', label='', relId='') {
+  const container = document.getElementById('item-relations-container');
+  const currentItemId = document.getElementById('item-id').value;
+  const rowId = 'ir-' + Date.now() + Math.random().toString(36).substr(2,5);
+  const rId = relId || ('REL-' + Date.now() + Math.random().toString(36).substr(2,8));
+  const combinedVal = (targetType && targetId) ? `${targetType}::${targetId}` : '';
+
+  const div = document.createElement('div');
+  div.className = 'item-rel-row';
+  div.dataset.relId = rId;
+  div.innerHTML = `
+    <div style="flex:2; display:flex; flex-direction:column; gap:6px;">
+      <input type="text" class="form-control" placeholder="${t('ph_item_rel_label')}" id="${rowId}-label" value="${label}">
+    </div>
+    <div style="flex:2;">
+      <select id="${rowId}-target" class="form-control">${buildCombinedOptions(currentItemId)}</select>
+    </div>
+    <button type="button" class="action-btn delete" onclick="removeItemRelRow(this,'${rowId}-target')" style="margin:0;flex-shrink:0;"><i class="ti ti-minus"></i> ${t('tbl_btn_delete')}</button>
+  `;
+  container.appendChild(div);
+
+  const ts = new TomSelect(`#${rowId}-target`, { create: false, maxOptions: 2000, sortField: false });
+  if (combinedVal) ts.setValue(combinedVal);
+  tsItemRelations.push({ id: `${rowId}-target`, ts });
+}
+
+function removeItemRelRow(btn, selectId) {
+  const row = btn.closest('.item-rel-row');
+  const idx = tsItemRelations.findIndex(x => x.id === selectId);
+  if (idx > -1) { tsItemRelations[idx].ts.destroy(); tsItemRelations.splice(idx, 1); }
+  row.remove();
+}
+
+function saveItem(event) {
+  event.preventDefault();
+  const idInput = document.getElementById('item-id').value;
+  const pid = document.getElementById('item-pid').value.trim();
+  const name = document.getElementById('item-name').value.trim();
+  const detail = document.getElementById('item-detail').value.trim();
+
+  if (items.some(it => it.pid.toLowerCase() === pid.toLowerCase() && it.id !== idInput)) {
+    alert(t('msg_item_dup_id')); document.getElementById('item-pid').focus(); return;
+  }
+
+  // รวบรวม relations
+  const relations = [];
+  Array.from(document.getElementById('item-relations-container').children).forEach(row => {
+    const label = row.querySelector('input[type="text"]').value.trim();
+    const targetSelect = row.querySelector('select');
+    const val = targetSelect ? targetSelect.value : '';
+    const relId = row.dataset.relId;
+    if (val) {
+      const [tType, tId] = val.split('::');
+      relations.push({ relId, targetType: tType, targetId: tId, label: label || '' });
+    }
+  });
+
+  const generatedId = idInput || 'ITM-' + Date.now() + Math.floor(Math.random()*1000);
+  const photo = document.getElementById('item-photo-data').value;
+  let customX = undefined, customY = undefined, imgScale = undefined;
+  if (idInput) {
+    const oldIt = items.find(x => x.id === idInput);
+    if (oldIt) {
+      customX = oldIt.customX;
+      customY = oldIt.customY;
+      imgScale = oldIt.imgScale;
+      relations.forEach(r => {
+        const oldR = oldIt.relations && oldIt.relations.find(x => x.relId === r.relId);
+        if (oldR) {
+          r.offsetX = oldR.offsetX;
+          r.offsetY = oldR.offsetY;
+          r.targetOffsetX = oldR.targetOffsetX;
+          r.targetOffsetY = oldR.targetOffsetY;
+        }
+      });
+    }
+  }
+
+  const itemData = { id: generatedId, pid, name, detail, photo, relations, customX, customY, imgScale,
+    caseStatus: document.getElementById('item-case-status').value.trim(),
+    caseStatusColor: document.getElementById('item-case-status-color').value || '#ca8a04'
+  };
+
+  if (idInput) {
+    const idx = items.findIndex(x => x.id === idInput);
+    if (idx !== -1) items[idx] = itemData;
+    alert(t('msg_item_update_success'));
+  } else {
+    items.push(itemData);
+    alert(t('msg_item_add_success'));
+  }
+
+  clearItemForm();
+  renderItemTable();
+  if (document.getElementById('tab-tree').classList.contains('active')) renderTree();
+}
+
+function clearItemForm() {
+  document.getElementById('item-form').reset();
+  document.getElementById('item-id').value = '';
+  document.getElementById('item-case-status-color').value = '#ca8a04';
+  document.getElementById('item-case-status-preview').style.display = 'none';
+  removeImage('item');
+  document.getElementById('item-relations-container').innerHTML = '';
+  tsItemRelations.forEach(o => o.ts.destroy());
+  tsItemRelations = [];
+  document.getElementById('item-form-title-text').innerText = t('item_form_title_add');
+  document.getElementById('item-submit-btn-text').innerText = t('btn_item_submit');
+}
+
+function editItem(id) {
+  const it = items.find(x => x.id === id); if (!it) return;
+  document.getElementById('item-id').value = it.id;
+  document.getElementById('item-pid').value = it.pid || '';
+  document.getElementById('item-name').value = it.name || '';
+  document.getElementById('item-detail').value = it.detail || '';
+  document.getElementById('item-case-status').value = it.caseStatus || '';
+  document.getElementById('item-case-status-color').value = it.caseStatusColor || '#ca8a04';
+  updateItemCaseStatusPreview();
+  if (it.photo) {
+    document.getElementById('item-photo-data').value = it.photo;
+    document.getElementById('item-photo-img').src = it.photo;
+    document.getElementById('item-photo-preview').style.display = 'flex';
+  } else {
+    removeImage('item');
+  }
+  document.getElementById('item-relations-container').innerHTML = '';
+  tsItemRelations.forEach(o => o.ts.destroy());
+  tsItemRelations = [];
+  (it.relations || []).forEach(r => addItemRelRow(r.targetType, r.targetId, r.label, r.relId));
+  document.getElementById('item-form-title-text').innerText = t('item_form_title_edit');
+  document.getElementById('item-submit-btn-text').innerText = t('btn_item_update');
+  switchTab('tab-item-form');
+}
+
+function deleteItem(id) {
+  const it = items.find(x => x.id === id); if (!it) return;
+  if (confirm(`${t('msg_item_delete_confirm')} [${it.pid}] ${it.name}?`)) {
+    items = items.filter(x => x.id !== id);
+    items.forEach(x => { if(x.relations) x.relations = x.relations.filter(r => r.targetId !== id); });
+    renderItemTable();
+    if (document.getElementById('tab-tree').classList.contains('active')) renderTree();
+  }
+}
+
+function renderItemTable() {
+  const tbody = document.getElementById('item-table-body'); if (!tbody) return;
+  const q = (document.getElementById('item-list-search')?.value || '').trim().toLowerCase();
+  const filtered = items.filter(it => !q || it.pid.toLowerCase().includes(q) || it.name.toLowerCase().includes(q) || (it.detail||'').toLowerCase().includes(q));
+  if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--color-text-tertiary);">${t('tbl_item_no_results')}</td></tr>`; return; }
+
+  tbody.innerHTML = filtered.map(it => {
+    const relHtml = (it.relations || []).map(r => {
+      if (r.targetType === 'P') {
+        const m = members.find(x => x.id === r.targetId);
+        const name = m ? `${m.prefix||''}${m.firstname} ${m.lastname}` : r.targetId;
+        return `<div style="margin-bottom:3px;"><span class="badge-person">${t('badge_person')}</span> <b>${name}</b>${r.label?' <span style="color:#64748b;">— '+r.label+'</span>':''}</div>`;
+      } else {
+        const ti = items.find(x => x.id === r.targetId);
+        const name = ti ? `[${ti.pid}] ${ti.name}` : r.targetId;
+        return `<div style="margin-bottom:3px;"><span class="badge-item">${t('badge_item')}</span> <b>${name}</b>${r.label?' <span style="color:#64748b;">— '+r.label+'</span>':''}</div>`;
+      }
+    }).join('') || '<span style="color:var(--color-text-tertiary);">-</span>';
+
+    return `<tr>
+      <td><b>[${it.pid||'-'}]</b></td>
+      <td>${it.name}</td>
+      <td style="font-size:12px;color:var(--color-text-secondary);">${it.detail||'-'}</td>
+      <td style="font-size:12px;">${relHtml}</td>
+      <td>
+        <button class="action-btn edit" onclick="editItem('${it.id}')"><i class="ti ti-edit"></i> ${t('tbl_btn_edit')}</button>
+        <button class="action-btn delete" onclick="deleteItem('${it.id}')"><i class="ti ti-trash"></i> ${t('tbl_btn_delete')}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ชุดข้อมูลปัจจุบันเริ่มต้น
+let members = [];
+let tsFather, tsMother, tsSpouse;
+let tsExtraRelations = [];
+let tsExtraRelationsVis = [];
+
+// คำนวณ badge color scheme จาก hex สีหลัก
+function autoColorScheme(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  // luminance
+  const lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+  // bg = สีหลักทำให้อ่อนลง (mix กับขาว 80%)
+  const bgR = Math.round(r*0.18 + 255*0.82), bgG = Math.round(g*0.18 + 255*0.82), bgB = Math.round(b*0.18 + 255*0.82);
+  const bg = `rgb(${bgR},${bgG},${bgB})`;
+  // border = สีหลักทำให้อ่อนลง 40%
+  const bdR = Math.round(r*0.55 + 255*0.45), bdG = Math.round(g*0.55 + 255*0.45), bdB = Math.round(b*0.55 + 255*0.45);
+  const border = `rgb(${bdR},${bdG},${bdB})`;
+  // text = สีหลักทำให้เข้มขึ้น (mix กับดำ 30%)
+  const txR = Math.round(r*0.65), txG = Math.round(g*0.65), txB = Math.round(b*0.65);
+  const text = `rgb(${txR},${txG},${txB})`;
+  return { bg, border, text };
+}
+
+function updateCaseStatusPreview() {
+  const val = document.getElementById('member-case-status').value.trim();
+  const hex = document.getElementById('member-case-status-color').value;
+  const prev = document.getElementById('member-case-status-preview');
+  if (!prev) return;
+  if (!val) { prev.style.display = 'none'; return; }
+  const s = autoColorScheme(hex);
+  prev.style.display = 'inline-block';
+  prev.style.background = s.bg;
+  prev.style.borderColor = s.border;
+  prev.style.color = s.text;
+  prev.textContent = val;
+}
+
+function updateItemCaseStatusPreview() {
+  const val = document.getElementById('item-case-status').value.trim();
+  const hex = document.getElementById('item-case-status-color').value;
+  const prev = document.getElementById('item-case-status-preview');
+  if (!prev) return;
+  if (!val) { prev.style.display = 'none'; return; }
+  const s = autoColorScheme(hex);
+  prev.style.display = 'inline-block';
+  prev.style.background = s.bg;
+  prev.style.borderColor = s.border;
+  prev.style.color = s.text;
+  prev.textContent = val;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const csInput = document.getElementById('member-case-status');
+  const csColor = document.getElementById('member-case-status-color');
+  if (csInput) csInput.addEventListener('input', updateCaseStatusPreview);
+  if (csColor) csColor.addEventListener('input', updateCaseStatusPreview);
+
+  const icsInput = document.getElementById('item-case-status');
+  const icsColor = document.getElementById('item-case-status-color');
+  if (icsInput) icsInput.addEventListener('input', updateItemCaseStatusPreview);
+  if (icsColor) icsColor.addEventListener('input', updateItemCaseStatusPreview);
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.getElementById('btn-' + tabId).classList.add('active');
+  if (tabId === 'tab-list') renderTableList();
+  else if (tabId === 'tab-item-list') renderItemTable();
+  else if (tabId === 'tab-tree') { renderTree(); resetZoom(); }
+}
+
+function updateFormDropdowns() {
+  const fatherSelect = document.getElementById('member-father');
+  const motherSelect = document.getElementById('member-mother');
+  const spouseSelect = document.getElementById('member-spouse');
+  if(!fatherSelect || !motherSelect || !spouseSelect) return;
+
+  const vF = tsFather ? tsFather.getValue() : '';
+  const vM = tsMother ? tsMother.getValue() : '';
+  const vS = tsSpouse ? tsSpouse.getValue() : '';
+
+  if (tsFather) { tsFather.destroy(); tsFather = null; }
+  if (tsMother) { tsMother.destroy(); tsMother = null; }
+  if (tsSpouse) { tsSpouse.destroy(); tsSpouse = null; }
+  
+  let fatherOptions = `<option value="">${t('sel_father')}</option>`;
+  let motherOptions = `<option value="">${t('sel_mother')}</option>`;
+  let spouseOptions = `<option value="">${t('sel_spouse')}</option>`;
+  
+  members.forEach(m => {
+    const text = `[${m.pid || '-'}] ${m.prefix || ''}${m.firstname} ${m.lastname} ${m.nick ? `(${m.nick})` : ''}`;
+    if (m.gender === 'ชาย' || m.gender === 'Male') fatherOptions += `<option value="${m.id}">${text}</option>`;
+    else motherOptions += `<option value="${m.id}">${text}</option>`;
+    spouseOptions += `<option value="${m.id}">${text}</option>`;
+  });
+  
+  fatherSelect.innerHTML = fatherOptions;
+  motherSelect.innerHTML = motherOptions;
+  spouseSelect.innerHTML = spouseOptions;
+
+  const tsConfig = { create: false, maxOptions: 1000, sortField: false };
+  tsFather = new TomSelect("#member-father", tsConfig);
+  tsMother = new TomSelect("#member-mother", tsConfig);
+  tsSpouse = new TomSelect("#member-spouse", { ...tsConfig, onChange: toggleSpouseOrderVisibility });
+
+  if(vF) tsFather.setValue(vF);
+  if(vM) tsMother.setValue(vM);
+  if(vS) tsSpouse.setValue(vS);
+}
+
+function toggleSpouseOrderVisibility() {
+  const spouseSelect = document.getElementById('member-spouse');
+  const spouseOrderGroup = document.getElementById('spouse-order-group');
+  const currentId = document.getElementById('member-id').value;
+  const selectedSpouseId = spouseSelect.value;
+  
+  if (!selectedSpouseId) { spouseOrderGroup.style.display = 'none'; return; }
+  
+  const target = members.find(x => x.id === selectedSpouseId);
+  const hasExistingSpouse = (target && target.spouse && target.spouse !== currentId) || members.some(m => m.spouse === selectedSpouseId && m.id !== currentId);
+  spouseOrderGroup.style.display = hasExistingSpouse ? 'flex' : 'none';
+}
+
+function updateExtraRelationColors(rowId) {
+  const relTypeSel = document.getElementById(`${rowId}-reltype`);
+  const sideSel = document.getElementById(`${rowId}-side`);
+  const labelInput = document.getElementById(`${rowId}-label`);
+  const labelRevInput = document.getElementById(`${rowId}-labelrev`);
+  const targetSelect = document.getElementById(`${rowId}-target`);
+  
+  if (!relTypeSel || !labelInput) return;
+  
+  const relType = relTypeSel.value;
+  const side = sideSel ? sideSel.value : 'self';
+  
+  // Clear styles
+  labelInput.style.backgroundColor = '';
+  labelInput.style.borderColor = '';
+  labelInput.style.color = '';
+  if (labelRevInput) {
+    labelRevInput.style.backgroundColor = '';
+    labelRevInput.style.borderColor = '';
+    labelRevInput.style.color = '';
+  }
+  
+  // Clear TomSelect wrapper style (direct mode)
+  if (targetSelect) {
+    const tsControl = targetSelect.nextSibling;
+    if (tsControl && tsControl.classList && tsControl.classList.contains('ts-wrapper')) {
+      const controlInner = tsControl.querySelector('.ts-control');
+      if (controlInner) {
+        controlInner.style.backgroundColor = '';
+        controlInner.style.borderColor = '';
+        controlInner.style.color = '';
+      }
+    }
+  }
+  
+  if (relType === 'inverse') {
+    if (side === 'self') {
+      labelInput.style.backgroundColor = '#e0f2fe';
+      labelInput.style.borderColor = '#7dd3fc';
+      labelInput.style.color = '#0369a1';
+      if (labelRevInput) {
+        labelRevInput.style.backgroundColor = '#ffe4e6';
+        labelRevInput.style.borderColor = '#fca5a5';
+        labelRevInput.style.color = '#b91c1c';
+      }
+    } else {
+      labelInput.style.backgroundColor = '#ffe4e6';
+      labelInput.style.borderColor = '#fca5a5';
+      labelInput.style.color = '#b91c1c';
+      if (labelRevInput) {
+        labelRevInput.style.backgroundColor = '#e0f2fe';
+        labelRevInput.style.borderColor = '#7dd3fc';
+        labelRevInput.style.color = '#0369a1';
+      }
+    }
+  }
+}
+
+function addExtraRelationRow(targetId = '', label = '', relType = 'direct', labelReverse = '', linkId = '') {
+  const container = document.getElementById('extra-relations-container');
+
+  const rowId = 'ex-rel-' + Date.now() + Math.random().toString(36).substr(2, 5);
+  const rowDiv = document.createElement('div');
+  rowDiv.className = 'extra-rel-row';
+  rowDiv.dataset.linkId = linkId || ('LK-' + Date.now() + Math.random().toString(36).substr(2, 8));
+  rowDiv.dataset.rowId = rowId;
+
+  const currentMemberId = document.getElementById('member-id').value;
+  let options = `<option value="">${t('sel_person')}</option>`;
+  members.forEach(m => {
+    if (m.id === currentMemberId && currentMemberId !== '') return;
+    const text = `[${m.pid || '-'}] ${m.prefix || ''}${m.firstname} ${m.lastname}`;
+    options += `<option value="${m.id}" ${m.id === targetId ? 'selected' : ''}>${text}</option>`;
+  });
+
+  const selfFirst = document.getElementById('member-firstname').value.trim();
+  const selfLast = document.getElementById('member-lastname').value.trim();
+  const selfName = (selfFirst || selfLast) ? `${selfFirst} ${selfLast}`.trim() : t('val_this_person');
+  let targetName = t('sel_person');
+  if (targetId) { const tm = members.find(x => x.id === targetId); if (tm) targetName = `${tm.prefix || ''}${tm.firstname} ${tm.lastname}`; }
+
+  rowDiv.innerHTML = `
+    <div style="flex:1; display:flex; flex-direction:column; gap:5px; min-width:0;">
+
+      <!-- แถว 1: ความสัมพันธ์ + เจ้าตัว -->
+      <div style="display:flex; gap:6px; align-items:center;">
+        <input type="text" class="form-control" placeholder="${t('ph_extra_rel')}" value="${label}" id="${rowId}-label" required style="flex:1; min-width:0;">
+        <div id="${rowId}-side-wrap" style="display:${relType === 'inverse' ? 'flex' : 'none'}; flex-shrink:0; width:100px;">
+          <select id="${rowId}-side" onchange="updateExtraRelationColors('${rowId}')"
+            style="width:100%; height:36px; padding:4px 6px; font-size:12px; font-weight:600; border:1.5px solid #7dd3fc; border-radius:6px; background:#e0f2fe; color:#0369a1; cursor:pointer;">
+            <option value="self" selected>${selfName}</option>
+            <option value="target" id="${rowId}-side-target-opt">${targetName}</option>
+          </select>
+        </div>
+        <div id="${rowId}-side-ph" style="display:${relType === 'inverse' ? 'none' : 'block'}; flex-shrink:0; width:100px;"></div>
+      </div>
+
+      <!-- แถว 2: ความสัมพันธ์ย้อนกลับ + pink person picker (inverse only) -->
+      <div id="${rowId}-row2" style="display:${relType === 'inverse' ? 'flex' : 'none'}; gap:6px; align-items:center;">
+        <input type="text" class="form-control" placeholder="${t('ph_extra_rel_reverse')}" value="${labelReverse}" id="${rowId}-labelrev" style="flex:1; min-width:0;">
+        <div style="flex-shrink:0; width:100px;" id="${rowId}-target-vis-wrap">
+          <select id="${rowId}-target-vis">${options}</select>
+        </div>
+      </div>
+
+      <!-- แถว 2 direct: เลือกบุคคล (TomSelect) full width -->
+      <div id="${rowId}-row2d" style="display:${relType === 'inverse' ? 'none' : 'flex'}; gap:6px; align-items:center;">
+        <div style="flex:1; min-width:0;">
+          <select id="${rowId}-target" class="form-control" required>${options}</select>
+        </div>
+        <div style="flex-shrink:0; width:100px;"></div>
+      </div>
+
+      <!-- hidden real select สำหรับโหมด inverse (TomSelect จะไม่ mount ที่นี่) -->
+      <select id="${rowId}-target-hidden" style="display:none;">${options}</select>
+
+    </div>
+    <div style="flex:0 0 auto; display:flex; flex-direction:column; gap:5px; align-items:center; justify-content:flex-start;">
+      <select id="${rowId}-reltype" style="width:72px; height:36px; padding:4px 4px; font-size:12px; font-weight:600; border:1px solid var(--color-border-secondary); border-radius:6px; background:white; cursor:pointer;" onchange="
+        const isInv = (this.value === 'inverse');
+        document.getElementById('${rowId}-row2').style.display  = isInv ? 'flex' : 'none';
+        document.getElementById('${rowId}-row2d').style.display = isInv ? 'none' : 'flex';
+        document.getElementById('${rowId}-side-wrap').style.display = isInv ? 'flex' : 'none';
+        document.getElementById('${rowId}-side-ph').style.display   = isInv ? 'none' : 'block';
+        updateExtraRelationColors('${rowId}');
+      ">
+        <option value="direct" ${relType === 'direct' ? 'selected' : ''}>${t('opt_rel_direct')}</option>
+        <option value="inverse" ${relType === 'inverse' ? 'selected' : ''}>${t('opt_rel_inverse')}</option>
+      </select>
+      <button type="button" class="action-btn delete" onclick="removeExtraRelationRow(this, '${rowId}-target')" style="margin:0; width:72px; justify-content:center;"><i class="ti ti-minus"></i></button>
+    </div>
+  `;
+  container.appendChild(rowDiv);
+
+  // TomSelect for direct mode (full width)
+  const ts = new TomSelect(`#${rowId}-target`, { create: false, maxOptions: 1000, sortField: false,
+    placeholder: t('sel_person'),
+    onChange: function(v){
+      const vis = tsExtraRelationsVis.find(x => x.id === `${rowId}-target-vis`);
+      if (vis) vis.ts.setValue(v, true);
+      updateRelSideTargetName(rowId);
+    }
+  });
+  tsExtraRelations.push({ id: `${rowId}-target`, ts: ts });
+
+  // TomSelect for inverse mode (pink, 100px wide)
+  const tsVis = new TomSelect(`#${rowId}-target-vis`, { create: false, maxOptions: 1000, sortField: false,
+    placeholder: t('sel_person'),
+    onChange: function(v){
+      const tsObj = tsExtraRelations.find(x => x.id === `${rowId}-target`);
+      if (tsObj) tsObj.ts.setValue(v, true);
+      updateRelSideTargetName(rowId);
+    }
+  });
+  tsExtraRelationsVis.push({ id: `${rowId}-target-vis`, ts: tsVis });
+
+  // Apply pink styling to the TomSelect-vis wrapper
+  const visWrapper = document.querySelector(`#${rowId}-target-vis-wrap .ts-wrapper`);
+  if (visWrapper) {
+    visWrapper.style.width = '100%';
+    const ctrl = visWrapper.querySelector('.ts-control');
+    if (ctrl) {
+      ctrl.style.background = '#ffe4e6';
+      ctrl.style.borderColor = '#fca5a5';
+      ctrl.style.color = '#b91c1c';
+      ctrl.style.fontSize = '12px';
+      ctrl.style.fontWeight = '600';
+      ctrl.style.minHeight = '36px';
+    }
+  }
+
+  // if starting in inverse, sync initial value
+  if (relType === 'inverse' && targetId) {
+    tsVis.setValue(targetId, true);
+  }
+  updateExtraRelationColors(rowId);
+}
+
+function updateRelSideTargetName(rowId) {
+  const opt = document.getElementById(`${rowId}-side-target-opt`);
+  if (!opt) return;
+  const tsVisObj = tsExtraRelationsVis.find(x => x.id === `${rowId}-target-vis`);
+  const tsObj = tsExtraRelations.find(x => x.id === `${rowId}-target`);
+  const relTypeSel = document.getElementById(`${rowId}-reltype`);
+  const isInv = relTypeSel && relTypeSel.value === 'inverse';
+  const val = isInv && tsVisObj ? tsVisObj.ts.getValue() : (tsObj ? tsObj.ts.getValue() : '');
+  const tm = members.find(x => x.id === val);
+  opt.textContent = tm ? `${tm.prefix || ''}${tm.firstname} ${tm.lastname}` : t('sel_person');
+  updateExtraRelationColors(rowId);
+}
+
+function removeExtraRelationRow(btn, selectId) {
+  const row = btn.closest('.extra-rel-row');
+  const tsObjIndex = tsExtraRelations.findIndex(x => x.id === selectId);
+  if (tsObjIndex > -1) { tsExtraRelations[tsObjIndex].ts.destroy(); tsExtraRelations.splice(tsObjIndex, 1); }
+  const visId = selectId.replace('-target', '-target-vis');
+  const tsVisIdx = tsExtraRelationsVis.findIndex(x => x.id === visId);
+  if (tsVisIdx > -1) { tsExtraRelationsVis[tsVisIdx].ts.destroy(); tsExtraRelationsVis.splice(tsVisIdx, 1); }
+  row.remove();
+}
+
+function saveMember(event) {
+  event.preventDefault();
+  const idInput = document.getElementById('member-id').value;
+  const pid = document.getElementById('member-pid').value.trim();
+  const isDuplicate = members.some(m => m.pid.toLowerCase() === pid.toLowerCase() && m.id !== idInput);
+  
+  if (isDuplicate) { alert(t('msg_dup_id')); document.getElementById('member-pid').focus(); return; }
+
+  const generatedId = idInput || 'ID-' + Date.now() + Math.floor(Math.random() * 1000);
+  const spouse = document.getElementById('member-spouse').value;
+  let spouseOrder = 1;
+  if (document.getElementById('spouse-order-group').style.display !== 'none') {
+    spouseOrder = parseInt(document.getElementById('member-spouseOrder').value) || 2;
+  }
+  
+  // รวบรวมข้อมูลความสัมพันธ์อื่น (พร้อมประเภทความสัมพันธ์ ตรงตัว/ผกผัน)
+  const extraRelations = [];
+  const container = document.getElementById('extra-relations-container');
+  Array.from(container.children).forEach(row => {
+    const textInputs = row.querySelectorAll('input[type="text"]');
+    const label = textInputs[0].value.trim();
+    const labelReverseInput = textInputs[1] ? textInputs[1].value.trim() : '';
+    const relType = row.querySelector('select[id$="-reltype"]').value === 'inverse' ? 'inverse' : 'direct';
+    const rowId = row.dataset.rowId;
+    let target = '';
+    if (relType === 'inverse' && rowId) {
+      const tsVisObj = tsExtraRelationsVis.find(x => x.id === `${rowId}-target-vis`);
+      target = tsVisObj ? tsVisObj.ts.getValue() : '';
+    }
+    if (!target) {
+      const targetSelReal = row.querySelector('select[id$="-target"]');
+      const tsObj = rowId ? tsExtraRelations.find(x => x.id === `${rowId}-target`) : null;
+      target = tsObj ? tsObj.ts.getValue() : (targetSelReal ? targetSelReal.value : '');
+    }
+    const sideSel = row.querySelector('select[id$="-side"]');
+    const side = (relType === 'inverse' && sideSel) ? sideSel.value : 'self';
+    const linkId = row.dataset.linkId;
+    if (label && target) {
+      const rev = relType === 'inverse' ? (labelReverseInput || label) : label;
+      const finalLabel = (relType === 'inverse' && side === 'target') ? rev : label;
+      const finalReverse = (relType === 'inverse' && side === 'target') ? label : rev;
+      extraRelations.push({ linkId, label: finalLabel, targetId: target, relType, labelReverse: finalReverse });
+    }
+  });
+
+  const photo = document.getElementById('member-photo-data').value;
+  let customX = undefined, customY = undefined, imgScale = undefined;
+  let spouseOffsetX = undefined, spouseOffsetY = undefined;
+  let parentOffsetX = undefined, parentOffsetY = undefined;
+  if (idInput) {
+    const oldM = members.find(x => x.id === idInput);
+    if (oldM) {
+      customX = oldM.customX;
+      customY = oldM.customY;
+      imgScale = oldM.imgScale;
+      spouseOffsetX = oldM.spouseOffsetX;
+      spouseOffsetY = oldM.spouseOffsetY;
+      parentOffsetX = oldM.parentOffsetX;
+      parentOffsetY = oldM.parentOffsetY;
+      extraRelations.forEach(r => {
+        const oldR = oldM.extraRelations && oldM.extraRelations.find(x => x.linkId === r.linkId);
+        if (oldR) {
+          r.offsetX = oldR.offsetX;
+          r.offsetY = oldR.offsetY;
+        }
+      });
+    }
+  }
+
+  const memberData = {
+    id: generatedId, pid,
+    prefix: document.getElementById('member-prefix').value.trim(),
+    firstname: document.getElementById('member-firstname').value.trim(),
+    lastname: document.getElementById('member-lastname').value.trim(),
+    maidenname: document.getElementById('member-maidenname').value.trim(),
+    nick: document.getElementById('member-nick').value.trim(),
+    gender: document.getElementById('member-gender').value,
+    dob: document.getElementById('member-dob').value.trim(),
+    status: document.getElementById('member-status').value,
+    age: document.getElementById('member-age').value.trim(),
+    father: document.getElementById('member-father').value,
+    mother: document.getElementById('member-mother').value,
+    spouse: spouse, spouseOrder: spouse ? spouseOrder : 1,
+    phone: document.getElementById('member-phone').value.trim(),
+    addr: document.getElementById('member-addr').value.trim(),
+    note: document.getElementById('member-note').value.trim(),
+    caseStatus: document.getElementById('member-case-status').value.trim(),
+    caseStatusColor: document.getElementById('member-case-status-color').value || '#3b82f6',
+    photo: photo,
+    customX: customX,
+    customY: customY,
+    imgScale: imgScale,
+    spouseOffsetX: spouseOffsetX,
+    spouseOffsetY: spouseOffsetY,
+    parentOffsetX: parentOffsetX,
+    parentOffsetY: parentOffsetY,
+    extraRelations: extraRelations
+  };
+  memberData.name = `${memberData.firstname} ${memberData.lastname}`.trim();
+  
+  if (idInput) {
+    const idx = members.findIndex(x => x.id === idInput);
+    if (idx !== -1) {
+      const oldSpouseId = members[idx].spouse;
+      if (oldSpouseId && oldSpouseId !== spouse) {
+        const oldSpouse = members.find(x => x.id === oldSpouseId);
+        if (oldSpouse && oldSpouse.spouse === idInput) oldSpouse.spouse = '';
+      }
+      const oldExtraRelations = JSON.parse(JSON.stringify(members[idx].extraRelations || []));
+      members[idx] = memberData;
+      syncReciprocalRelations(generatedId, oldExtraRelations, extraRelations);
+    }
+    alert(t('msg_edit_success'));
+  } else {
+    members.push(memberData);
+    syncReciprocalRelations(generatedId, [], extraRelations);
+    alert(t('msg_add_success'));
+  }
+  
+  if (spouse) {
+    const targetSpouse = members.find(x => x.id === spouse);
+    if (targetSpouse) targetSpouse.spouse = generatedId;
+  }
+  
+  clearForm(); updateFormDropdowns(); switchTab('tab-list');
+}
+
+// อัปเดต/สร้างความสัมพันธ์แบบสะท้อนกลับ (mirror) ในข้อมูลของอีกฝ่ายโดยอัตโนมัติ
+// - ลบลิงก์เก่าที่ไม่ได้ใช้แล้วออกจากปลายทางเดิม
+// - เพิ่ม/อัปเดตลิงก์ใหม่ในข้อมูลของปลายทางใหม่ โดยใช้ linkId เดียวกันเพื่ออ้างอิงคู่กัน
+// - ถ้าเป็น "ผกผัน" จะใช้ labelReverse เป็นคำที่อีกฝ่ายมองมาที่เรา / ถ้า "ตรงตัว" จะใช้คำเดียวกันทั้งสองฝ่าย
+function syncReciprocalRelations(memberId, oldRels, newRels) {
+  (oldRels || []).forEach(rel => {
+    const target = members.find(x => x.id === rel.targetId);
+    if (target && target.extraRelations) {
+      target.extraRelations = target.extraRelations.filter(r => r.linkId !== rel.linkId);
+    }
+  });
+
+  (newRels || []).forEach(rel => {
+    const target = members.find(x => x.id === rel.targetId);
+    if (!target) return;
+    if (!target.extraRelations) target.extraRelations = [];
+    target.extraRelations = target.extraRelations.filter(r => r.linkId !== rel.linkId);
+    const mirroredLabel = rel.relType === 'inverse' ? (rel.labelReverse || rel.label) : rel.label;
+    const mirroredReverse = rel.relType === 'inverse' ? rel.label : rel.label;
+    
+    let targetOffsetX = undefined, targetOffsetY = undefined;
+    if (oldRels) {
+      const oldRecip = target.extraRelations.find(r => r.linkId === rel.linkId);
+      if (oldRecip) {
+        targetOffsetX = oldRecip.offsetX;
+        targetOffsetY = oldRecip.offsetY;
+      }
+    }
+
+    target.extraRelations.push({
+      linkId: rel.linkId,
+      label: mirroredLabel,
+      targetId: memberId,
+      relType: rel.relType,
+      labelReverse: mirroredReverse,
+      offsetX: targetOffsetX,
+      offsetY: targetOffsetY
+    });
+  });
+}
+
+function clearForm() {
+  document.getElementById('member-form').reset();
+  document.getElementById('member-id').value = '';
+  document.getElementById('member-case-status-color').value = '#3b82f6';
+  document.getElementById('member-case-status-preview').style.display = 'none';
+  removeImage('member');
+  if (tsFather) tsFather.setValue('');
+  if (tsMother) tsMother.setValue('');
+  if (tsSpouse) tsSpouse.setValue('');
+  
+  document.getElementById('extra-relations-container').innerHTML = '';
+  tsExtraRelations.forEach(obj => obj.ts.destroy()); tsExtraRelations = [];
+  tsExtraRelationsVis.forEach(obj => obj.ts.destroy()); tsExtraRelationsVis = [];
+
+  document.getElementById('spouse-order-group').style.display = 'none';
+  document.getElementById('form-title-text').innerText = t('form_title_add');
+  document.getElementById('btn-submit-text').innerText = t('btn_submit');
+}
+
+function editMember(id) {
+  const m = members.find(x => x.id === id); if (!m) return;
+  document.getElementById('member-id').value = m.id;
+  document.getElementById('member-pid').value = m.pid || '';
+  document.getElementById('member-prefix').value = m.prefix || '';
+  document.getElementById('member-firstname').value = m.firstname || '';
+  document.getElementById('member-lastname').value = m.lastname || '';
+  document.getElementById('member-maidenname').value = m.maidenname || '';
+  document.getElementById('member-nick').value = m.nick || '';
+  document.getElementById('member-gender').value = m.gender || 'Male';
+  document.getElementById('member-dob').value = m.dob || '';
+  document.getElementById('member-status').value = m.status || 'Alive';
+  document.getElementById('member-age').value = m.age || '';
+  
+  if (m.photo) {
+    document.getElementById('member-photo-data').value = m.photo;
+    document.getElementById('member-photo-img').src = m.photo;
+    document.getElementById('member-photo-preview').style.display = 'flex';
+  } else {
+    removeImage('member');
+  }
+
+  if (tsFather) tsFather.setValue(m.father || '');
+  if (tsMother) tsMother.setValue(m.mother || '');
+  if (tsSpouse) tsSpouse.setValue(m.spouse || '');
+  
+  toggleSpouseOrderVisibility();
+  document.getElementById('member-spouseOrder').value = (m.spouseOrder && m.spouseOrder >= 2) ? m.spouseOrder : '2';
+  
+  document.getElementById('member-phone').value = m.phone || '';
+  document.getElementById('member-addr').value = m.addr || '';
+  document.getElementById('member-note').value = m.note || '';
+  document.getElementById('member-case-status').value = m.caseStatus || '';
+  document.getElementById('member-case-status-color').value = m.caseStatusColor || '#3b82f6';
+  updateCaseStatusPreview();
+  
+  document.getElementById('extra-relations-container').innerHTML = '';
+  tsExtraRelations.forEach(obj => obj.ts.destroy()); tsExtraRelations = [];
+  tsExtraRelationsVis.forEach(obj => obj.ts.destroy()); tsExtraRelationsVis = [];
+  if (m.extraRelations && m.extraRelations.length > 0) {
+    m.extraRelations.forEach(rel => addExtraRelationRow(rel.targetId, rel.label, rel.relType || 'direct', rel.labelReverse || '', rel.linkId || ''));
+  }
+
+  document.getElementById('form-title-text').innerText = t('form_title_edit');
+  document.getElementById('btn-submit-text').innerText = t('btn_update');
+  switchTab('tab-form');
+}
+
+function deleteMember(id) {
+  const m = members.find(x => x.id === id); if (!m) return;
+  if (confirm(`${t('msg_delete_confirm')} [${m.pid}] ${m.firstname} ${m.lastname}?`)) {
+    members = members.filter(x => x.id !== id);
+    members.forEach(x => { 
+      if(x.father===id) x.father=''; 
+      if(x.mother===id) x.mother=''; 
+      if(x.spouse===id) x.spouse=''; 
+      if(x.extraRelations) {
+        x.extraRelations = x.extraRelations.filter(rel => rel.targetId !== id);
+      }
+    });
+    alert(t('msg_delete_success'));
+    updateFormDropdowns(); renderTableList();
+  }
+}
+
+function renderTableList() {
+  const tbody = document.getElementById('member-table-body'); if(!tbody) return;
+  const query = document.getElementById('list-search-input').value.trim().toLowerCase();
+  
+  const filtered = members.filter(m => 
+    (m.firstname && m.firstname.toLowerCase().includes(query)) || (m.lastname && m.lastname.toLowerCase().includes(query)) ||
+    (m.nick && m.nick.toLowerCase().includes(query)) || (m.pid && m.pid.toLowerCase().includes(query))
+  );
+  
+  if (!filtered.length) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--color-text-tertiary);">${t('tbl_no_results')}</td></tr>`; return; }
+  
+  tbody.innerHTML = filtered.map(m => {
+    const f = m.father ? members.find(x => x.id === m.father) : null;
+    const mo = m.mother ? members.find(x => x.id === m.mother) : null;
+    const s = m.spouse ? members.find(x => x.id === m.spouse) : null;
+    return `<tr>
+      <td><b>[${m.pid || '-'}]</b></td>
+      <td>${m.prefix || ''}${m.firstname} ${m.lastname} ${m.nick ? `(${m.nick})` : ''}</td>
+      <td>${mapDataVal(m.gender, 'gender') || '-'}</td>
+      <td>${m.age ? `${m.age} ${t('dtl_years')}` : '-'} (${mapDataVal(m.status, 'status')})</td>
+      <td>${f ? `[${f.pid}] ${f.firstname}` : '-'}</td>
+      <td>${mo ? `[${mo.pid}] ${mo.firstname}` : '-'}</td>
+      <td>${s ? `[${s.pid}] ${s.firstname}` : '-'}</td>
+      <td>
+        <button class="action-btn edit" onclick="editMember('${m.id}')"><i class="ti ti-edit"></i> ${t('tbl_btn_edit')}</button>
+        <button class="action-btn delete" onclick="deleteMember('${m.id}')"><i class="ti ti-trash"></i> ${t('tbl_btn_delete')}</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        members = data;
+        items = [];
+        alert(t('msg_load_success') + members.length);
+      } else if (data && Array.isArray(data.members)) {
+        members = data.members;
+        items = Array.isArray(data.items) ? data.items : [];
+        alert(t('msg_load_success') + members.length);
+      } else { alert(t('msg_invalid_json')); return; }
+      updateFormDropdowns(); renderTableList(); renderItemTable();
+      if(document.getElementById('tab-tree').classList.contains('active')) renderTree();
+    } catch (err) { alert(t('msg_load_err') + err.message); }
+  };
+  reader.readAsText(file); event.target.value = ''; 
+}
+
+function exportJSON() {
+  if (!members.length && !items.length) { alert(t('msg_no_data_save')); return; }
+  const blob = new Blob([JSON.stringify({ members, items }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'crimezeen_data.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// Tree Engine Settings
+let scale = 1; let transformX = 0; let transformY = 0; let isDragging = false; let startX, startY;
+let initialDistance = null; let initialScale = 1;
+let manualArrangeMode = false;
+let dragHandle = null;
+let waypointMode = ''; // '' | 'add' | 'delete'
+window.edgeWaypoints = {}; // { [edgeKey]: [{x,y}, ...] }
+
+function getNodeDimensions(node) {
+  const baseW = node && typeof node.customW === 'number' ? node.customW : 90;
+  const baseH = node && typeof node.customH === 'number' ? node.customH : 54;
+  const hasCustomW = node && typeof node.customW === 'number';
+  const hasCustomH = node && typeof node.customH === 'number';
+  if (!node || !node.photo) {
+    return { w: baseW, h: getAutoNodeHeight(node, baseW, baseH, 0) };
+  }
+  const imgScale = node.imgScale || 1.0;
+  const imgW = 70 * imgScale;
+  const imgH = 70 * imgScale;
+  // ความกว้าง/ความสูงขั้นต่ำต้องพอสำหรับแสดงรูป แต่ผู้ใช้ยังคงลดขนาดกล่อง (baseW/baseH) ได้
+  // โดยเคารพค่าที่ผู้ใช้ปรับจาก changeNodeSize เสมอ ไม่บวกซ้อนกันไม่จำกัด
+  const w = hasCustomW ? baseW : Math.max(baseW, imgW + 10);
+  const h = hasCustomH ? baseH : getAutoNodeHeight(node, w, baseH, imgH);
+  return { w, h, imgW, imgH };
+}
+
+function getAutoNodeHeight(node, boxW, baseH, imgH) {
+  if (!node || typeof node.customH === 'number') return baseH;
+  const maxChars = Math.max(8, Math.floor((boxW - 10) / 6.5));
+  const countLines = (text) => {
+    if (!text) return 0;
+    const tokens = String(text).split(/\s+/);
+    let count = 0, cur = '';
+    for (const tok of tokens) {
+      const test = cur ? cur + ' ' + tok : tok;
+      if (test.length > maxChars && cur) { count++; cur = tok; }
+      else { cur = test; }
+    }
+    return count + (cur ? 1 : 0);
+  };
+  const lineH = 15;
+  const isItem = Object.prototype.hasOwnProperty.call(node, 'detail') && !Object.prototype.hasOwnProperty.call(node, 'firstname');
+  const padTop = node.photo ? (5 + imgH + 4) : (isItem ? 10 : 6);
+  const lineCount = isItem
+    ? countLines(node.name || '') + countLines(node.detail || '')
+    : countLines((node.prefix ? node.prefix + '' : '') + (node.firstname || '')) +
+      countLines(node.lastname || '') +
+      countLines(node.nick ? `(${node.nick})` : '') +
+      countLines(node.note || '');
+  return Math.max(baseH, padTop + lineCount * lineH + (isItem ? 8 : 6));
+}
+
+function changeNodeImgScale(id, amount, event) {
+  if (event) event.stopPropagation();
+  const m = members.find(x => x.id === id) || items.find(x => x.id === id);
+  if (m) {
+    m.imgScale = Math.max(0.3, Math.min(3.0, (m.imgScale || 1.0) + amount));
+    redrawTreeSVG();
+  }
+}
+
+function changeNodeSize(id, dw, dh, event) {
+  if (event) event.stopPropagation();
+  const m = members.find(x => x.id === id) || items.find(x => x.id === id);
+  if (m) {
+    // ใช้ค่า customW/H ปัจจุบัน (ไม่ใช่ dims ที่ผ่านการบังคับขั้นต่ำจากรูปแล้ว)
+    // เพื่อให้ลดขนาดได้จริงแม้กล่องจะมีรูปภาพที่บังคับขนาดขั้นต่ำอยู่
+    const currentDims = getNodeDimensions(m);
+    const baseW = typeof m.customW === 'number' ? m.customW : currentDims.w;
+    const baseH = typeof m.customH === 'number' ? m.customH : currentDims.h;
+    m.customW = Math.max(60, Math.min(300, baseW + dw));
+    m.customH = Math.max(36, Math.min(200, baseH + dh));
+    redrawTreeSVG();
+  }
+}
+
+function constrainToRectPerimeter(dx, dy, w, h) {
+  const clampedX = Math.max(0, Math.min(w, dx));
+  const clampedY = Math.max(0, Math.min(h, dy));
+  
+  const distLeft = clampedX;
+  const distRight = w - clampedX;
+  const distTop = clampedY;
+  const distBottom = h - clampedY;
+  
+  const minDist = Math.min(distLeft, distRight, distTop, distBottom);
+  
+  if (minDist === distLeft) {
+    return { x: 0, y: clampedY };
+  } else if (minDist === distRight) {
+    return { x: w, y: clampedY };
+  } else if (minDist === distTop) {
+    return { x: clampedX, y: 0 };
+  } else {
+    return { x: clampedX, y: h };
+  }
+}
+const W = 90; const H = 54; const VGAP = 110; const SIBLING_GAP = 25; const SPOUSE_GAP = 20; const EXTRA_SPOUSE_DY = 65; const EXTRA_SPOUSE_DX = 25;
+const SPOUSE_COLORS = { 1: "#e11d48", 2: "#2563eb", 3: "#16a34a", 4: "#ea580c", 5: "#8b5cf6" };
+
+function getGeneration(id, memo={}){
+  if(memo[id]!==undefined)return memo[id]; const m=members.find(x=>x.id===id); if(!m){memo[id]=0;return 0;}
+  const fg=m.father?getGeneration(m.father,memo):-1; const mg=m.mother?getGeneration(m.mother,memo):-1;
+  if(fg===-1 && mg===-1) { memo[id]=0; return 0; }
+  memo[id] = Math.max(fg,mg)+1; return memo[id];
+}
+function applyZoomTransform() {
+  const tLayer = document.getElementById('tree-transform-layer');
+  if(tLayer) tLayer.style.transform = `translate(${transformX}px, ${transformY}px) scale(${scale})`;
+}
+function zoom(dir) { scale = dir==='in' ? Math.min(scale+0.1, 3) : Math.max(scale-0.1, 0.3); applyZoomTransform(); }
+function resetZoom() { scale = 1; transformX = 20; transformY = 20; applyZoomTransform(); }
+
+function moveHandle(clientX, clientY) {
+  const w = document.getElementById('tree-drag-wrapper');
+  if (!w) return;
+  const rect = w.getBoundingClientRect();
+  const pt = {
+    x: (clientX - rect.left - transformX) / scale,
+    y: (clientY - rect.top - transformY) / scale
+  };
+  
+  const type = dragHandle.type;
+  const nodeId = dragHandle.nodeId;
+  const linkId = dragHandle.linkId;
+  const relId = dragHandle.relId;
+  
+  let targetNodeId = nodeId;
+  if (type === 'item-dst') {
+    const it = items.find(x => x.id === nodeId);
+    if (it) {
+      const rel = it.relations.find(r => r.relId === relId);
+      if (rel) targetNodeId = rel.targetId;
+    }
+  }
+  
+  const m = members.find(x => x.id === targetNodeId) || items.find(x => x.id === targetNodeId);
+  if (!m) return;
+  
+  const p = window.treePositions[targetNodeId];
+  if (!p) return;
+  
+  const dims = getNodeDimensions(m);
+  const dx = pt.x - p.x;
+  const dy = pt.y - p.y;
+  
+  const constrained = constrainToRectPerimeter(dx, dy, dims.w, dims.h);
+  
+  if (type === 'spouse') {
+    m.spouseOffsetX = constrained.x;
+    m.spouseOffsetY = constrained.y;
+  } else if (type === 'parent') {
+    m.parentOffsetX = constrained.x;
+    m.parentOffsetY = constrained.y;
+  } else if (type === 'extra') {
+    if (m.extraRelations) {
+      const rel = m.extraRelations.find(r => r.linkId === linkId);
+      if (rel) {
+        rel.offsetX = constrained.x;
+        rel.offsetY = constrained.y;
+      }
+    }
+  } else if (type === 'item-src') {
+    const it = items.find(x => x.id === nodeId);
+    if (it && it.relations) {
+      const rel = it.relations.find(r => r.relId === relId);
+      if (rel) {
+        rel.offsetX = constrained.x;
+        rel.offsetY = constrained.y;
+      }
+    }
+  } else if (type === 'item-dst') {
+    const it = items.find(x => x.id === nodeId);
+    if (it && it.relations) {
+      const rel = it.relations.find(r => r.relId === relId);
+      if (rel) {
+        rel.targetOffsetX = constrained.x;
+        rel.targetOffsetY = constrained.y;
+      }
+    }
+  }
+  
+  redrawTreeSVG();
+}
+
+// เก็บ reference ของ window-level listeners ปัจจุบัน เพื่อให้สามารถลบออกก่อนแนบใหม่
+// ป้องกันปัญหา listener ซ้อนกันหลายชุดเมื่อ renderTree() ถูกเรียกซ้ำ (เช่น สลับโหมดแก้ไข/เพิ่มจุดหมุน)
+// ซึ่งเป็นสาเหตุที่ทำให้จุดหมุน "กระโดด" ไปตำแหน่งผิดพลาด เนื่องจาก listener เก่าอ้างอิง DOM ที่ถูกแทนที่ไปแล้ว
+window._panWindowListeners = window._panWindowListeners || null;
+
+function initPanEvents() {
+  const w = document.getElementById('tree-drag-wrapper'); if(!w) return;
+
+  // ลบ window-level listeners ชุดเก่าทิ้งก่อนเสมอ (ถ้ามี) เพื่อไม่ให้ค้างอ้างอิง DOM ที่ถูกแทนที่
+  if (window._panWindowListeners) {
+    window.removeEventListener('mousemove', window._panWindowListeners.mousemove);
+    window.removeEventListener('mouseup', window._panWindowListeners.mouseup);
+    window.removeEventListener('touchmove', window._panWindowListeners.touchmove);
+    window.removeEventListener('touchend', window._panWindowListeners.touchend);
+    window._panWindowListeners = null;
+  }
+
+  let dragNodeId = null; let nodeOffsetX = 0, nodeOffsetY = 0;
+  let wpDragKey = null; let wpDragIdx = -1;
+  let rafPending = false;
+
+  // rAF-throttled applyZoomTransform
+  function scheduleTransform() {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => { applyZoomTransform(); rafPending = false; });
+  }
+
+  function svgPointFromClient(clientX, clientY) {
+    const rect = w.getBoundingClientRect();
+    return { x: (clientX - rect.left - transformX) / scale, y: (clientY - rect.top - transformY) / scale };
+  }
+
+  function moveNode(clientX, clientY) {
+    const pt = svgPointFromClient(clientX, clientY);
+    const nx = pt.x - nodeOffsetX; const ny = pt.y - nodeOffsetY;
+    window.treePositions[dragNodeId] = { x: nx, y: ny };
+    const mObj = (window.treeMembers && window.treeMembers.find(x => x.id === dragNodeId)) || (window.treeItems && window.treeItems.find(x => x.id === dragNodeId));
+    if(mObj) { mObj.customX = nx; mObj.customY = ny; }
+    redrawTreeSVG();
+  }
+
+  // ── Mouse ──────────────────────────────────────────────────────────────────
+  w.addEventListener('mousedown', (e) => {
+    if(manualArrangeMode) {
+      if (waypointMode === 'add' && e.target.closest('[data-edge-add]')) { e.preventDefault(); return; }
+      if (waypointMode === 'delete' && e.target.closest('[data-wp-del-key]')) { e.preventDefault(); return; }
+      const wpDragEl = e.target.closest('[data-wp-drag-key]');
+      if (wpDragEl) { wpDragKey = wpDragEl.getAttribute('data-wp-drag-key'); wpDragIdx = parseInt(wpDragEl.getAttribute('data-wp-drag-idx')); e.preventDefault(); return; }
+      const handle = e.target.closest('circle[data-handle-type]');
+      if (handle) { dragHandle = { type: handle.getAttribute('data-handle-type'), nodeId: handle.getAttribute('data-node-id'), linkId: handle.getAttribute('data-link-id'), relId: handle.getAttribute('data-rel-id') }; e.preventDefault(); return; }
+      const g = e.target.closest('[data-node-id]');
+      if(g) { dragNodeId = g.getAttribute('data-node-id'); const pt = svgPointFromClient(e.clientX, e.clientY); const p = window.treePositions[dragNodeId] || { x: 0, y: 0 }; nodeOffsetX = pt.x - p.x; nodeOffsetY = pt.y - p.y; return; }
+    }
+    if(e.target.closest('g[onclick]')) return;
+    isDragging=true; startX=e.clientX-transformX; startY=e.clientY-transformY;
+  });
+
+  const onMouseMove = (e) => {
+    if (wpDragKey !== null && wpDragIdx >= 0) { const pt = svgPointFromClient(e.clientX, e.clientY); if (!window.edgeWaypoints[wpDragKey]) window.edgeWaypoints[wpDragKey] = []; window.edgeWaypoints[wpDragKey][wpDragIdx] = { x: pt.x, y: pt.y }; redrawTreeSVG(); return; }
+    if(dragHandle) { moveHandle(e.clientX, e.clientY); return; }
+    if(dragNodeId) { moveNode(e.clientX, e.clientY); return; }
+    if(!isDragging) return;
+    transformX=e.clientX-startX; transformY=e.clientY-startY;
+    scheduleTransform();
+  };
+  const onMouseUp = () => { isDragging=false; dragNodeId=null; dragHandle=null; wpDragKey=null; wpDragIdx=-1; };
+  window.addEventListener('mousemove', onMouseMove);
+  window.addEventListener('mouseup', onMouseUp);
+
+  // Click handler for waypoint add/delete
+  w.addEventListener('click', (e) => {
+    if (waypointMode === 'add') {
+      const edgeEl = e.target.closest('[data-edge-add]');
+      if (edgeEl) {
+        const edgeKey = edgeEl.getAttribute('data-edge-add');
+        const pt = svgPointFromClient(e.clientX, e.clientY);
+        if (!window.edgeWaypoints[edgeKey]) window.edgeWaypoints[edgeKey] = [];
+        const sx = parseFloat(edgeEl.getAttribute('data-sx')); const sy = parseFloat(edgeEl.getAttribute('data-sy'));
+        const ex = parseFloat(edgeEl.getAttribute('data-ex')); const ey = parseFloat(edgeEl.getAttribute('data-ey'));
+        const bendAttr = edgeEl.getAttribute('data-bend');
+        const wps = window.edgeWaypoints[edgeKey];
+        // เส้นพ่อแม่-ลูก (parent edge) เมื่อยังไม่มีจุดหมุน จะวาดเป็นเส้นหักมุม (elbow) ไม่ใช่เส้นตรง
+        // ต้องคำนวณจุดหักมุมจริง (midY2) มาประกอบเป็น allPts เพื่อให้ตำแหน่งคลิก/แทรกจุดตรงกับเส้นที่มองเห็นจริง
+        let allPts;
+        if (bendAttr && wps.length === 0) {
+          const midY2 = parseFloat(bendAttr);
+          allPts = [{x:sx,y:sy}, {x:sx,y:midY2}, {x:ex,y:midY2}, {x:ex,y:ey}];
+        } else {
+          allPts = [{x:sx,y:sy}, ...wps, {x:ex,y:ey}];
+        }
+        let bestSeg = wps.length; let bestDist = Infinity; let bestSegPointCount = allPts.length - 1;
+        let bestInsertAfterRealWp = wps.length; // ค่าเริ่มต้น: แทรกท้ายสุด
+        for (let i=0; i<allPts.length-1; i++) {
+          const ax=allPts[i].x,ay=allPts[i].y,bx=allPts[i+1].x,by=allPts[i+1].y;
+          const t = Math.max(0,Math.min(1,((pt.x-ax)*(bx-ax)+(pt.y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2||1)));
+          const cx=ax+t*(bx-ax),cy=ay+t*(by-ay);
+          const d=Math.hypot(pt.x-cx,pt.y-cy);
+          if(d<bestDist){
+            bestDist=d;
+            // เมื่อใช้ allPts แบบ elbow (3 ช่วงเสมือน) ไม่ว่าคลิกช่วงไหนก็ให้แทรกเป็นจุดแรก (index 0)
+            // เพราะยังไม่มีจุดหมุนจริงในระบบเลย
+            bestInsertAfterRealWp = (bendAttr && wps.length === 0) ? 0 : i;
+          }
+        }
+        wps.splice(bestInsertAfterRealWp, 0, {x: pt.x, y: pt.y});
+        redrawTreeSVG(); e.stopPropagation(); return;
+      }
+    }
+    if (waypointMode === 'delete') {
+      const delEl = e.target.closest('[data-wp-del-key]');
+      if (delEl) {
+        const edgeKey = delEl.getAttribute('data-wp-del-key'); const idx = parseInt(delEl.getAttribute('data-wp-del-idx'));
+        if (window.edgeWaypoints[edgeKey]) { window.edgeWaypoints[edgeKey].splice(idx, 1); redrawTreeSVG(); }
+        e.stopPropagation(); return;
+      }
+    }
+  });
+
+  // ── Touch ──────────────────────────────────────────────────────────────────
+  // Pinch state
+  let pinchMidX = 0, pinchMidY = 0;
+
+  w.addEventListener('touchstart', (e) => {
+    if(manualArrangeMode && e.touches.length === 1) {
+      if (waypointMode === 'add' && e.target.closest('[data-edge-add]')) { e.preventDefault(); return; }
+      if (waypointMode === 'delete' && e.target.closest('[data-wp-del-key]')) { e.preventDefault(); return; }
+      const wpDragEl = e.target.closest('[data-wp-drag-key]');
+      if (wpDragEl) { wpDragKey = wpDragEl.getAttribute('data-wp-drag-key'); wpDragIdx = parseInt(wpDragEl.getAttribute('data-wp-drag-idx')); e.preventDefault(); return; }
+      const handle = e.target.closest('circle[data-handle-type]');
+      if (handle) { dragHandle = { type: handle.getAttribute('data-handle-type'), nodeId: handle.getAttribute('data-node-id'), linkId: handle.getAttribute('data-link-id'), relId: handle.getAttribute('data-rel-id') }; e.preventDefault(); return; }
+      const g = e.target.closest('[data-node-id]');
+      if(g) { dragNodeId = g.getAttribute('data-node-id'); const pt = svgPointFromClient(e.touches[0].clientX, e.touches[0].clientY); const p = window.treePositions[dragNodeId] || { x: 0, y: 0 }; nodeOffsetX = pt.x - p.x; nodeOffsetY = pt.y - p.y; e.preventDefault(); return; }
+    }
+    if(e.target.closest('g[onclick]')) return;
+    if(e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX - transformX;
+      startY = e.touches[0].clientY - transformY;
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      const t0 = e.touches[0], t1 = e.touches[1];
+      initialDistance = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      initialScale = scale;
+      // Record pinch midpoint in screen space for anchor zoom
+      const rect = w.getBoundingClientRect();
+      pinchMidX = (t0.clientX + t1.clientX) / 2 - rect.left;
+      pinchMidY = (t0.clientY + t1.clientY) / 2 - rect.top;
+    }
+  }, {passive: false});
+
+  const onTouchMove = (e) => {
+    e.preventDefault(); // prevent page scroll — must be on element, not window, for non-passive
+    if (wpDragKey !== null && wpDragIdx >= 0 && e.touches.length === 1) {
+      const pt = svgPointFromClient(e.touches[0].clientX, e.touches[0].clientY);
+      if (!window.edgeWaypoints[wpDragKey]) window.edgeWaypoints[wpDragKey] = [];
+      window.edgeWaypoints[wpDragKey][wpDragIdx] = { x: pt.x, y: pt.y };
+      redrawTreeSVG(); return;
+    }
+    if (dragHandle && e.touches.length === 1) { moveHandle(e.touches[0].clientX, e.touches[0].clientY); return; }
+    if (dragNodeId && e.touches.length === 1) { moveNode(e.touches[0].clientX, e.touches[0].clientY); return; }
+    if (isDragging && e.touches.length === 1) {
+      transformX = e.touches[0].clientX - startX;
+      transformY = e.touches[0].clientY - startY;
+      scheduleTransform();
+    } else if (e.touches.length === 2 && initialDistance !== null) {
+      const t0 = e.touches[0], t1 = e.touches[1];
+      const currentDistance = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+      const newScale = Math.min(Math.max(initialScale * (currentDistance / initialDistance), 0.3), 3);
+      // Anchor zoom at pinch midpoint
+      const scaleRatio = newScale / scale;
+      transformX = pinchMidX - scaleRatio * (pinchMidX - transformX);
+      transformY = pinchMidY - scaleRatio * (pinchMidY - transformY);
+      scale = newScale;
+      scheduleTransform();
+    }
+  };
+  // touchmove ต้องแนบที่ element (ไม่ใช่ window) เพื่อให้ preventDefault ใช้ได้กับ non-passive listener
+  w.addEventListener('touchmove', onTouchMove, {passive: false});
+
+  const onTouchEnd = (e) => {
+    if (e.touches.length < 2) initialDistance = null;
+    if (e.touches.length === 0) { isDragging = false; dragNodeId = null; dragHandle = null; wpDragKey = null; wpDragIdx = -1; }
+  };
+  w.addEventListener('touchend', onTouchEnd, {passive: true});
+
+  // เก็บ reference ของ window-level listeners ไว้ เพื่อให้เรียก initPanEvents() ครั้งถัดไปลบออกได้ถูกต้อง
+  window._panWindowListeners = { mousemove: onMouseMove, mouseup: onMouseUp, touchmove: onTouchMove, touchend: onTouchEnd };
+}
+
+function showMemberDetail(id){
+  const m=members.find(x=>x.id===id); if(!m)return;
+  const panel=document.getElementById('detail-panel');
+  const father=m.father&&members.find(x=>x.id===m.father); const mother=m.mother&&members.find(x=>x.id===m.mother);
+  // รวบรวมคู่สมรสทุกคน (ทั้งที่ระบุใน spouse ของตัวเอง และที่ระบุว่า spouse เป็น id นี้)
+  const allSpouseIds = new Set();
+  if(m.spouse) allSpouseIds.add(m.spouse);
+  members.forEach(x => { if(x.spouse === id) allSpouseIds.add(x.id); });
+  const allSpouses = [...allSpouseIds].map(sid => members.find(x=>x.id===sid)).filter(Boolean);
+  const spouse = allSpouses[0] || null; // เก็บไว้ใช้กับโค้ดเดิม
+  const children=members.filter(x=>x.father===id||x.mother===id);
+  const isMale = m.gender === 'ชาย' || m.gender === 'Male';
+  
+  let extraRelsHtml = '';
+  if (m.extraRelations && m.extraRelations.length) {
+    extraRelsHtml = m.extraRelations.map(rel => {
+      const target = members.find(x => x.id === rel.targetId);
+      const name = target ? `${target.prefix||''}${target.firstname} ${target.lastname}` : rel.targetId;
+      const labelText = (rel.relType === 'inverse' && rel.labelReverse && rel.labelReverse !== rel.label)
+        ? `${rel.label} (ย้อนกลับ: ${rel.labelReverse})` : rel.label;
+      return `<b>${labelText}</b>: ${name}`;
+    }).join(', ');
+  }
+
+  const relatedItems = items.filter(it => 
+    it.relations && it.relations.some(r => r.targetType === 'P' && r.targetId === m.id)
+  );
+  let itemsRelsHtml = '';
+  if (relatedItems.length) {
+    itemsRelsHtml = relatedItems.map(it => {
+      const rel = it.relations.find(r => r.targetType === 'P' && r.targetId === m.id);
+      const relText = rel.label ? ` (${rel.label})` : '';
+      return `${it.name}${relText}`;
+    }).join(', ');
+  }
+
+  panel.style.display='block';
+  panel.innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px; border-bottom: 1px solid var(--color-border-secondary); padding-bottom: 10px;">
+      ${m.photo
+        ? `<img src="${m.photo}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid ${isMale?'#93c5fd':'#f9a8d4'}; flex-shrink:0;">`
+        : `<div style="width:38px;height:38px;border-radius:50%;background:${isMale?'#e6f1fb':'#fbeaf0'};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:${isMale?'#0c447c':'#72243e'}"><i class="ti ti-user"></i></div>`
+      }
+      <div>
+        <div style="font-weight:600; font-size:15px;">${m.prefix || ''}${m.firstname} ${m.lastname}${m.maidenname?` (${t('dtl_formerly')}: `+m.maidenname+')':''}${m.nick?' ('+m.nick+')':''}</div>
+        <div style="font-size:12px;color:var(--color-text-secondary)">${t('dtl_gender')}: ${mapDataVal(m.gender, 'gender')} · ${t('dtl_status')}: ${mapDataVal(m.status, 'status')}${m.dob?' · '+t('dtl_dob')+': '+m.dob:''}</div>
+      </div>
+      <button class="btn" style="margin-left:auto;padding:0;border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('detail-panel').style.display='none'">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;font-size:13px;">
+      ${father?`<div><span style="color:var(--color-text-tertiary); font-weight:500;">${t('dtl_father')}: </span>${father.prefix || ''}${father.firstname} ${father.lastname}</div>`:''}
+      ${mother?`<div><span style="color:var(--color-text-tertiary); font-weight:500;">${t('dtl_mother')}: </span>${mother.prefix || ''}${mother.firstname} ${mother.lastname}</div>`:''}
+      ${allSpouses.length === 1 ? `<div><span style="color:var(--color-text-tertiary); font-weight:500;">${t('dtl_spouse')}: </span>${allSpouses[0].prefix || ''}${allSpouses[0].firstname} ${allSpouses[0].lastname}</div>` : ''}
+      ${allSpouses.length > 1 ? `<div style="grid-column:span 2"><span style="color:var(--color-text-tertiary); font-weight:500;">คู่สมรส (${allSpouses.length} คน): </span>${allSpouses.map((s,i)=>`<span style="background:${Object.values(SPOUSE_COLORS)[i]||'#64748b'};color:#fff;border-radius:4px;padding:1px 7px;font-size:12px;margin-right:4px;">(${i+1}) ${s.prefix||''}${s.firstname} ${s.lastname}</span>`).join('')}</div>` : ''}
+      ${children.length?`<div style="grid-column:span 2"><span style="color:var(--color-text-tertiary); font-weight:500;">${t('dtl_children')} (${children.length} ${t('val_person')}): </span>${children.map(c=>`${c.prefix || ''}${c.firstname} ${c.lastname}`).join(', ')}</div>`:''}
+      ${extraRelsHtml?`<div style="grid-column:span 2"><span style="color:var(--color-text-tertiary); font-weight:500;">ความสัมพันธ์อื่น: </span>${extraRelsHtml}</div>`:''}
+      ${itemsRelsHtml?`<div style="grid-column:span 2"><span style="color:var(--color-text-tertiary); font-weight:500;">วัตถุ/พฤติการณ์ที่เกี่ยวข้อง: </span>${itemsRelsHtml}</div>`:''}
+    </div>`;
+}
+
+function showItemDetail(id){
+  const it = items.find(x => x.id === id); if(!it) return;
+  const panel = document.getElementById('detail-panel');
+  panel.style.display = 'block';
+  const relHtml = (it.relations || []).map(r => {
+    let name = r.targetId;
+    if (r.targetType === 'P') { const m = members.find(x => x.id === r.targetId); if (m) name = `${m.prefix||''}${m.firstname} ${m.lastname}`; }
+    else { const ti = items.find(x => x.id === r.targetId); if (ti) name = `[${ti.pid}] ${ti.name}`; }
+    return `<div>${r.label?`<b>${r.label}</b>: `:''}${name}</div>`;
+  }).join('') || '-';
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px; border-bottom: 1px solid var(--color-border-secondary); padding-bottom: 10px;">
+      ${it.photo
+        ? `<img src="${it.photo}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;border:2px solid #fde68a; flex-shrink:0;">`
+        : `<div style="width:38px;height:38px;border-radius:50%;background:#fef9c3;display:flex;align-items:center;justify-content:center;font-size:16px;"><i class="ti ti-package" style="color:#ca8a04;"></i></div>`
+      }
+      <div>
+        <div style="font-weight:600; font-size:15px;">[${it.pid||'-'}] ${it.name}</div>
+        ${it.detail?`<div style="font-size:12px;color:var(--color-text-secondary)">${it.detail}</div>`:''}
+      </div>
+      <button class="btn" style="margin-left:auto;padding:0;border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center;" onclick="document.getElementById('detail-panel').style.display='none'">✕</button>
+    </div>
+    <div style="font-size:13px;"><span style="color:var(--color-text-tertiary); font-weight:500;">${t('dtl_relations')}: </span><div style="margin-top:4px;">${relHtml}</div></div>
+  `;
+}
+
+function handleTreeSearch() {
+  const query = document.getElementById('tree-search-input').value.trim().toLowerCase();
+  const resultsDiv = document.getElementById('tree-search-results');
+  if (!query) { resultsDiv.style.display = 'none'; resultsDiv.innerHTML = ''; return; }
+  
+  const matches = members.filter(m => (m.firstname && m.firstname.toLowerCase().includes(query)) || (m.lastname && m.lastname.toLowerCase().includes(query)) || (m.nick && m.nick.toLowerCase().includes(query)) || (m.pid && m.pid.toLowerCase().includes(query)));
+  if (matches.length === 0) { resultsDiv.innerHTML = `<div class="search-item" style="color:var(--color-text-tertiary); cursor:default;">${t('tree_no_results')}</div>`; resultsDiv.style.display = 'block'; return; }
+  
+  resultsDiv.innerHTML = matches.map(m => `<div class="search-item" onclick="focusMember('${m.id}')"><b style="color:var(--color-border-primary);">[${m.pid || '-'}]</b> ${m.prefix || ''}${m.firstname} ${m.lastname} ${m.nick ? `(${m.nick})` : ''}</div>`).join('');
+  resultsDiv.style.display = 'block';
+}
+
+function focusMember(id) {
+  document.getElementById('tree-search-results').style.display = 'none';
+  if (!window.treePositions || !window.treePositions[id]) return;
+  const p = window.treePositions[id]; const wrapper = document.getElementById('tree-drag-wrapper'); if (!wrapper) return;
+  scale = 1.2; transformX = (wrapper.clientWidth / 2) - ((p.x + W / 2) * scale); transformY = (wrapper.clientHeight / 2) - ((p.y + H / 2) * scale);
+  applyZoomTransform(); showMemberDetail(id);
+}
+
+document.addEventListener('click', function(e) {
+  const box = document.getElementById('tree-search-input'); const results = document.getElementById('tree-search-results');
+  if (results && e.target !== box && !results.contains(e.target)) results.style.display = 'none';
+});
+
+function renderTree(){
+  const el=document.getElementById('tree-container'); if(!el) return;
+  if(!members.length){el.innerHTML=`<div class="empty-state">${t('tree_empty')}</div>`;return;}
+  
+  // อัปเดตตัวกรองให้ดึงคนที่มีข้อมูล Extra Relations เข้ามาคำนวณในผังด้วย
+  const treeMembers = members.filter(m => 
+    !!m.father || !!m.mother || !!m.spouse || 
+    members.some(x => x.spouse === m.id || x.father === m.id || x.mother === m.id) ||
+    (m.extraRelations && m.extraRelations.length > 0) ||
+    members.some(x => x.extraRelations && x.extraRelations.some(rel => rel.targetId === m.id))
+  );
+  
+  if(!treeMembers.length){el.innerHTML=`<div class="empty-state">${t('tree_no_rel')}</div>`;return;}
+
+  const genMap={}; treeMembers.forEach(m=>getGeneration(m.id,genMap));
+  for(let i=0;i<5;i++){ treeMembers.forEach(m=>{ let allSps = [m.spouse, ...treeMembers.filter(x=>x.spouse===m.id).map(x=>x.id)].filter(Boolean); allSps.forEach(spId => { let mx = Math.max(genMap[m.id]||0, genMap[spId]||0); genMap[m.id] = mx; genMap[spId] = mx; }); if(m.father && m.mother) { let mx = Math.max(genMap[m.father]||0, genMap[m.mother]||0); genMap[m.father] = mx; genMap[m.mother] = mx; } }); }
+
+  const headMap = {}; const spouseBlocks = {}; 
+  treeMembers.forEach(m => {
+    if(headMap[m.id]) return;
+    let sps = treeMembers.filter(x => x.id === m.spouse || x.spouse === m.id);
+    let implicitSpouseIds = treeMembers.filter(c => (c.father === m.id && c.mother) || (c.mother === m.id && c.father)).map(c => c.father === m.id ? c.mother : c.father);
+    implicitSpouseIds.forEach(id => { if(!sps.find(x => x.id === id)) { let impNode = treeMembers.find(x => x.id === id); if(impNode) { impNode.isImplicit = true; sps.push(impNode); } } });
+    
+    let group = [m, ...sps]; group = [...new Map(group.map(item => [item.id, item])).values()];
+    group.sort((a,b) => {
+        const aM = a.gender === 'ชาย' || a.gender === 'Male'; const bM = b.gender === 'ชาย' || b.gender === 'Male';
+        if(aM && !bM) return -1; if(bM && !aM) return 1; return (a.isImplicit ? 99 : (parseInt(a.spouseOrder)||1)) - (b.isImplicit ? 99 : (parseInt(b.spouseOrder)||1));
+    });
+    let head = group[0]; spouseBlocks[head.id] = group; group.forEach(x => headMap[x.id] = head.id);
+  });
+
+  const childrenOfHead = {};
+  treeMembers.forEach(m => {
+      let parentHead = null; if(m.father && headMap[m.father]) parentHead = headMap[m.father]; else if(m.mother && headMap[m.mother]) parentHead = headMap[m.mother];
+      if(parentHead) { if(!childrenOfHead[parentHead]) childrenOfHead[parentHead] = []; childrenOfHead[parentHead].push(m); }
+  });
+
+  const subtreeWidth = {};
+  function calcWidth(hId) {
+      if(subtreeWidth[hId]) return subtreeWidth[hId];
+      let block = spouseBlocks[hId]; let baseW = W; if(block.length > 1) baseW = W + SPOUSE_GAP + W + (block.length - 2) * EXTRA_SPOUSE_DX;
+      let children = childrenOfHead[hId] || []; if(children.length === 0) { subtreeWidth[hId] = baseW; return baseW; }
+      let cHeads = [...new Set(children.map(c => headMap[c.id]))];
+      let childrenW = cHeads.reduce((sum, ch) => sum + calcWidth(ch), 0) + (cHeads.length - 1) * SIBLING_GAP;
+      return (subtreeWidth[hId] = Math.max(baseW, childrenW));
+  }
+  Object.keys(spouseBlocks).forEach(h => calcWidth(h));
+
+  const positions = {};
+  function placeBlock(hId, centerX) {
+      if(positions[hId]) return;
+      let block = spouseBlocks[hId]; let gen = genMap[hId] || 0; let y = gen * (H + VGAP);
+      let baseW = W; if(block.length > 1) baseW = W + SPOUSE_GAP + W + (block.length - 2) * EXTRA_SPOUSE_DX;
+      let startX = centerX - baseW/2; positions[hId] = { x: startX, y: y };
+      for(let i=1; i<block.length; i++) { let sp = block[i]; positions[sp.id] = { x: startX + W + SPOUSE_GAP + (i-1)*EXTRA_SPOUSE_DX, y: (i === 1) ? y : y + (i-1)*EXTRA_SPOUSE_DY }; }
+      let children = childrenOfHead[hId] || [];
+      if(children.length > 0) {
+          let cHeads = [...new Set(children.map(c => headMap[c.id]))];
+          cHeads.sort((a,b) => (parseInt(children.find(c=>headMap[c.id]===b).age)||0) - (parseInt(children.find(c=>headMap[c.id]===a).age)||0));
+          let totalCW = cHeads.reduce((sum, ch) => sum + subtreeWidth[ch], 0) + (cHeads.length - 1) * SIBLING_GAP; let currX = centerX - totalCW/2;
+          cHeads.forEach(ch => { let w = subtreeWidth[ch]; placeBlock(ch, currX + w/2); currX += w + SIBLING_GAP; });
+      }
+  }
+
+  let rootHeads = Object.keys(spouseBlocks).filter(h => !new Set(Object.values(childrenOfHead).flat().map(c=>headMap[c.id])).has(h)); let currRootX = 50;
+  rootHeads.forEach(rh => { let w = subtreeWidth[rh]; placeBlock(rh, currRootX + w/2); currRootX += w + 80; });
+
+  // นำตำแหน่งที่ผู้ใช้จัดเรียงด้วยตนเองมาทับตำแหน่งที่คำนวณอัตโนมัติ (ถ้ามี)
+  treeMembers.forEach(m => {
+    if (typeof m.customX === 'number' && typeof m.customY === 'number') {
+      positions[m.id] = { x: m.customX, y: m.customY };
+    }
+  });
+
+  // ══════════════════════════════════════════════
+  // วัตถุ/พฤติการณ์ ที่เชื่อมโยงกับบุคคล หรือ วัตถุ/พฤติการณ์อื่น "ในแผนผัง"
+  // ══════════════════════════════════════════════
+  const memberIdsInTree = new Set(treeMembers.map(m => m.id));
+  const treeItemIds = new Set();
+  let changedItems = true;
+  while (changedItems) {
+    changedItems = false;
+    items.forEach(it => {
+      if (treeItemIds.has(it.id)) return;
+      const linked = (it.relations || []).some(r => {
+        if (r.targetType === 'P') return memberIdsInTree.has(r.targetId);
+        if (r.targetType === 'I') return treeItemIds.has(r.targetId);
+        return false;
+      });
+      if (linked) { treeItemIds.add(it.id); changedItems = true; }
+    });
+    // ตรวจสอบเพิ่ม: วัตถุที่ "ถูกอ้างถึง" โดยวัตถุที่อยู่ในผังแล้ว ก็ให้นับเข้าผังด้วย
+    items.forEach(it => {
+      if (treeItemIds.has(it.id)) return;
+      const referencedByTreeItem = items.some(other => treeItemIds.has(other.id) && (other.relations||[]).some(r => r.targetType==='I' && r.targetId===it.id));
+      if (referencedByTreeItem) { treeItemIds.add(it.id); changedItems = true; }
+    });
+  }
+  const treeItems = items.filter(it => treeItemIds.has(it.id));
+
+  // จัดตำแหน่งกล่อง วัตถุ/พฤติการณ์ เป็นแถวใหม่ด้านล่างของผัง (ถ้าไม่ได้ลากจัดเองไว้)
+  let maxY = 0;
+  Object.values(positions).forEach(p => { if (p.y > maxY) maxY = p.y; });
+  const itemRowY = maxY + H + VGAP;
+  let itemRowX = 50;
+  treeItems.forEach(it => {
+    if (typeof it.customX === 'number' && typeof it.customY === 'number') {
+      positions[it.id] = { x: it.customX, y: it.customY };
+    } else {
+      positions[it.id] = { x: itemRowX, y: itemRowY };
+      itemRowX += W + SIBLING_GAP + 30;
+    }
+  });
+
+  window.treePositions = positions;
+  window.treeMembers = treeMembers;
+  window.treeItems = treeItems;
+  window.treeSpouseBlocks = spouseBlocks;
+
+  const built = buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems);
+
+  const arrangeLabel = manualArrangeMode ? t('btn_arrange_off') : t('btn_arrange_on');
+  const arrangeBtnClass = manualArrangeMode ? 'zoom-btn arrange-btn-active' : 'zoom-btn';
+  const resetBtn = manualArrangeMode ? `<button class="zoom-btn" onclick="resetTreeLayout()" title="${t('btn_arrange_reset')}"><i class="ti ti-arrow-back-up"></i></button>` : '';
+  
+  // Waypoint buttons — only visible in manual arrange mode
+  const waypointAddBtnClass = waypointMode === 'add' ? 'zoom-btn arrange-btn-active' : 'zoom-btn';
+  const waypointDelBtnClass = waypointMode === 'delete' ? 'zoom-btn' + ' arrange-btn-active' : 'zoom-btn';
+  const waypointBtns = manualArrangeMode ? `
+    <button class="${waypointAddBtnClass}" onclick="toggleWaypointMode('add', event)" title="${t('btn_add_waypoint')}" style="background:${waypointMode==='add'?'#16a34a':'white'};color:${waypointMode==='add'?'#fff':'#16a34a'};border-color:${waypointMode==='add'?'#16a34a':'#bbf7d0'};"><i class="ti ti-plus"></i> ${t('btn_add_waypoint')}</button>
+    <button class="${waypointDelBtnClass}" onclick="toggleWaypointMode('delete', event)" title="${t('btn_del_waypoint')}" style="background:${waypointMode==='delete'?'#dc2626':'white'};color:${waypointMode==='delete'?'#fff':'#dc2626'};border-color:${waypointMode==='delete'?'#dc2626':'#fca5a5'};"><i class="ti ti-minus"></i> ${t('btn_del_waypoint')}</button>
+  ` : '';
+  
+  const hintText = waypointMode === 'add' ? t('hint_waypoint_add') : waypointMode === 'delete' ? t('hint_waypoint_del') : (manualArrangeMode ? t('hint_arrange') : '');
+  const hint = (manualArrangeMode || waypointMode) ? `<div class="arrange-hint"><i class="ti ti-info-circle"></i> ${hintText}</div>` : '';
+
+  el.innerHTML=`<div class="tree-container-box">
+    ${hint}
+    <div class="zoom-controls" style="flex-wrap:wrap; max-width: ${manualArrangeMode ? '320px' : 'auto'};">
+      <button class="${arrangeBtnClass}" onclick="toggleManualArrange()" title="${arrangeLabel}" style="padding:0 10px; font-size:13px; font-weight:600;">${manualArrangeMode ? t('btn_arrange_off') : t('btn_arrange_on')}</button>
+      ${resetBtn}
+      ${waypointBtns}
+      <button class="zoom-btn" onclick="zoom('in')" title="Zoom In"><i class="ti ti-zoom-in"></i></button>
+      <button class="zoom-btn" onclick="zoom('out')" title="Zoom Out"><i class="ti ti-zoom-out"></i></button>
+      <button class="zoom-btn" onclick="resetZoom()" title="Reset Zoom"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="tree-wrap" id="tree-drag-wrapper" style="cursor:${manualArrangeMode ? 'default' : 'grab'};">
+      <div class="tree-svg-container" id="tree-transform-layer">
+        <svg id="tree-svg-el" width="${built.svgW}" height="${built.svgH}" style="display:block;">${built.edges}${built.hearts}${built.nodes}${built.handles || ''}</svg>
+      </div>
+    </div>
+  </div>`;
+  initPanEvents();
+}
+
+// สร้างเนื้อหา SVG (เส้นความสัมพันธ์ + กล่องข้อมูล) จากตำแหน่งปัจจุบัน
+// แยกออกมาเพื่อให้สามารถ "วาดซ้ำอย่างรวดเร็ว" ได้เวลาลากกล่องข้อมูลในโหมดจัดเรียงด้วยตนเอง
+function buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems) {
+  treeItems = treeItems || [];
+  let edges='', nodes='', hearts='', extraEdges=''; const jointPoints={};
+  let waypointLayer=''; // จุดหมุน (diamond) แยกชั้นเพื่อให้อยู่บนสุดเสมอ ไม่ถูกกล่อง/รูปภาพบัง
+  const EW = window.edgeWaypoints || {};
+
+  // Helper: build polyline points string from array of {x,y}
+  function polyPts(pts) { return pts.map(p => `${p.x},${p.y}`).join(' '); }
+
+  // Helper: build an edge path d with optional waypoints (polyline / path with L segments)
+  function buildEdgeD(sx, sy, ex, ey, wps) {
+    if (!wps || wps.length === 0) return `M${sx},${sy} L${ex},${ey}`;
+    let d = `M${sx},${sy}`;
+    wps.forEach(w => { d += ` L${w.x},${w.y}`; });
+    d += ` L${ex},${ey}`;
+    return d;
+  }
+
+  // Helper: get point at fraction t along a polyline (default 0.5 = midpoint)
+  function polyMid(sx, sy, ex, ey, wps, frac) {
+    frac = (frac === undefined) ? 0.5 : frac;
+    const pts = [{x:sx,y:sy}, ...(wps||[]), {x:ex,y:ey}];
+    let totalLen = 0;
+    for (let i=1;i<pts.length;i++) totalLen += Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y);
+    let target = totalLen * frac, acc = 0;
+    for (let i=1;i<pts.length;i++) {
+      const seg = Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y);
+      if (acc + seg >= target) {
+        const t2 = (target - acc) / seg;
+        return { x: pts[i-1].x + t2*(pts[i].x-pts[i-1].x), y: pts[i-1].y + t2*(pts[i].y-pts[i-1].y) };
+      }
+      acc += seg;
+    }
+    return { x: (sx+ex)/2, y: (sy+ey)/2 };
+  }
+
+  // Helper: render an edge with optional waypoint hit-area (for add mode); diamonds go to waypointLayer separately
+  function renderEdge(edgeKey, sx, sy, ex, ey, strokeStyle, isAddMode, isDelMode, waypointHandles) {
+    const wps = EW[edgeKey] || [];
+    const d = buildEdgeD(sx, sy, ex, ey, wps);
+    let out = `<path d="${d}" style="${strokeStyle}" fill="none"/>`;
+    if (isAddMode) {
+      // Transparent wide hit area
+      out += `<path d="${d}" fill="none" stroke="transparent" stroke-width="18" style="cursor:crosshair;" data-edge-add="${edgeKey}" data-sx="${sx}" data-sy="${sy}" data-ex="${ex}" data-ey="${ey}"/>`;
+    }
+    // Waypoint handles (diamonds) — เก็บลง waypointLayer แทน เพื่อให้อยู่บนสุดเสมอ
+    wps.forEach((wp, idx) => {
+      if (isDelMode) {
+        waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#dc2626" stroke="#fff" stroke-width="1.5" style="cursor:pointer;" data-wp-del-key="${edgeKey}" data-wp-del-idx="${idx}"/>`;
+      } else if (manualArrangeMode) {
+        waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#f59e0b" stroke="#fff" stroke-width="1.5" style="cursor:grab;" data-wp-drag-key="${edgeKey}" data-wp-drag-idx="${idx}"/>`;
+      }
+    });
+    return out;
+  }
+
+  const isAddMode = waypointMode === 'add';
+  const isDelMode = waypointMode === 'delete';
+
+  Object.values(spouseBlocks).forEach(block => {
+      let head = block[0];
+      for(let i=1; i<block.length; i++) {
+          let sp = block[i]; let p1 = positions[head.id]; let p2 = positions[sp.id]; if(!p1 || !p2) continue; let pairKey = [head.id, sp.id].sort().join('-');
+          let color = sp.isImplicit ? "#94a3b8" : (SPOUSE_COLORS[i] || "#64748b");
+          
+          const dimsHead = getNodeDimensions(head);
+          const dimsSp = getNodeDimensions(sp);
+          
+          // แบ่งจุดออกจากกล่อง head ตาม index เพื่อไม่ให้ซ้อนทับกัน
+          const numSpouses = block.length - 1; // จำนวนคู่สมรสทั้งหมด
+          const headYFrac = numSpouses === 1 ? 0.5 : i / (numSpouses + 1);
+          let headX = (typeof head.spouseOffsetX === 'number') ? p1.x + head.spouseOffsetX : p1.x + dimsHead.w;
+          let headY = (typeof head.spouseOffsetY === 'number') ? p1.y + head.spouseOffsetY : p1.y + dimsHead.h * headYFrac;
+          
+          let spX = (typeof sp.spouseOffsetX === 'number') ? p2.x + sp.spouseOffsetX : p2.x;
+          let spY = (typeof sp.spouseOffsetY === 'number') ? p2.y + sp.spouseOffsetY : p2.y + dimsSp.h / 2;
+          
+          const wps = EW[`spouse:${pairKey}`] || [];
+          const midPt = polyMid(headX, headY, spX, spY, wps);
+          const midX = midPt.x; const midY = midPt.y;
+          jointPoints[pairKey] = { x: midX, y: midY, color: color };
+
+          const strokeStyle = `stroke:${color}; stroke-width:${sp.isImplicit?2:2.5}; ${sp.isImplicit?'stroke-dasharray:4,3;':''}`;
+          edges += renderEdge(`spouse:${pairKey}`, headX, headY, spX, spY, strokeStyle, isAddMode, isDelMode);
+          
+          if(!sp.isImplicit && i===1) hearts += `<g transform="translate(${midX-8},${midY-8})"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${color}" transform="scale(0.7)"/></g>`;
+          if(!sp.isImplicit && i>1) hearts += `<g transform="translate(${midX-7}, ${midY-7})"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${color}" transform="scale(0.6)"/></g>`;
+      }
+  });
+
+  treeMembers.forEach(m => {
+      const p = positions[m.id]; if(!p) return;
+      const dimsM = getNodeDimensions(m);
+      const childX = (typeof m.parentOffsetX === 'number') ? p.x + m.parentOffsetX : p.x + dimsM.w / 2;
+      const childY = (typeof m.parentOffsetY === 'number') ? p.y + m.parentOffsetY : p.y;
+      
+      if(m.father && m.mother && positions[m.father] && positions[m.mother] && jointPoints[[m.father, m.mother].sort().join('-')]) {
+          const joint = jointPoints[[m.father, m.mother].sort().join('-')];
+          const edgeKey = `parent:${m.id}`;
+          const wps = EW[edgeKey] || [];
+          // Build the L-shaped parent edge through waypoints
+          const sx = joint.x, sy = joint.y, ex = childX, ey = childY;
+          const midY2 = sy + (ey - sy) * 0.45;
+          // Default L-path points: joint -> (joint.x, midY) -> (childX, midY) -> child
+          // We use waypoints to override the intermediate points
+          let pathD;
+          if (wps.length > 0) {
+            pathD = buildEdgeD(sx, sy, ex, ey, wps);
+          } else {
+            pathD = `M${sx},${sy} L${sx},${midY2} L${ex},${midY2} L${ex},${ey}`;
+          }
+          edges += `<path d="${pathD}" class="edge" style="stroke:${joint.color}; stroke-width:2; fill:none;"/>`;
+          if (isAddMode) edges += `<path d="${pathD}" fill="none" stroke="transparent" stroke-width="18" style="cursor:crosshair;" data-edge-add="${edgeKey}" data-sx="${sx}" data-sy="${sy}" data-ex="${ex}" data-ey="${ey}" data-bend="${wps.length===0 ? midY2 : ''}"/>`;
+          wps.forEach((wp, idx) => {
+            if (isDelMode) {
+              waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#dc2626" stroke="#fff" stroke-width="1.5" style="cursor:pointer;" data-wp-del-key="${edgeKey}" data-wp-del-idx="${idx}"/>`;
+            } else if (manualArrangeMode) {
+              waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#f59e0b" stroke="#fff" stroke-width="1.5" style="cursor:grab;" data-wp-drag-key="${edgeKey}" data-wp-drag-idx="${idx}"/>`;
+            }
+          });
+      } else if(m.father || m.mother) {
+          const pp = positions[m.father || m.mother];
+          const parentNode = members.find(x => x.id === (m.father || m.mother));
+          if(pp && parentNode) {
+              const dimsParent = getNodeDimensions(parentNode);
+              const parentX = parentNode.spouseOffsetX !== undefined ? pp.x + parentNode.spouseOffsetX : pp.x + dimsParent.w / 2;
+              const parentY = parentNode.spouseOffsetY !== undefined ? pp.y + parentNode.spouseOffsetY : pp.y + dimsParent.h;
+              const edgeKey = `parent:${m.id}`;
+              const wps = EW[edgeKey] || [];
+              const sx = parentX, sy = parentY, ex = childX, ey = childY;
+              const midY2 = sy + (ey - sy) * 0.45;
+              let pathD = wps.length > 0 ? buildEdgeD(sx, sy, ex, ey, wps) : `M${sx},${sy} L${sx},${midY2} L${ex},${midY2} L${ex},${ey}`;
+              edges += `<path d="${pathD}" class="edge" style="stroke:#94a3b8; stroke-width:2; fill:none;"/>`;
+              if (isAddMode) edges += `<path d="${pathD}" fill="none" stroke="transparent" stroke-width="18" style="cursor:crosshair;" data-edge-add="${edgeKey}" data-sx="${sx}" data-sy="${sy}" data-ex="${ex}" data-ey="${ey}" data-bend="${wps.length===0 ? midY2 : ''}"/>`;
+              wps.forEach((wp, idx) => {
+                if (isDelMode) {
+                  waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#dc2626" stroke="#fff" stroke-width="1.5" style="cursor:pointer;" data-wp-del-key="${edgeKey}" data-wp-del-idx="${idx}"/>`;
+                } else if (manualArrangeMode) {
+                  waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#f59e0b" stroke="#fff" stroke-width="1.5" style="cursor:grab;" data-wp-drag-key="${edgeKey}" data-wp-drag-idx="${idx}"/>`;
+                }
+              });
+          }
+      }
+  });
+
+  const drawnLinks = new Set();
+  treeMembers.forEach(m => {
+    if(m.extraRelations) {
+      m.extraRelations.forEach(rel => {
+        if(rel.linkId) { if(drawnLinks.has(rel.linkId)) return; drawnLinks.add(rel.linkId); }
+        const p1 = positions[m.id];
+        const p2 = positions[rel.targetId];
+        const dims1 = getNodeDimensions(m);
+        const targetNode = members.find(x => x.id === rel.targetId);
+        if(p1 && p2 && targetNode) {
+          const dims2 = getNodeDimensions(targetNode);
+          
+          let startX = (typeof rel.offsetX === 'number') ? p1.x + rel.offsetX : p1.x + dims1.w / 2;
+          let startY = (typeof rel.offsetY === 'number') ? p1.y + rel.offsetY : p1.y + dims1.h;
+          
+          const targetRel = targetNode.extraRelations && targetNode.extraRelations.find(r => r.linkId === rel.linkId);
+          let endX = (targetRel && typeof targetRel.offsetX === 'number') ? p2.x + targetRel.offsetX : p2.x + dims2.w / 2;
+          let endY = (targetRel && typeof targetRel.offsetY === 'number') ? p2.y + targetRel.offsetY : p2.y + dims2.h;
+          
+          const edgeKey = `extra:${m.id}:${rel.linkId || rel.targetId}`;
+          const wps = EW[edgeKey] || [];
+          const d = buildEdgeD(startX, startY, endX, endY, wps);
+          const isInverse = rel.relType === 'inverse' && rel.labelReverse && rel.labelReverse !== rel.label;
+
+          extraEdges += `<path d="${d}" style="stroke:#000000; stroke-width:1.5; fill:none; stroke-dasharray:4,4;"/>`;
+          if (isAddMode) extraEdges += `<path d="${d}" fill="none" stroke="transparent" stroke-width="18" style="cursor:crosshair;" data-edge-add="${edgeKey}" data-sx="${startX}" data-sy="${startY}" data-ex="${endX}" data-ey="${endY}"/>`;
+          wps.forEach((wp, idx) => {
+            if (isDelMode) {
+              waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#dc2626" stroke="#fff" stroke-width="1.5" style="cursor:pointer;" data-wp-del-key="${edgeKey}" data-wp-del-idx="${idx}"/>`;
+            } else if (manualArrangeMode) {
+              waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#f59e0b" stroke="#fff" stroke-width="1.5" style="cursor:grab;" data-wp-drag-key="${edgeKey}" data-wp-drag-idx="${idx}"/>`;
+            }
+          });
+
+          const midPt = polyMid(startX, startY, endX, endY, wps);
+          if(isInverse) {
+            // คำนวณ label positions ตาม polyline จริง (ไม่ใช่เส้นตรง)
+            const allPts = [{x:startX,y:startY}, ...wps, {x:endX,y:endY}];
+            const lPt1 = polyMid(startX, startY, endX, endY, wps, 0.25);
+            const lPt2 = polyMid(startX, startY, endX, endY, wps, 0.75);
+            if(rel.label) extraEdges += `<text x="${lPt1.x}" y="${lPt1.y - 5}" text-anchor="middle" style="font-size:11px; fill:#e11d48; font-weight:700; paint-order:stroke; stroke:#fff; stroke-width:2px;">${rel.label}</text>`;
+            if(rel.labelReverse) extraEdges += `<text x="${lPt2.x}" y="${lPt2.y - 5}" text-anchor="middle" style="font-size:11px; fill:#2563eb; font-weight:700; paint-order:stroke; stroke:#fff; stroke-width:2px;">${rel.labelReverse}</text>`;
+          } else if(rel.label) {
+            extraEdges += `<text x="${midPt.x}" y="${midPt.y - 4}" text-anchor="middle" style="font-size:11.5px; fill:#000000; font-weight:700;">${rel.label}</text>`;
+          }
+        }
+      });
+    }
+  });
+
+  edges += extraEdges;
+
+  let itemEdges = '';
+  const drawnItemLinks = new Set();
+  treeItems.forEach(it => {
+    (it.relations || []).forEach(rel => {
+      if(!rel.targetId) return;
+      const linkKey = rel.relId || `${it.id}->${rel.targetId}`;
+      if(drawnItemLinks.has(linkKey)) return; drawnItemLinks.add(linkKey);
+      const p1 = positions[it.id];
+      const p2 = positions[rel.targetId];
+      if(!p1 || !p2) return;
+      
+      const dims1 = getNodeDimensions(it);
+      const targetNode = members.find(x => x.id === rel.targetId) || items.find(x => x.id === rel.targetId);
+      const dims2 = getNodeDimensions(targetNode);
+
+      let startX = (typeof rel.offsetX === 'number') ? p1.x + rel.offsetX : p1.x + dims1.w / 2;
+      let startY = (typeof rel.offsetY === 'number') ? p1.y + rel.offsetY : p1.y + dims1.h;
+
+      let endX = (typeof rel.targetOffsetX === 'number') ? p2.x + rel.targetOffsetX : p2.x + dims2.w / 2;
+      let endY = (typeof rel.targetOffsetY === 'number') ? p2.y + rel.targetOffsetY : p2.y + dims2.h;
+
+      const edgeKey = `item:${it.id}:${rel.relId || rel.targetId}`;
+      const wps = EW[edgeKey] || [];
+      const d = buildEdgeD(startX, startY, endX, endY, wps);
+      const midPt = polyMid(startX, startY, endX, endY, wps);
+
+      itemEdges += `<path d="${d}" style="stroke:#000000; stroke-width:1.5; fill:none;"/>`;
+      if (isAddMode) itemEdges += `<path d="${d}" fill="none" stroke="transparent" stroke-width="18" style="cursor:crosshair;" data-edge-add="${edgeKey}" data-sx="${startX}" data-sy="${startY}" data-ex="${endX}" data-ey="${endY}"/>`;
+      wps.forEach((wp, idx) => {
+        if (isDelMode) {
+          waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#dc2626" stroke="#fff" stroke-width="1.5" style="cursor:pointer;" data-wp-del-key="${edgeKey}" data-wp-del-idx="${idx}"/>`;
+        } else if (manualArrangeMode) {
+          waypointLayer += `<rect x="${wp.x-6}" y="${wp.y-6}" width="12" height="12" rx="2" transform="rotate(45,${wp.x},${wp.y})" fill="#f59e0b" stroke="#fff" stroke-width="1.5" style="cursor:grab;" data-wp-drag-key="${edgeKey}" data-wp-drag-idx="${idx}"/>`;
+        }
+      });
+      if(rel.label) {
+        itemEdges += `<text x="${midPt.x}" y="${midPt.y - 4}" text-anchor="middle" style="font-size: 11.5px; fill: #000000; font-weight: 700;">${rel.label}</text>`;
+      }
+    });
+  });
+  edges += itemEdges;
+
+  treeMembers.forEach(m=>{
+    const p=positions[m.id]; if(!p)return; const cls=(m.gender==='ชาย'||m.gender==='Male')?'node-male':'node-female';
+    const dims = getNodeDimensions(m);
+
+    // Helper: wrap text into lines fitting within maxChars per line
+    function wrapTextPerson(text, maxChars) {
+      if (!text) return [];
+      const tokens = text.split(/\s+/);
+      const lines = [];
+      let cur = '';
+      for (const tok of tokens) {
+        const test = cur ? cur + ' ' + tok : tok;
+        if (test.length > maxChars && cur) { lines.push(cur); cur = tok; }
+        else { cur = test; }
+      }
+      if (cur) lines.push(cur);
+      return lines;
+    }
+
+    const maxChars = Math.max(8, Math.floor((dims.w - 10) / 6.5));
+    const firstLines = wrapTextPerson((m.prefix ? m.prefix + '' : '') + (m.firstname || ''), maxChars);
+    const lastLines  = wrapTextPerson(m.lastname  || '', maxChars);
+    const nickLines  = m.nick ? wrapTextPerson(`(${m.nick})`, maxChars) : [];
+    const noteLines  = m.note ? wrapTextPerson(m.note, maxChars) : [];
+    const allTextLines = [...firstLines, ...lastLines, ...nickLines, ...noteLines];
+    const lineH = 15;
+    const padTop = m.photo ? (5 + dims.imgH + 4) : 6;
+    const textH = padTop + allTextLines.length * lineH + 6;
+    // หากผู้ใช้ปรับความสูงกล่องเอง (customH) ให้เคารพค่านั้นเสมอ แม้ข้อความจะยาวกว่าก็ตาม (ยอมให้ล้นได้)
+    // หากยังไม่เคยปรับ ให้ขยายอัตโนมัติตามเนื้อหาเพื่อไม่ให้ข้อความถูกตัด
+    const boxH = (typeof m.customH === 'number') ? dims.h : Math.max(dims.h, textH);
+
+    const interaction = manualArrangeMode
+      ? `data-node-id="${m.id}" style="cursor:grab;"`
+      : `style="cursor:pointer" onclick="showMemberDetail('${m.id}')"`;
+      
+    let innerContent = '';
+    if (m.photo) {
+      innerContent += `<image href="${m.photo}" x="${p.x + (dims.w - dims.imgW)/2}" y="${p.y + 5}" width="${dims.imgW}" height="${dims.imgH}" preserveAspectRatio="xMidYMid slice" rx="4"/>`;
+    }
+
+    let ty = p.y + padTop + lineH;
+    firstLines.forEach(ln => {
+      innerContent += `<text x="${p.x+dims.w/2}" y="${ty}" text-anchor="middle" class="node-name">${ln}</text>`;
+      ty += lineH;
+    });
+    lastLines.forEach(ln => {
+      innerContent += `<text x="${p.x+dims.w/2}" y="${ty}" text-anchor="middle" class="node-detail" style="font-weight:700; font-size:11px; fill:#1e293b;">${ln}</text>`;
+      ty += lineH;
+    });
+    nickLines.forEach(ln => {
+      innerContent += `<text x="${p.x+dims.w/2}" y="${ty}" text-anchor="middle" class="node-detail" style="font-weight:500; font-size:11px; fill:#64748b;">${ln}</text>`;
+      ty += lineH;
+    });
+    if (noteLines.length > 0) {
+      // เส้นคั่นระหว่าง ชื่อ/ชื่อเล่น กับ note
+      innerContent += `<line x1="${p.x+8}" y1="${ty-3}" x2="${p.x+dims.w-8}" y2="${ty-3}" stroke="#cbd5e1" stroke-width="0.8"/>`;
+      ty += 2;
+      noteLines.forEach(ln => {
+        innerContent += `<text x="${p.x+dims.w/2}" y="${ty}" text-anchor="middle" style="font-size:10px; fill:#475569; font-style:italic;">${ln}</text>`;
+        ty += lineH;
+      });
+    }
+    
+    let controls = '';
+    if (manualArrangeMode) {
+      if (m.photo) {
+        const btnY = p.y + 10;
+        const btnMinusX = p.x + (dims.w - dims.imgW)/2 + 10;
+        const btnPlusX = p.x + (dims.w - dims.imgW)/2 + dims.imgW - 10;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${m.id}', 0.1, event)" title="Enlarge image"><circle cx="${btnPlusX}" cy="${btnY}" r="7" fill="#10b981" stroke="#ffffff" stroke-width="1"/><text x="${btnPlusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${m.id}', -0.1, event)" title="Shrink image"><circle cx="${btnMinusX}" cy="${btnY}" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="1"/><text x="${btnMinusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">-</text></g>`;
+      }
+      const rzX = p.x + dims.w + 2;
+      const rzY = p.y + boxH / 2;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${m.id}', 10, 0, event)" title="เพิ่มความกว้าง"><rect x="${rzX}" y="${rzY - 14}" width="14" height="14" rx="3" fill="#10b981" stroke="#fff" stroke-width="1"/><text x="${rzX+7}" y="${rzY-4}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${m.id}', -10, 0, event)" title="ลดความกว้าง"><rect x="${rzX}" y="${rzY + 2}" width="14" height="14" rx="3" fill="#ef4444" stroke="#fff" stroke-width="1"/><text x="${rzX+7}" y="${rzY+12}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">−</text></g>`;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${m.id}', 0, 10, event)" title="เพิ่มความสูง"><rect x="${p.x + dims.w/2 - 7}" y="${p.y + boxH + 2}" width="14" height="14" rx="3" fill="#10b981" stroke="#fff" stroke-width="1"/><text x="${p.x + dims.w/2}" y="${p.y + boxH + 13}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${m.id}', 0, -10, event)" title="ลดความสูง"><rect x="${p.x + dims.w/2 - 7}" y="${p.y - 16}" width="14" height="14" rx="3" fill="#ef4444" stroke="#fff" stroke-width="1"/><text x="${p.x + dims.w/2}" y="${p.y - 5}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">−</text></g>`;
+    }
+
+    nodes+=`<g ${interaction}>
+      <rect x="${p.x}" y="${p.y}" width="${dims.w}" height="${boxH}" rx="6" class="${cls}"/>
+      ${innerContent}
+      ${(m.status==='เสียชีวิต'||m.status==='Deceased')?`<text x="${p.x+dims.w-6}" y="${p.y+13}" text-anchor="end" style="font-size:11px;fill:var(--color-text-tertiary); font-weight:bold;">†</text>`:''}
+      ${controls}
+    </g>`;
+
+    // Case status badge — วาดทับด้านบนของกล่อง (หลัง g เพื่อให้อยู่บนสุด)
+    if (m.caseStatus) {
+      const hex = m.caseStatusColor || '#3b82f6';
+      const r2 = parseInt(hex.slice(1,3),16), g2 = parseInt(hex.slice(3,5),16), b2 = parseInt(hex.slice(5,7),16);
+      const bgR = Math.round(r2*0.18+255*0.82), bgG = Math.round(g2*0.18+255*0.82), bgB = Math.round(b2*0.18+255*0.82);
+      const bdR = Math.round(r2*0.55+255*0.45), bdG = Math.round(g2*0.55+255*0.45), bdB = Math.round(b2*0.55+255*0.45);
+      const txR = Math.round(r2*0.65), txG = Math.round(g2*0.65), txB = Math.round(b2*0.65);
+      const bgColor = `rgb(${bgR},${bgG},${bgB})`;
+      const bdColor = `rgb(${bdR},${bdG},${bdB})`;
+      const txColor = `rgb(${txR},${txG},${txB})`;
+      const badgePadX = 8, badgeH = 18, badgeFontSize = 10;
+      // approx text width: ~6px per char
+      const badgeW = Math.min(m.caseStatus.length * 6.5 + badgePadX*2, dims.w - 4);
+      const badgeX = p.x + (dims.w - badgeW) / 2;
+      const badgeY = p.y - badgeH/2 - 1;
+      nodes += `<g>
+        <rect x="${badgeX}" y="${badgeY}" width="${badgeW}" height="${badgeH}" rx="${badgeH/2}" fill="${bgColor}" stroke="${bdColor}" stroke-width="1.5"/>
+        <text x="${badgeX + badgeW/2}" y="${badgeY + badgeH/2 + 3.5}" text-anchor="middle" style="font-size:${badgeFontSize}px; font-weight:700; fill:${txColor}; font-family:'Sarabun','Segoe UI',sans-serif;">${m.caseStatus}</text>
+      </g>`;
+    }
+  });
+
+  treeItems.forEach(it=>{
+    const p=positions[it.id]; if(!p) return;
+    const dims = getNodeDimensions(it);
+
+    // Helper: wrap text into lines fitting within maxWidth chars (approx pixel-based)
+    function wrapText(text, maxChars) {
+      if (!text) return [];
+      const words = text.split('');  // char-by-char for Thai/mixed text
+      // Use word-based split for better wrapping
+      const tokens = text.split(/\s+/);
+      const lines = [];
+      let cur = '';
+      for (const tok of tokens) {
+        const test = cur ? cur + ' ' + tok : tok;
+        if (test.length > maxChars && cur) {
+          lines.push(cur);
+          cur = tok;
+        } else {
+          cur = test;
+        }
+      }
+      if (cur) lines.push(cur);
+      return lines;
+    }
+
+    const maxChars = Math.max(8, Math.floor((dims.w - 10) / 6.5));
+    const nameLines = wrapText(it.name || '', maxChars);
+    const detailLines = it.detail ? wrapText(it.detail, maxChars) : [];
+    const totalLines = nameLines.length + detailLines.length;
+    const lineH = 15;
+    const padTop = it.photo ? (5 + dims.imgH + 4) : 10;
+    const textH = padTop + totalLines * lineH + 8;
+    // หากผู้ใช้ปรับความสูงกล่องเอง (customH) ให้เคารพค่านั้นเสมอ แม้ข้อความจะยาวกว่าก็ตาม (ยอมให้ล้นได้)
+    // หากยังไม่เคยปรับ ให้ขยายอัตโนมัติตามเนื้อหาเพื่อไม่ให้ข้อความถูกตัด
+    const boxH = (typeof it.customH === 'number') ? dims.h : Math.max(dims.h, textH);
+
+    const interaction = manualArrangeMode
+      ? `data-node-id="${it.id}" style="cursor:grab;"`
+      : `style="cursor:pointer" onclick="showItemDetail('${it.id}')"`;
+      
+    let innerContent = '';
+    if (it.photo) {
+      innerContent += `<image href="${it.photo}" x="${p.x + (dims.w - dims.imgW)/2}" y="${p.y + 5}" width="${dims.imgW}" height="${dims.imgH}" preserveAspectRatio="xMidYMid slice" rx="4"/>`;
+    }
+
+    // Render name lines
+    let ty = p.y + padTop + lineH;
+    nameLines.forEach((ln, i) => {
+      innerContent += `<text x="${p.x+dims.w/2}" y="${ty}" text-anchor="middle" style="font-size:11px; font-weight:600; fill:#1e293b;">${ln}</text>`;
+      ty += lineH;
+    });
+    // Render detail lines
+    detailLines.forEach((ln, i) => {
+      innerContent += `<text x="${p.x+dims.w/2}" y="${ty}" text-anchor="middle" style="font-size:10px; font-weight:500; fill:#64748b;">${ln}</text>`;
+      ty += lineH;
+    });
+    
+    let controls = '';
+    if (manualArrangeMode) {
+      if (it.photo) {
+        const btnY = p.y + 10;
+        const btnMinusX = p.x + (dims.w - dims.imgW)/2 + 10;
+        const btnPlusX = p.x + (dims.w - dims.imgW)/2 + dims.imgW - 10;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${it.id}', 0.1, event)" title="Enlarge image"><circle cx="${btnPlusX}" cy="${btnY}" r="7" fill="#10b981" stroke="#ffffff" stroke-width="1"/><text x="${btnPlusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${it.id}', -0.1, event)" title="Shrink image"><circle cx="${btnMinusX}" cy="${btnY}" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="1"/><text x="${btnMinusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">-</text></g>`;
+      }
+      const rzX = p.x + dims.w + 2;
+      const rzY = p.y + boxH / 2;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${it.id}', 10, 0, event)" title="เพิ่มความกว้าง"><rect x="${rzX}" y="${rzY - 14}" width="14" height="14" rx="3" fill="#10b981" stroke="#fff" stroke-width="1"/><text x="${rzX+7}" y="${rzY-4}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${it.id}', -10, 0, event)" title="ลดความกว้าง"><rect x="${rzX}" y="${rzY + 2}" width="14" height="14" rx="3" fill="#ef4444" stroke="#fff" stroke-width="1"/><text x="${rzX+7}" y="${rzY+12}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">−</text></g>`;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${it.id}', 0, 10, event)" title="เพิ่มความสูง"><rect x="${p.x + dims.w/2 - 7}" y="${p.y + boxH + 2}" width="14" height="14" rx="3" fill="#10b981" stroke="#fff" stroke-width="1"/><text x="${p.x + dims.w/2}" y="${p.y + boxH + 13}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+      controls += `<g style="cursor:pointer;" onclick="changeNodeSize('${it.id}', 0, -10, event)" title="ลดความสูง"><rect x="${p.x + dims.w/2 - 7}" y="${p.y - 16}" width="14" height="14" rx="3" fill="#ef4444" stroke="#fff" stroke-width="1"/><text x="${p.x + dims.w/2}" y="${p.y - 5}" text-anchor="middle" style="fill:#fff; font-size:14px; font-weight:bold; font-family:sans-serif;">−</text></g>`;
+    }
+
+    nodes+=`<g ${interaction}>
+      <rect x="${p.x}" y="${p.y}" width="${dims.w}" height="${boxH}" rx="6" style="fill:#fef9c3; stroke:#ca8a04; stroke-width:1.5; stroke-dasharray:3,2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04));"/>
+      ${innerContent}
+      ${controls}
+    </g>`;
+
+    // Case status badge — วาดทับด้านบนของกล่อง (หลัง g เพื่อให้อยู่บนสุด)
+    if (it.caseStatus) {
+      const hex = it.caseStatusColor || '#ca8a04';
+      const r2 = parseInt(hex.slice(1,3),16), g2 = parseInt(hex.slice(3,5),16), b2 = parseInt(hex.slice(5,7),16);
+      const bgR = Math.round(r2*0.18+255*0.82), bgG = Math.round(g2*0.18+255*0.82), bgB = Math.round(b2*0.18+255*0.82);
+      const bdR = Math.round(r2*0.55+255*0.45), bdG = Math.round(g2*0.55+255*0.45), bdB = Math.round(b2*0.55+255*0.45);
+      const txR = Math.round(r2*0.65), txG = Math.round(g2*0.65), txB = Math.round(b2*0.65);
+      const bgColor = `rgb(${bgR},${bgG},${bgB})`;
+      const bdColor = `rgb(${bdR},${bdG},${bdB})`;
+      const txColor = `rgb(${txR},${txG},${txB})`;
+      const badgePadX = 8, badgeH = 18, badgeFontSize = 10;
+      const badgeW = Math.min(it.caseStatus.length * 6.5 + badgePadX*2, dims.w - 4);
+      const badgeX = p.x + (dims.w - badgeW) / 2;
+      const badgeY = p.y - badgeH/2 - 1;
+      nodes += `<g>
+        <rect x="${badgeX}" y="${badgeY}" width="${badgeW}" height="${badgeH}" rx="${badgeH/2}" fill="${bgColor}" stroke="${bdColor}" stroke-width="1.5"/>
+        <text x="${badgeX + badgeW/2}" y="${badgeY + badgeH/2 + 3.5}" text-anchor="middle" style="font-size:${badgeFontSize}px; font-weight:700; fill:${txColor}; font-family:'Sarabun','Segoe UI',sans-serif;">${it.caseStatus}</text>
+      </g>`;
+    }
+  });
+
+  let handles = '';
+  if (manualArrangeMode) {
+    treeMembers.forEach(m => {
+      const p = positions[m.id]; if (!p) return;
+      const dims = getNodeDimensions(m);
+      const hasSpouse = m.spouse && treeMembers.some(x => x.id === m.spouse);
+      if (hasSpouse) {
+        const hX = (typeof m.spouseOffsetX === 'number') ? p.x + m.spouseOffsetX : p.x + dims.w;
+        const hY = (typeof m.spouseOffsetY === 'number') ? p.y + m.spouseOffsetY : p.y + dims.h / 2;
+        handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="spouse" data-node-id="${m.id}"/>`;
+      }
+      
+      const hasParents = m.father || m.mother;
+      if (hasParents) {
+        const hX = (typeof m.parentOffsetX === 'number') ? p.x + m.parentOffsetX : p.x + dims.w / 2;
+        const hY = (typeof m.parentOffsetY === 'number') ? p.y + m.parentOffsetY : p.y;
+        handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#10b981" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="parent" data-node-id="${m.id}"/>`;
+      }
+      
+      if (m.extraRelations) {
+        m.extraRelations.forEach(rel => {
+          const targetNode = treeMembers.find(x => x.id === rel.targetId);
+          if (!targetNode) return;
+          const hX = (typeof rel.offsetX === 'number') ? p.x + rel.offsetX : p.x + dims.w / 2;
+          const hY = (typeof rel.offsetY === 'number') ? p.y + rel.offsetY : p.y + dims.h;
+          handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="extra" data-node-id="${m.id}" data-link-id="${rel.linkId}"/>`;
+        });
+      }
+    });
+    
+    treeItems.forEach(it => {
+      const p = positions[it.id]; if (!p) return;
+      const dims = getNodeDimensions(it);
+      if (it.relations) {
+        it.relations.forEach(rel => {
+          const targetNode = treeMembers.find(x => x.id === rel.targetId) || treeItems.find(x => x.id === rel.targetId);
+          if (!targetNode) return;
+          
+          const hX = (typeof rel.offsetX === 'number') ? p.x + rel.offsetX : p.x + dims.w / 2;
+          const hY = (typeof rel.offsetY === 'number') ? p.y + rel.offsetY : p.y + dims.h;
+          handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#ec4899" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="item-src" data-node-id="${it.id}" data-rel-id="${rel.relId}"/>`;
+          
+          const tp = positions[targetNode.id];
+          if (tp) {
+            const tDims = getNodeDimensions(targetNode);
+            const thX = (typeof rel.targetOffsetX === 'number') ? tp.x + rel.targetOffsetX : tp.x + tDims.w / 2;
+            const thY = (typeof rel.targetOffsetY === 'number') ? tp.y + rel.targetOffsetY : tp.y + tDims.h;
+            handles += `<circle cx="${thX}" cy="${thY}" r="5" fill="#a855f7" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="item-dst" data-node-id="${it.id}" data-target-id="${rel.targetId}" data-rel-id="${rel.relId}"/>`;
+          }
+        });
+      }
+    });
+  }
+
+  const allX = Object.keys(positions).map(id => {
+    const node = members.find(x => x.id === id) || items.find(x => x.id === id);
+    const dims = getNodeDimensions(node);
+    return positions[id].x + dims.w;
+  });
+  const allY = Object.keys(positions).map(id => {
+    const node = members.find(x => x.id === id) || items.find(x => x.id === id);
+    const dims = getNodeDimensions(node);
+    return positions[id].y + dims.h;
+  });
+  const svgW = Math.max(...allX, 500) + 150;
+  const svgH = Math.max(...allY, 500) + 150;
+  return { edges, hearts, nodes, handles: handles + waypointLayer, svgW, svgH };
+}
+
+function redrawTreeSVG() {
+  const svg = document.getElementById('tree-svg-el'); if(!svg) return;
+  if(!window.treePositions || !window.treeMembers || !window.treeSpouseBlocks) return;
+  const built = buildTreeSVG(window.treePositions, window.treeMembers, window.treeSpouseBlocks, window.treeItems || []);
+  svg.setAttribute('width', built.svgW); svg.setAttribute('height', built.svgH);
+  svg.innerHTML = `${built.edges}${built.hearts}${built.nodes}${built.handles || ''}`;
+}
+
+function toggleManualArrange() {
+  manualArrangeMode = !manualArrangeMode;
+  if (!manualArrangeMode) waypointMode = '';
+  renderTree();
+}
+
+function toggleWaypointMode(mode, event) {
+  if (event) event.stopPropagation();
+  if (waypointMode === mode) { waypointMode = ''; } else { waypointMode = mode; }
+  renderTree();
+}
+
+function resetTreeLayout() {
+  window.edgeWaypoints = {};
+  waypointMode = '';
+  members.forEach(m => {
+    delete m.customX; delete m.customY; delete m.imgScale; delete m.customW; delete m.customH;
+    delete m.spouseOffsetX; delete m.spouseOffsetY;
+    delete m.parentOffsetX; delete m.parentOffsetY;
+    if (m.extraRelations) {
+      m.extraRelations.forEach(rel => { delete rel.offsetX; delete rel.offsetY; });
+    }
+  });
+  items.forEach(it => {
+    delete it.customX; delete it.customY; delete it.imgScale; delete it.customW; delete it.customH;
+    if (it.relations) {
+      it.relations.forEach(rel => {
+        delete rel.offsetX; delete rel.offsetY;
+        delete rel.targetOffsetX; delete rel.targetOffsetY;
+      });
+    }
+  });
+  renderTree();
+}
+
+function exportPDF() {
+  if (!members.length) { alert(t('msg_no_data_export')); return; }
+  renderTree(); const svgEl = document.querySelector('#tree-container svg'); if (!svgEl) return;
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>crimezeen_pdf</title><style>body { margin: 0; padding: 20px; background: #ffffff; display: flex; flex-direction: column; align-items: center; } h2 { font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif; color: #1e293b; font-size: 18px; margin-bottom: 15px; } svg { display: block; max-width: 100%; height: auto; } .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; } .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; } .node-name { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; fill: #1e293b; } .node-detail { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 11px; fill: #475569; } .edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; } @media print { @page { size: auto; margin: 12mm 10mm; } body { padding: 0; } }</style></head><body><h2>${t('app_title')}</h2><div>${svgEl.outerHTML}</div><script>window.onload = function() { setTimeout(function() { window.print(); window.close(); }, 400); };<\/script></body></html>`);
+  printWindow.document.close();
+}
+
+function exportJPEG() {
+  if (!members.length) { alert(t('msg_no_data_export')); return; }
+  renderTree();
+  const svgEl = document.querySelector('#tree-container svg');
+  if (!svgEl) return;
+
+  // Clone SVG and embed CSS styles inline for accurate rendering
+  const svgClone = svgEl.cloneNode(true);
+  // Ensure white background
+  const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bgRect.setAttribute('x', svgClone.getAttribute('viewBox') ? svgClone.getAttribute('viewBox').split(' ')[0] : '0');
+  bgRect.setAttribute('y', svgClone.getAttribute('viewBox') ? svgClone.getAttribute('viewBox').split(' ')[1] : '0');
+  bgRect.setAttribute('width', '100%');
+  bgRect.setAttribute('height', '100%');
+  bgRect.setAttribute('fill', '#ffffff');
+  svgClone.insertBefore(bgRect, svgClone.firstChild);
+
+  // Inject essential CSS into SVG
+  const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+  style.textContent = `
+    .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; }
+    .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; }
+    .node-name { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; fill: #1e293b; }
+    .node-detail { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 11px; fill: #475569; }
+    .edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+  `;
+  svgClone.insertBefore(style, svgClone.firstChild);
+
+  // Get dimensions
+  const vb = svgClone.getAttribute('viewBox');
+  let svgW, svgH;
+  if (vb) {
+    const parts = vb.split(/\s+|,/);
+    svgW = parseFloat(parts[2]);
+    svgH = parseFloat(parts[3]);
+  } else {
+    svgW = parseFloat(svgClone.getAttribute('width')) || 1200;
+    svgH = parseFloat(svgClone.getAttribute('height')) || 800;
+  }
+
+  const scale = 2; // 2x resolution for crisp output
+  const canvas = document.createElement('canvas');
+  canvas.width = svgW * scale;
+  canvas.height = svgH * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(scale, scale);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, svgW, svgH);
+
+  const svgData = new XMLSerializer().serializeToString(svgClone);
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+  const img = new Image();
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0, svgW, svgH);
+    URL.revokeObjectURL(url);
+    const link = document.createElement('a');
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+    link.download = `crimezeen_jpeg_${stamp}.jpg`;
+    link.href = canvas.toDataURL('image/jpeg', 0.92);
+    link.click();
+  };
+  img.onerror = function() {
+    URL.revokeObjectURL(url);
+    alert('ไม่สามารถ Export JPEG ได้ กรุณาลองใหม่อีกครั้ง');
+  };
+  img.src = url;
+}
+
+function exportViewerHTML() {
+  if (!members.length) { alert(t('msg_no_data_export')); return; }
+  
+  const exportedHTML = `<!DOCTYPE html>
+<html lang="${currentLang}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${t('app_title')} (Interactive Viewer)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #475569;
+  --color-text-tertiary: #94a3b8;
+  --color-border-primary: #378add;
+  --color-border-secondary: #e2e8f0;
+  --color-border-tertiary: #cbd5e1;
+  --border-radius-md: 6px;
+  --border-radius-lg: 12px;
+}
+*{box-sizing:border-box; font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;}
+body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; padding: 15px; }
+.container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+h2 { font-size: 20px; margin-top: 0; margin-bottom: 15px; color: var(--color-text-primary); text-align: center; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.sticky-header-panel { position: -webkit-sticky; position: sticky; top: 0; background: #ffffff; z-index: 100; padding-bottom: 12px; border-bottom: 1px solid var(--color-border-secondary); margin-bottom: 16px; }
+.search-box-wrap { position: relative; margin-top: 8px; }
+.search-input-field { width: 100%; font-size: 14px; padding: 10px 14px 10px 38px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); transition: all 0.2s; }
+.search-input-field:focus { outline: none; border-color: var(--color-border-primary); box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.15); }
+.search-icon-inside { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--color-text-tertiary); font-size: 16px; }
+.search-dropdown-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); max-height: 220px; overflow-y: auto; z-index: 110; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.search-item { padding: 10px 14px; cursor: pointer; font-size: 13.5px; border-bottom: 1px solid var(--color-background-secondary); transition: background 0.15s; }
+.search-item:hover { background: var(--color-background-secondary); }
+.tree-container-box { position: relative; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-border-tertiary); background: #f8fafc; overflow: hidden; }
+.zoom-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 4px; background: white; padding: 4px; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; max-width: 340px; justify-content: flex-end; }
+.zoom-btn { min-width: 32px; height: 32px; padding: 0 6px; font-size: 13px; border: 1px solid var(--color-border-secondary); background: white; border-radius: 4px; cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; gap: 4px; font-weight: 600; }
+.zoom-btn.arrange-btn-active { background: var(--color-border-primary); color: #fff; border-color: var(--color-border-primary); }
+.arrange-hint { position: absolute; top: 12px; left: 12px; right: 60px; background: rgba(55,138,221,0.95); color: #fff; font-size: 12.5px; padding: 8px 12px; border-radius: var(--border-radius-md); z-index: 10; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.tree-wrap [data-node-id] { cursor: grab; }
+.tree-wrap [data-node-id]:active { cursor: grabbing; }
+.tree-wrap { width: 100%; height: 700px; cursor: grab; overflow: hidden; position: relative; touch-action: none; }
+.tree-svg-container { position: absolute; top: 0; left: 0; transform-origin: 0 0; transform: translate(0px, 0px) scale(1); will-change: transform; }
+.node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+.node-name { font-size: 12px; font-weight: 600; fill: var(--color-text-primary); }
+.node-detail { font-size: 11px; font-weight: 500; fill: var(--color-text-secondary); }
+.edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; }
+.empty-state { text-align: center; padding: 40px 0; color: var(--color-text-tertiary); font-size: 14px; }
+.btn { padding: 4px 8px; font-size: 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2><i class="ti ti-chart-tree" style="color: #378add;"></i> ${t('app_title')}</h2>
+  <div class="sticky-header-panel">
+    <div id="detail-panel" style="display:none; background:var(--color-background-secondary); border-radius:var(--border-radius-lg); padding:14px; font-size:13px; border:1px solid var(--color-border-tertiary); margin-bottom:10px;"></div>
+    <div class="search-box-wrap">
+      <i class="ti ti-search search-icon-inside"></i>
+      <input type="text" id="tree-search-input" class="search-input-field" placeholder="${t('ph_search_tree')}" oninput="handleTreeSearch()">
+      <div id="tree-search-results" class="search-dropdown-list" style="display:none;"></div>
+    </div>
+  </div>
+  <div id="tree-container"></div>
+</div>
+<script>
+const i18n = ${JSON.stringify(i18n)};
+let currentLang = '${currentLang}';
+const members = ${JSON.stringify(members)};
+const items = ${JSON.stringify(items)};
+
+let scale = 1; let transformX = 0; let transformY = 0; let isDragging = false; let startX, startY;
+let initialDistance = null; let initialScale = 1;
+let manualArrangeMode = false;
+let dragHandle = null;
+let waypointMode = '';
+window.edgeWaypoints = ${JSON.stringify(window.edgeWaypoints || {})};
+const W = 90; const H = 54; const VGAP = 110; const SIBLING_GAP = 25; const SPOUSE_GAP = 20;
+const EXTRA_SPOUSE_DY = 65; const EXTRA_SPOUSE_DX = 25;
+const SPOUSE_COLORS = { 1: "#e11d48", 2: "#2563eb", 3: "#16a34a", 4: "#ea580c", 5: "#8b5cf6" };
+
+${t.toString()}
+${mapDataVal.toString()}
+${getGeneration.toString()}
+${applyZoomTransform.toString()}
+${zoom.toString()}
+${resetZoom.toString()}
+${getNodeDimensions.toString()}
+${getAutoNodeHeight.toString()}
+${changeNodeImgScale.toString()}
+${changeNodeSize.toString()}
+${constrainToRectPerimeter.toString()}
+${moveHandle.toString()}
+${initPanEvents.toString()}
+${showMemberDetail.toString()}
+${showItemDetail.toString()}
+${handleTreeSearch.toString()}
+${focusMember.toString()}
+
+document.addEventListener('click', function(e) {
+  const box = document.getElementById('tree-search-input'); const results = document.getElementById('tree-search-results');
+  if (results && e.target !== box && !results.contains(e.target)) { results.style.display = 'none'; }
+});
+
+${renderTree.toString()}
+${buildTreeSVG.toString()}
+${redrawTreeSVG.toString()}
+${toggleManualArrange.toString()}
+${toggleWaypointMode.toString()}
+${resetTreeLayout.toString()}
+
+window.onload = function() { renderTree(); resetZoom(); };
+<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([exportedHTML], { type: 'text/html;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'crimezeen_html.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+window.onload = function() {
+  updateUILanguage(); // Initialize English default
+  updateFormDropdowns();
+  renderTableList();
+  renderTree();
+  resetZoom();
+};
+</script>
+</body>
+</html>
