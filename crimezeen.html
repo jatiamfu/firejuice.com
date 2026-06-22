@@ -23,6 +23,7 @@
   --border-radius-lg: 12px;
 }
 *{box-sizing:border-box; font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif;}
+html, body { overflow-x: hidden; max-width: 100%; }
 body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; padding: 15px; }
 .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: var(--border-radius-lg); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
 
@@ -42,6 +43,20 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
 .btn-jpeg:hover { background: #ecfdf5; }
 .btn-lang { border-color: var(--color-border-primary); color: var(--color-border-primary); }
 .btn-lang:hover { background: #eff6ff; }
+
+/* Responsive — มือถือ (จอกว้างไม่เกิน 600px) */
+@media (max-width: 600px) {
+  body { padding: 8px; }
+  .container { padding: 12px; border-radius: var(--border-radius-md); }
+  .top-bar { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  .logo-area { font-size: 13px; }
+  .file-actions { flex-wrap: wrap; gap: 6px; }
+  .btn-top { padding: 6px 10px; font-size: 12px; }
+  .tabs-nav { flex-wrap: wrap; gap: 4px; overflow-x: auto; }
+  .tab-btn { padding: 8px 12px; font-size: 13px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-actions { flex-wrap: wrap; }
+}
 
 /* Tabs Navigation */
 .tabs-nav { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 2px solid var(--color-border-secondary); padding-bottom: 4px; }
@@ -118,6 +133,8 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
 .tree-wrap [data-node-id]:active { cursor: grabbing; }
 .tree-wrap { width: 100%; height: 600px; cursor: grab; overflow: hidden; position: relative; touch-action: none; }
 .tree-svg-container { position: absolute; top: 0; left: 0; transform-origin: 0 0; transform: translate(0px, 0px) scale(1); will-change: transform; }
+#tree-svg-el { touch-action: none; display: block; }
+.tree-wrap [data-node-id] { touch-action: none; }
 .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
 .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
 .node-item { fill: #fefce8; stroke: #ca8a04; stroke-width: 1.5; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06)); }
@@ -440,7 +457,7 @@ const i18n = {
     tree_no_results: "❌ No matching persons found", tree_empty: "Please enter data or load a file to view the tree.", tree_no_rel: "No relationship links found in the system.",
     dtl_gender: "Gender", dtl_status: "Status", dtl_dob: "DOB", dtl_father: "Father", dtl_mother: "Mother", dtl_spouse: "Spouse", dtl_children: "Children", dtl_formerly: "Formerly", dtl_years: "years old",
     val_male: "Male", val_female: "Female", val_alive: "Alive", val_deceased: "Deceased", val_person: "person",
-    btn_arrange_on: "Edit", btn_arrange_off: "Exit Arrange Mode", btn_arrange_reset: "Reset Layout", btn_undo: "Undo", btn_redo: "Redo", hint_arrange: "Drag boxes to reposition. Use +/− buttons on box edges to resize width/height.",
+    btn_arrange_on: "Edit", btn_arrange_off: "Exit Arrange Mode", btn_arrange_reset: "Reset", btn_undo: "Undo", btn_redo: "Redo", hint_arrange: "Drag boxes to reposition. Use +/− buttons on box edges to resize width/height.",
     tab_item_add: "Add Object/Circumstance", tab_item_db: "Object/Circumstance Database",
     item_form_title_add: "Add Object/Circumstance", item_form_title_edit: "Edit Object/Circumstance",
     lbl_item_pid: "Code (Object/Circumstance) *", ph_item_pid: "e.g. EV-001, OBJ-01",
@@ -479,7 +496,7 @@ const i18n = {
     tree_no_results: "❌ ไม่พบบุคคลที่ตรงกัน", tree_empty: "กรุณากรอกข้อมูลหรือโหลดไฟล์ข้อมูลเพื่อดูผัง", tree_no_rel: "ไม่มีความเชื่อมโยงสายสัมพันธ์ในระบบ",
     dtl_gender: "เพศ", dtl_status: "สถานะ", dtl_dob: "วันเกิด", dtl_father: "บิดา", dtl_mother: "มารดา", dtl_spouse: "คู่สมรส", dtl_children: "ทายาทบุตร", dtl_formerly: "เดิม", dtl_years: "ปี",
     val_male: "ชาย", val_female: "หญิง", val_alive: "มีชีวิต", val_deceased: "เสียชีวิต", val_person: "คน",
-    btn_arrange_on: "แก้ไข", btn_arrange_off: "ออกจากโหมดจัดเรียง", btn_arrange_reset: "รีเซ็ตตำแหน่ง", btn_undo: "ย้อนกลับ", btn_redo: "ทำซ้ำ", hint_arrange: "ลากกล่องข้อมูลเพื่อจัดตำแหน่งใหม่ | กดปุ่ม +/− ที่ขอบกล่องเพื่อปรับความกว้าง/ความสูง",
+    btn_arrange_on: "แก้ไข", btn_arrange_off: "ออกจากโหมดจัดเรียง", btn_arrange_reset: "คืนค่าเริ่มต้น", btn_undo: "ย้อนกลับ", btn_redo: "ทำซ้ำ", hint_arrange: "ลากกล่องข้อมูลเพื่อจัดตำแหน่งใหม่ | กดปุ่ม +/− ที่ขอบกล่องเพื่อปรับความกว้าง/ความสูง",
     tab_item_add: "เพิ่ม วัตถุ/พฤติการณ์", tab_item_db: "ฐานข้อมูล วัตถุ/พฤติการณ์",
     item_form_title_add: "เพิ่มวัตถุ/พฤติการณ์", item_form_title_edit: "แก้ไขวัตถุ/พฤติการณ์",
     lbl_item_pid: "รหัส วัตถุ/พฤติการณ์ *", ph_item_pid: "เช่น EV-001, OBJ-01",
@@ -2146,7 +2163,7 @@ function renderTree(){
 
   const arrangeLabel = manualArrangeMode ? t('btn_arrange_off') : t('btn_arrange_on');
   const arrangeBtnClass = manualArrangeMode ? 'zoom-btn arrange-btn-active' : 'zoom-btn';
-  const resetBtn = manualArrangeMode ? `<button class="zoom-btn" onclick="resetTreeLayout()" title="${t('btn_arrange_reset')}"><i class="ti ti-arrow-back-up"></i></button>` : '';
+  const resetBtn = manualArrangeMode ? `<button class="zoom-btn" onclick="resetTreeLayout()" style="padding:0 10px; font-size:13px; font-weight:600;">${t('btn_arrange_reset')}</button>` : '';
 
   // Undo/Redo buttons — only visible in manual arrange mode
   const undoRedoBtns = manualArrangeMode ? `
@@ -2497,8 +2514,8 @@ function buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems) {
         const btnY = p.y + 10;
         const btnMinusX = p.x + (dims.w - dims.imgW)/2 + 10;
         const btnPlusX = p.x + (dims.w - dims.imgW)/2 + dims.imgW - 10;
-        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${m.id}', 0.1, event)" title="Enlarge image"><circle cx="${btnPlusX}" cy="${btnY}" r="7" fill="#10b981" stroke="#ffffff" stroke-width="1"/><text x="${btnPlusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
-        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${m.id}', -0.1, event)" title="Shrink image"><circle cx="${btnMinusX}" cy="${btnY}" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="1"/><text x="${btnMinusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">-</text></g>`;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${m.id}', 0.1, event)" title="Enlarge image"><circle cx="${btnPlusX}" cy="${btnY}" r="9" fill="#10b981" stroke="#ffffff" stroke-width="1"/><text x="${btnPlusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${m.id}', -0.1, event)" title="Shrink image"><circle cx="${btnMinusX}" cy="${btnY}" r="9" fill="#ef4444" stroke="#ffffff" stroke-width="1"/><text x="${btnMinusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">-</text></g>`;
       }
       const rzX = p.x + dims.w + 2;
       const rzY = p.y + boxH / 2;
@@ -2600,8 +2617,8 @@ function buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems) {
         const btnY = p.y + 10;
         const btnMinusX = p.x + (dims.w - dims.imgW)/2 + 10;
         const btnPlusX = p.x + (dims.w - dims.imgW)/2 + dims.imgW - 10;
-        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${it.id}', 0.1, event)" title="Enlarge image"><circle cx="${btnPlusX}" cy="${btnY}" r="7" fill="#10b981" stroke="#ffffff" stroke-width="1"/><text x="${btnPlusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
-        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${it.id}', -0.1, event)" title="Shrink image"><circle cx="${btnMinusX}" cy="${btnY}" r="7" fill="#ef4444" stroke="#ffffff" stroke-width="1"/><text x="${btnMinusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">-</text></g>`;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${it.id}', 0.1, event)" title="Enlarge image"><circle cx="${btnPlusX}" cy="${btnY}" r="9" fill="#10b981" stroke="#ffffff" stroke-width="1"/><text x="${btnPlusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">+</text></g>`;
+        controls += `<g style="cursor:pointer;" onclick="changeNodeImgScale('${it.id}', -0.1, event)" title="Shrink image"><circle cx="${btnMinusX}" cy="${btnY}" r="9" fill="#ef4444" stroke="#ffffff" stroke-width="1"/><text x="${btnMinusX}" y="${btnY+3}" text-anchor="middle" style="fill:#ffffff; font-size:10px; font-weight:bold; font-family:sans-serif;">-</text></g>`;
       }
       const rzX = p.x + dims.w + 2;
       const rzY = p.y + boxH / 2;
@@ -2647,14 +2664,14 @@ function buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems) {
       if (hasSpouse) {
         const hX = (typeof m.spouseOffsetX === 'number') ? p.x + m.spouseOffsetX : p.x + dims.w;
         const hY = (typeof m.spouseOffsetY === 'number') ? p.y + m.spouseOffsetY : p.y + dims.h / 2;
-        handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="spouse" data-node-id="${m.id}"/>`;
+        handles += `<circle cx="${hX}" cy="${hY}" r="22" fill="transparent" stroke="none" style="cursor:pointer;" data-handle-type="spouse"data-node-id="${m.id}"/><circle cx="${hX}" cy="${hY}" r="10" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="spouse" data-node-id="${m.id}"/>`;
       }
       
       const hasParents = m.father || m.mother;
       if (hasParents) {
         const hX = (typeof m.parentOffsetX === 'number') ? p.x + m.parentOffsetX : p.x + dims.w / 2;
         const hY = (typeof m.parentOffsetY === 'number') ? p.y + m.parentOffsetY : p.y;
-        handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#10b981" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="parent" data-node-id="${m.id}"/>`;
+        handles += `<circle cx="${hX}" cy="${hY}" r="22" fill="transparent" stroke="none" style="cursor:pointer;" data-handle-type="parent"data-node-id="${m.id}"/><circle cx="${hX}" cy="${hY}" r="10" fill="#10b981" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="parent" data-node-id="${m.id}"/>`;
       }
       
       if (m.extraRelations) {
@@ -2663,7 +2680,7 @@ function buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems) {
           if (!targetNode) return;
           const hX = (typeof rel.offsetX === 'number') ? p.x + rel.offsetX : p.x + dims.w / 2;
           const hY = (typeof rel.offsetY === 'number') ? p.y + rel.offsetY : p.y + dims.h;
-          handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="extra" data-node-id="${m.id}" data-link-id="${rel.linkId}"/>`;
+          handles += `<circle cx="${hX}" cy="${hY}" r="22" fill="transparent" stroke="none" style="cursor:pointer;" data-handle-type="extra"data-node-id="${m.id}" data-link-id="${rel.linkId}"/><circle cx="${hX}" cy="${hY}" r="10" fill="#f59e0b" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="extra" data-node-id="${m.id}" data-link-id="${rel.linkId}"/>`;
         });
       }
     });
@@ -2678,14 +2695,14 @@ function buildTreeSVG(positions, treeMembers, spouseBlocks, treeItems) {
           
           const hX = (typeof rel.offsetX === 'number') ? p.x + rel.offsetX : p.x + dims.w / 2;
           const hY = (typeof rel.offsetY === 'number') ? p.y + rel.offsetY : p.y + dims.h;
-          handles += `<circle cx="${hX}" cy="${hY}" r="5" fill="#ec4899" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="item-src" data-node-id="${it.id}" data-rel-id="${rel.relId}"/>`;
+          handles += `<circle cx="${hX}" cy="${hY}" r="22" fill="transparent" stroke="none" style="cursor:pointer;" data-handle-type="item-src"data-node-id="${it.id}" data-rel-id="${rel.relId}"/><circle cx="${hX}" cy="${hY}" r="10" fill="#ec4899" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="item-src" data-node-id="${it.id}" data-rel-id="${rel.relId}"/>`;
           
           const tp = positions[targetNode.id];
           if (tp) {
             const tDims = getNodeDimensions(targetNode);
             const thX = (typeof rel.targetOffsetX === 'number') ? tp.x + rel.targetOffsetX : tp.x + tDims.w / 2;
             const thY = (typeof rel.targetOffsetY === 'number') ? tp.y + rel.targetOffsetY : tp.y + tDims.h;
-            handles += `<circle cx="${thX}" cy="${thY}" r="5" fill="#a855f7" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="item-dst" data-node-id="${it.id}" data-target-id="${rel.targetId}" data-rel-id="${rel.relId}"/>`;
+            handles += `<circle cx="${thX}" cy="${thY}" r="22" fill="transparent" stroke="none" style="cursor:pointer;" data-handle-type="item-dst" data-node-id="${it.id}" data-target-id="${rel.targetId}" data-rel-id="${rel.relId}"/><circle cx="${thX}" cy="${thY}" r="10" fill="#a855f7" stroke="#ffffff" stroke-width="1.5" style="cursor:pointer;" data-handle-type="item-dst" data-node-id="${it.id}" data-target-id="${rel.targetId}" data-rel-id="${rel.relId}"/>`;
           }
         });
       }
