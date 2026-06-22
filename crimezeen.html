@@ -111,6 +111,7 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
 .tree-container-box { position: relative; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-border-tertiary); background: #f8fafc; overflow: hidden; }
 .zoom-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 4px; background: white; padding: 4px; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; max-width: 340px; justify-content: flex-end; }
 .zoom-btn { min-width: 32px; height: 32px; padding: 0 6px; font-size: 13px; border: 1px solid var(--color-border-secondary); background: white; border-radius: 4px; cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; gap: 4px; font-weight: 600; }
+.zoom-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .zoom-btn.arrange-btn-active { background: var(--color-border-primary); color: #fff; border-color: var(--color-border-primary); }
 .arrange-hint { position: absolute; top: 12px; left: 12px; right: 60px; background: rgba(55,138,221,0.95); color: #fff; font-size: 12.5px; padding: 8px 12px; border-radius: var(--border-radius-md); z-index: 10; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 .tree-wrap [data-node-id] { cursor: grab; }
@@ -439,7 +440,7 @@ const i18n = {
     tree_no_results: "❌ No matching persons found", tree_empty: "Please enter data or load a file to view the tree.", tree_no_rel: "No relationship links found in the system.",
     dtl_gender: "Gender", dtl_status: "Status", dtl_dob: "DOB", dtl_father: "Father", dtl_mother: "Mother", dtl_spouse: "Spouse", dtl_children: "Children", dtl_formerly: "Formerly", dtl_years: "years old",
     val_male: "Male", val_female: "Female", val_alive: "Alive", val_deceased: "Deceased", val_person: "person",
-    btn_arrange_on: "Edit", btn_arrange_off: "Exit Arrange Mode", btn_arrange_reset: "Reset Layout", hint_arrange: "Drag boxes to reposition. Use +/− buttons on box edges to resize width/height.",
+    btn_arrange_on: "Edit", btn_arrange_off: "Exit Arrange Mode", btn_arrange_reset: "Reset Layout", btn_undo: "Undo", btn_redo: "Redo", hint_arrange: "Drag boxes to reposition. Use +/− buttons on box edges to resize width/height.",
     tab_item_add: "Add Object/Circumstance", tab_item_db: "Object/Circumstance Database",
     item_form_title_add: "Add Object/Circumstance", item_form_title_edit: "Edit Object/Circumstance",
     lbl_item_pid: "Code (Object/Circumstance) *", ph_item_pid: "e.g. EV-001, OBJ-01",
@@ -478,7 +479,7 @@ const i18n = {
     tree_no_results: "❌ ไม่พบบุคคลที่ตรงกัน", tree_empty: "กรุณากรอกข้อมูลหรือโหลดไฟล์ข้อมูลเพื่อดูผัง", tree_no_rel: "ไม่มีความเชื่อมโยงสายสัมพันธ์ในระบบ",
     dtl_gender: "เพศ", dtl_status: "สถานะ", dtl_dob: "วันเกิด", dtl_father: "บิดา", dtl_mother: "มารดา", dtl_spouse: "คู่สมรส", dtl_children: "ทายาทบุตร", dtl_formerly: "เดิม", dtl_years: "ปี",
     val_male: "ชาย", val_female: "หญิง", val_alive: "มีชีวิต", val_deceased: "เสียชีวิต", val_person: "คน",
-    btn_arrange_on: "แก้ไข", btn_arrange_off: "ออกจากโหมดจัดเรียง", btn_arrange_reset: "รีเซ็ตตำแหน่ง", hint_arrange: "ลากกล่องข้อมูลเพื่อจัดตำแหน่งใหม่ | กดปุ่ม +/− ที่ขอบกล่องเพื่อปรับความกว้าง/ความสูง",
+    btn_arrange_on: "แก้ไข", btn_arrange_off: "ออกจากโหมดจัดเรียง", btn_arrange_reset: "รีเซ็ตตำแหน่ง", btn_undo: "ย้อนกลับ", btn_redo: "ทำซ้ำ", hint_arrange: "ลากกล่องข้อมูลเพื่อจัดตำแหน่งใหม่ | กดปุ่ม +/− ที่ขอบกล่องเพื่อปรับความกว้าง/ความสูง",
     tab_item_add: "เพิ่ม วัตถุ/พฤติการณ์", tab_item_db: "ฐานข้อมูล วัตถุ/พฤติการณ์",
     item_form_title_add: "เพิ่มวัตถุ/พฤติการณ์", item_form_title_edit: "แก้ไขวัตถุ/พฤติการณ์",
     lbl_item_pid: "รหัส วัตถุ/พฤติการณ์ *", ph_item_pid: "เช่น EV-001, OBJ-01",
@@ -1456,6 +1457,7 @@ function changeNodeImgScale(id, amount, event) {
   if (event) event.stopPropagation();
   const m = members.find(x => x.id === id) || items.find(x => x.id === id);
   if (m) {
+    pushArrangeUndo();
     m.imgScale = Math.max(0.3, Math.min(3.0, (m.imgScale || 1.0) + amount));
     redrawTreeSVG();
   }
@@ -1465,6 +1467,7 @@ function changeNodeSize(id, dw, dh, event) {
   if (event) event.stopPropagation();
   const m = members.find(x => x.id === id) || items.find(x => x.id === id);
   if (m) {
+    pushArrangeUndo();
     // ใช้ค่า customW/H ปัจจุบัน (ไม่ใช่ dims ที่ผ่านการบังคับขั้นต่ำจากรูปแล้ว)
     // เพื่อให้ลดขนาดได้จริงแม้กล่องจะมีรูปภาพที่บังคับขนาดขั้นต่ำอยู่
     const currentDims = getNodeDimensions(m);
@@ -1588,6 +1591,90 @@ function moveHandle(clientX, clientY) {
 // เก็บ reference ของ window-level listeners ปัจจุบัน เพื่อให้สามารถลบออกก่อนแนบใหม่
 // ป้องกันปัญหา listener ซ้อนกันหลายชุดเมื่อ renderTree() ถูกเรียกซ้ำ (เช่น สลับโหมดแก้ไข/เพิ่มจุดหมุน)
 // ซึ่งเป็นสาเหตุที่ทำให้จุดหมุน "กระโดด" ไปตำแหน่งผิดพลาด เนื่องจาก listener เก่าอ้างอิง DOM ที่ถูกแทนที่ไปแล้ว
+// ── Undo/Redo สำหรับโหมดจัดเรียงด้วยตนเอง ──────────────────────────────────────
+// เก็บ snapshot ของ layout-relevant state (ตำแหน่ง/ขนาดกล่อง/จุดหมุน) เพื่อย้อนกลับ/ทำซ้ำได้
+let arrangeUndoStack = [];
+let arrangeRedoStack = [];
+const ARRANGE_HISTORY_LIMIT = 50;
+
+function snapshotArrangeState() {
+  // เก็บเฉพาะ field ที่เกี่ยวกับ layout ของแต่ละ member/item เพื่อให้ snapshot เล็กและเร็ว
+  const pickLayoutFields = (obj) => ({
+    id: obj.id,
+    customX: obj.customX, customY: obj.customY, customW: obj.customW, customH: obj.customH, imgScale: obj.imgScale,
+    spouseOffsetX: obj.spouseOffsetX, spouseOffsetY: obj.spouseOffsetY,
+    parentOffsetX: obj.parentOffsetX, parentOffsetY: obj.parentOffsetY,
+    extraRelations: obj.extraRelations ? obj.extraRelations.map(r => ({ linkId: r.linkId, offsetX: r.offsetX, offsetY: r.offsetY })) : undefined,
+    relations: obj.relations ? obj.relations.map(r => ({ relId: r.relId, offsetX: r.offsetX, offsetY: r.offsetY, targetOffsetX: r.targetOffsetX, targetOffsetY: r.targetOffsetY })) : undefined,
+  });
+  return JSON.stringify({
+    members: members.map(pickLayoutFields),
+    items: items.map(pickLayoutFields),
+    edgeWaypoints: window.edgeWaypoints || {}
+  });
+}
+
+function restoreArrangeState(snapshotStr) {
+  const snap = JSON.parse(snapshotStr);
+  const applyLayoutFields = (arr, dataArr) => {
+    dataArr.forEach(d => {
+      const obj = arr.find(x => x.id === d.id);
+      if (!obj) return;
+      ['customX','customY','customW','customH','imgScale','spouseOffsetX','spouseOffsetY','parentOffsetX','parentOffsetY'].forEach(k => {
+        if (d[k] === undefined) delete obj[k]; else obj[k] = d[k];
+      });
+      if (d.extraRelations && obj.extraRelations) {
+        d.extraRelations.forEach(dr => {
+          const rel = obj.extraRelations.find(r => r.linkId === dr.linkId);
+          if (rel) { rel.offsetX = dr.offsetX; rel.offsetY = dr.offsetY; }
+        });
+      }
+      if (d.relations && obj.relations) {
+        d.relations.forEach(dr => {
+          const rel = obj.relations.find(r => r.relId === dr.relId);
+          if (rel) { rel.offsetX = dr.offsetX; rel.offsetY = dr.offsetY; rel.targetOffsetX = dr.targetOffsetX; rel.targetOffsetY = dr.targetOffsetY; }
+        });
+      }
+    });
+  };
+  applyLayoutFields(members, snap.members);
+  applyLayoutFields(items, snap.items);
+  window.edgeWaypoints = snap.edgeWaypoints || {};
+}
+
+// เรียกก่อนเริ่มการแก้ไขใดๆ (ลากกล่อง/จุดหมุน/ปรับขนาด ฯลฯ) เพื่อบันทึก state ก่อนหน้าไว้ใน undo stack
+function pushArrangeUndo() {
+  arrangeUndoStack.push(snapshotArrangeState());
+  if (arrangeUndoStack.length > ARRANGE_HISTORY_LIMIT) arrangeUndoStack.shift();
+  arrangeRedoStack = []; // การกระทำใหม่ล้าง redo stack เสมอ
+  updateUndoRedoButtons();
+}
+
+function arrangeUndo() {
+  if (arrangeUndoStack.length === 0) return;
+  arrangeRedoStack.push(snapshotArrangeState());
+  const prev = arrangeUndoStack.pop();
+  restoreArrangeState(prev);
+  renderTree();
+  updateUndoRedoButtons();
+}
+
+function arrangeRedo() {
+  if (arrangeRedoStack.length === 0) return;
+  arrangeUndoStack.push(snapshotArrangeState());
+  const next = arrangeRedoStack.pop();
+  restoreArrangeState(next);
+  renderTree();
+  updateUndoRedoButtons();
+}
+
+function updateUndoRedoButtons() {
+  const undoBtn = document.getElementById('arrange-undo-btn');
+  const redoBtn = document.getElementById('arrange-redo-btn');
+  if (undoBtn) undoBtn.disabled = arrangeUndoStack.length === 0;
+  if (redoBtn) redoBtn.disabled = arrangeRedoStack.length === 0;
+}
+
 window._panWindowListeners = window._panWindowListeners || null;
 
 function initPanEvents() {
@@ -1615,7 +1702,11 @@ function initPanEvents() {
 
   function svgPointFromClient(clientX, clientY) {
     const rect = w.getBoundingClientRect();
-    return { x: (clientX - rect.left - transformX) / scale, y: (clientY - rect.top - transformY) / scale };
+    const result = { x: (clientX - rect.left - transformX) / scale, y: (clientY - rect.top - transformY) / scale };
+    if (window.__wpDebug) {
+      console.log('[svgPointFromClient]', { clientX, clientY, rectLeft: rect.left, rectTop: rect.top, rectW: rect.width, rectH: rect.height, transformX, transformY, scale, result });
+    }
+    return result;
   }
 
   function moveNode(clientX, clientY) {
@@ -1627,24 +1718,54 @@ function initPanEvents() {
     redrawTreeSVG();
   }
 
+  // ── Mouse Wheel Zoom ───────────────────────────────────────────────────────
+  // เลื่อนล้อเมาส์ขึ้น = zoom in, เลื่อนลง = zoom out, ซูมเข้า/ออกที่ตำแหน่งเคอร์เซอร์เป็นจุดยึด
+  w.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = w.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const zoomDir = e.deltaY < 0 ? 1 : -1; // เลื่อนขึ้น (deltaY ติดลบ) = zoom in
+    const zoomStep = 0.1;
+    const newScale = Math.min(Math.max(scale + zoomDir * zoomStep, 0.3), 3);
+    if (newScale === scale) return;
+    // คงตำแหน่งใต้เคอร์เซอร์ไว้ที่เดิมขณะซูม (anchor zoom ที่ตำแหน่งเมาส์)
+    const scaleRatio = newScale / scale;
+    transformX = mouseX - scaleRatio * (mouseX - transformX);
+    transformY = mouseY - scaleRatio * (mouseY - transformY);
+    scale = newScale;
+    applyZoomTransform();
+  }, { passive: false });
+
   // ── Mouse ──────────────────────────────────────────────────────────────────
   w.addEventListener('mousedown', (e) => {
+    if (window.__wpDebug) {
+      console.log('[MOUSEDOWN]', { clientX: e.clientX, clientY: e.clientY, manualArrangeMode, waypointMode, target: e.target.tagName + (e.target.id ? '#'+e.target.id : ''), hasEdgeAddAncestor: !!e.target.closest('[data-edge-add]'), hasWpDragAncestor: !!e.target.closest('[data-wp-drag-key]'), hasNodeIdAncestor: !!e.target.closest('[data-node-id]'), nodeIdFound: e.target.closest('[data-node-id]') ? e.target.closest('[data-node-id]').getAttribute('data-node-id') : null });
+    }
     if(manualArrangeMode) {
       if (waypointMode === 'add' && e.target.closest('[data-edge-add]')) { e.preventDefault(); return; }
       if (waypointMode === 'delete' && e.target.closest('[data-wp-del-key]')) { e.preventDefault(); return; }
       const wpDragEl = e.target.closest('[data-wp-drag-key]');
-      if (wpDragEl) { wpDragKey = wpDragEl.getAttribute('data-wp-drag-key'); wpDragIdx = parseInt(wpDragEl.getAttribute('data-wp-drag-idx')); e.preventDefault(); return; }
+      if (wpDragEl) { pushArrangeUndo(); wpDragKey = wpDragEl.getAttribute('data-wp-drag-key'); wpDragIdx = parseInt(wpDragEl.getAttribute('data-wp-drag-idx')); e.preventDefault(); return; }
       const handle = e.target.closest('circle[data-handle-type]');
-      if (handle) { dragHandle = { type: handle.getAttribute('data-handle-type'), nodeId: handle.getAttribute('data-node-id'), linkId: handle.getAttribute('data-link-id'), relId: handle.getAttribute('data-rel-id') }; e.preventDefault(); return; }
+      if (handle) { pushArrangeUndo(); dragHandle = { type: handle.getAttribute('data-handle-type'), nodeId: handle.getAttribute('data-node-id'), linkId: handle.getAttribute('data-link-id'), relId: handle.getAttribute('data-rel-id') }; e.preventDefault(); return; }
       const g = e.target.closest('[data-node-id]');
-      if(g) { dragNodeId = g.getAttribute('data-node-id'); const pt = svgPointFromClient(e.clientX, e.clientY); const p = window.treePositions[dragNodeId] || { x: 0, y: 0 }; nodeOffsetX = pt.x - p.x; nodeOffsetY = pt.y - p.y; return; }
+      if(g) { pushArrangeUndo(); dragNodeId = g.getAttribute('data-node-id'); const pt = svgPointFromClient(e.clientX, e.clientY); const p = window.treePositions[dragNodeId] || { x: 0, y: 0 }; nodeOffsetX = pt.x - p.x; nodeOffsetY = pt.y - p.y; return; }
     }
     if(e.target.closest('g[onclick]')) return;
     isDragging=true; startX=e.clientX-transformX; startY=e.clientY-transformY;
   });
 
   const onMouseMove = (e) => {
-    if (wpDragKey !== null && wpDragIdx >= 0) { const pt = svgPointFromClient(e.clientX, e.clientY); if (!window.edgeWaypoints[wpDragKey]) window.edgeWaypoints[wpDragKey] = []; window.edgeWaypoints[wpDragKey][wpDragIdx] = { x: pt.x, y: pt.y }; redrawTreeSVG(); return; }
+    if (wpDragKey !== null && wpDragIdx >= 0) {
+      const pt = svgPointFromClient(e.clientX, e.clientY);
+      if (!window.edgeWaypoints[wpDragKey]) window.edgeWaypoints[wpDragKey] = [];
+      window.edgeWaypoints[wpDragKey][wpDragIdx] = { x: pt.x, y: pt.y };
+      if (window.__wpDebug) {
+        console.log('[DRAG-WAYPOINT]', { wpDragKey, wpDragIdx, pt });
+      }
+      redrawTreeSVG(); return;
+    }
     if(dragHandle) { moveHandle(e.clientX, e.clientY); return; }
     if(dragNodeId) { moveNode(e.clientX, e.clientY); return; }
     if(!isDragging) return;
@@ -1678,6 +1799,7 @@ function initPanEvents() {
         }
         let bestSeg = wps.length; let bestDist = Infinity; let bestSegPointCount = allPts.length - 1;
         let bestInsertAfterRealWp = wps.length; // ค่าเริ่มต้น: แทรกท้ายสุด
+        let bestProjectedPt = { x: pt.x, y: pt.y }; // จุดที่ฉายลงบนเส้นจริงใกล้ที่สุด (snap point)
         for (let i=0; i<allPts.length-1; i++) {
           const ax=allPts[i].x,ay=allPts[i].y,bx=allPts[i+1].x,by=allPts[i+1].y;
           const t = Math.max(0,Math.min(1,((pt.x-ax)*(bx-ax)+(pt.y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2||1)));
@@ -1685,12 +1807,26 @@ function initPanEvents() {
           const d=Math.hypot(pt.x-cx,pt.y-cy);
           if(d<bestDist){
             bestDist=d;
-            // เมื่อใช้ allPts แบบ elbow (3 ช่วงเสมือน) ไม่ว่าคลิกช่วงไหนก็ให้แทรกเป็นจุดแรก (index 0)
-            // เพราะยังไม่มีจุดหมุนจริงในระบบเลย
             bestInsertAfterRealWp = (bendAttr && wps.length === 0) ? 0 : i;
+            bestProjectedPt = { x: cx, y: cy };
           }
         }
-        wps.splice(bestInsertAfterRealWp, 0, {x: pt.x, y: pt.y});
+        // ป้องกันคลิกที่ห่างจากเส้นมากเกินไป (เช่น คลิกพลาดข้ามไปโดนเส้นอื่นที่ไม่เกี่ยวข้อง หรือเมาส์ขยับระหว่าง mousedown→click)
+        // หากจุดที่ใกล้ที่สุดบนเส้นยังห่างเกิน MAX_SNAP_DIST ให้ถือว่าไม่ใช่การคลิกที่เส้นนี้จริง แล้วไม่เพิ่มจุด
+        const MAX_SNAP_DIST = 40;
+        if (bestDist > MAX_SNAP_DIST) {
+          if (window.__wpDebug) {
+            console.log('[ADD-WAYPOINT] REJECTED - too far from line', { edgeKey, distFromLine: bestDist, rawClickPt: pt });
+          }
+          e.stopPropagation(); return;
+        }
+        // ใช้ตำแหน่ง "ฉายลงบนเส้นจริง" (snap) แทนตำแหน่งคลิกดิบ เพื่อป้องกันจุดหมุนเบี่ยงออกจากเส้นเมื่อคลิกไม่ตรงเป๊ะ
+        // (hit-area กว้าง 18px ทำให้คลิกใกล้เคียงเส้นก็ลงทะเบียนได้ แต่ถ้าใช้พิกัดดิบ จุดจะ "กระโดด" ออกจากเส้นเดิม)
+        pushArrangeUndo();
+        wps.splice(bestInsertAfterRealWp, 0, { x: bestProjectedPt.x, y: bestProjectedPt.y });
+        if (window.__wpDebug) {
+          console.log('[ADD-WAYPOINT]', { edgeKey, clickClientX: e.clientX, clickClientY: e.clientY, clickedElement: e.target.tagName + (e.target.id ? '#'+e.target.id : '') + (e.target.className && e.target.className.baseVal !== undefined ? '.'+e.target.className.baseVal : ''), sx, sy, ex, ey, bendAttr, insertedAt: bestInsertAfterRealWp, rawClickPt: pt, snappedPt: bestProjectedPt, distFromLine: bestDist, wpsAfter: JSON.parse(JSON.stringify(wps)) });
+        }
         redrawTreeSVG(); e.stopPropagation(); return;
       }
     }
@@ -1698,7 +1834,7 @@ function initPanEvents() {
       const delEl = e.target.closest('[data-wp-del-key]');
       if (delEl) {
         const edgeKey = delEl.getAttribute('data-wp-del-key'); const idx = parseInt(delEl.getAttribute('data-wp-del-idx'));
-        if (window.edgeWaypoints[edgeKey]) { window.edgeWaypoints[edgeKey].splice(idx, 1); redrawTreeSVG(); }
+        if (window.edgeWaypoints[edgeKey]) { pushArrangeUndo(); window.edgeWaypoints[edgeKey].splice(idx, 1); redrawTreeSVG(); }
         e.stopPropagation(); return;
       }
     }
@@ -1713,11 +1849,11 @@ function initPanEvents() {
       if (waypointMode === 'add' && e.target.closest('[data-edge-add]')) { e.preventDefault(); return; }
       if (waypointMode === 'delete' && e.target.closest('[data-wp-del-key]')) { e.preventDefault(); return; }
       const wpDragEl = e.target.closest('[data-wp-drag-key]');
-      if (wpDragEl) { wpDragKey = wpDragEl.getAttribute('data-wp-drag-key'); wpDragIdx = parseInt(wpDragEl.getAttribute('data-wp-drag-idx')); e.preventDefault(); return; }
+      if (wpDragEl) { pushArrangeUndo(); wpDragKey = wpDragEl.getAttribute('data-wp-drag-key'); wpDragIdx = parseInt(wpDragEl.getAttribute('data-wp-drag-idx')); e.preventDefault(); return; }
       const handle = e.target.closest('circle[data-handle-type]');
-      if (handle) { dragHandle = { type: handle.getAttribute('data-handle-type'), nodeId: handle.getAttribute('data-node-id'), linkId: handle.getAttribute('data-link-id'), relId: handle.getAttribute('data-rel-id') }; e.preventDefault(); return; }
+      if (handle) { pushArrangeUndo(); dragHandle = { type: handle.getAttribute('data-handle-type'), nodeId: handle.getAttribute('data-node-id'), linkId: handle.getAttribute('data-link-id'), relId: handle.getAttribute('data-rel-id') }; e.preventDefault(); return; }
       const g = e.target.closest('[data-node-id]');
-      if(g) { dragNodeId = g.getAttribute('data-node-id'); const pt = svgPointFromClient(e.touches[0].clientX, e.touches[0].clientY); const p = window.treePositions[dragNodeId] || { x: 0, y: 0 }; nodeOffsetX = pt.x - p.x; nodeOffsetY = pt.y - p.y; e.preventDefault(); return; }
+      if(g) { pushArrangeUndo(); dragNodeId = g.getAttribute('data-node-id'); const pt = svgPointFromClient(e.touches[0].clientX, e.touches[0].clientY); const p = window.treePositions[dragNodeId] || { x: 0, y: 0 }; nodeOffsetX = pt.x - p.x; nodeOffsetY = pt.y - p.y; e.preventDefault(); return; }
     }
     if(e.target.closest('g[onclick]')) return;
     if(e.touches.length === 1) {
@@ -2011,6 +2147,12 @@ function renderTree(){
   const arrangeLabel = manualArrangeMode ? t('btn_arrange_off') : t('btn_arrange_on');
   const arrangeBtnClass = manualArrangeMode ? 'zoom-btn arrange-btn-active' : 'zoom-btn';
   const resetBtn = manualArrangeMode ? `<button class="zoom-btn" onclick="resetTreeLayout()" title="${t('btn_arrange_reset')}"><i class="ti ti-arrow-back-up"></i></button>` : '';
+
+  // Undo/Redo buttons — only visible in manual arrange mode
+  const undoRedoBtns = manualArrangeMode ? `
+    <button class="zoom-btn" id="arrange-undo-btn" onclick="arrangeUndo()" title="${t('btn_undo')}" ${arrangeUndoStack.length === 0 ? 'disabled' : ''}><i class="ti ti-arrow-back-up-double"></i></button>
+    <button class="zoom-btn" id="arrange-redo-btn" onclick="arrangeRedo()" title="${t('btn_redo')}" ${arrangeRedoStack.length === 0 ? 'disabled' : ''}><i class="ti ti-arrow-forward-up-double"></i></button>
+  ` : '';
   
   // Waypoint buttons — only visible in manual arrange mode
   const waypointAddBtnClass = waypointMode === 'add' ? 'zoom-btn arrange-btn-active' : 'zoom-btn';
@@ -2025,9 +2167,10 @@ function renderTree(){
 
   el.innerHTML=`<div class="tree-container-box">
     ${hint}
-    <div class="zoom-controls" style="flex-wrap:wrap; max-width: ${manualArrangeMode ? '320px' : 'auto'};">
+    <div class="zoom-controls" style="flex-wrap:wrap; max-width: ${manualArrangeMode ? '380px' : 'auto'};">
       <button class="${arrangeBtnClass}" onclick="toggleManualArrange()" title="${arrangeLabel}" style="padding:0 10px; font-size:13px; font-weight:600;">${manualArrangeMode ? t('btn_arrange_off') : t('btn_arrange_on')}</button>
       ${resetBtn}
+      ${undoRedoBtns}
       ${waypointBtns}
       <button class="zoom-btn" onclick="zoom('in')" title="Zoom In"><i class="ti ti-zoom-in"></i></button>
       <button class="zoom-btn" onclick="zoom('out')" title="Zoom Out"><i class="ti ti-zoom-out"></i></button>
@@ -2039,6 +2182,7 @@ function renderTree(){
       </div>
     </div>
   </div>`;
+  applyZoomTransform(); // sync ตำแหน่ง pan/zoom ปัจจุบันเข้ากับ DOM ใหม่ทันที ป้องกันจอ "เด้งกลับ" ไปตำแหน่งเริ่มต้นทุกครั้งที่ renderTree() ถูกเรียกซ้ำ (เช่น สลับโหมดแก้ไข/เพิ่มจุดหมุน)
   initPanEvents();
 }
 
@@ -2574,6 +2718,7 @@ function redrawTreeSVG() {
 function toggleManualArrange() {
   manualArrangeMode = !manualArrangeMode;
   if (!manualArrangeMode) waypointMode = '';
+  if (manualArrangeMode) { arrangeUndoStack = []; arrangeRedoStack = []; } // เริ่มต้น history ใหม่ทุกครั้งที่เข้าโหมดแก้ไข
   renderTree();
 }
 
@@ -2584,6 +2729,7 @@ function toggleWaypointMode(mode, event) {
 }
 
 function resetTreeLayout() {
+  pushArrangeUndo();
   window.edgeWaypoints = {};
   waypointMode = '';
   members.forEach(m => {
@@ -2725,6 +2871,7 @@ h2 { font-size: 20px; margin-top: 0; margin-bottom: 15px; color: var(--color-tex
 .tree-container-box { position: relative; border-radius: var(--border-radius-lg); border: 1px dashed var(--color-border-tertiary); background: #f8fafc; overflow: hidden; }
 .zoom-controls { position: absolute; top: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 4px; background: white; padding: 4px; border-radius: var(--border-radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 10; max-width: 340px; justify-content: flex-end; }
 .zoom-btn { min-width: 32px; height: 32px; padding: 0 6px; font-size: 13px; border: 1px solid var(--color-border-secondary); background: white; border-radius: 4px; cursor: pointer; color: var(--color-text-secondary); display: flex; align-items: center; justify-content: center; gap: 4px; font-weight: 600; }
+.zoom-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .zoom-btn.arrange-btn-active { background: var(--color-border-primary); color: #fff; border-color: var(--color-border-primary); }
 .arrange-hint { position: absolute; top: 12px; left: 12px; right: 60px; background: rgba(55,138,221,0.95); color: #fff; font-size: 12.5px; padding: 8px 12px; border-radius: var(--border-radius-md); z-index: 10; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
 .tree-wrap [data-node-id] { cursor: grab; }
@@ -2765,6 +2912,9 @@ let manualArrangeMode = false;
 let dragHandle = null;
 let waypointMode = '';
 window.edgeWaypoints = ${JSON.stringify(window.edgeWaypoints || {})};
+let arrangeUndoStack = [];
+let arrangeRedoStack = [];
+const ARRANGE_HISTORY_LIMIT = 50;
 const W = 90; const H = 54; const VGAP = 110; const SIBLING_GAP = 25; const SPOUSE_GAP = 20;
 const EXTRA_SPOUSE_DY = 65; const EXTRA_SPOUSE_DX = 25;
 const SPOUSE_COLORS = { 1: "#e11d48", 2: "#2563eb", 3: "#16a34a", 4: "#ea580c", 5: "#8b5cf6" };
@@ -2798,6 +2948,24 @@ ${redrawTreeSVG.toString()}
 ${toggleManualArrange.toString()}
 ${toggleWaypointMode.toString()}
 ${resetTreeLayout.toString()}
+${snapshotArrangeState.toString()}
+${restoreArrangeState.toString()}
+${pushArrangeUndo.toString()}
+${arrangeUndo.toString()}
+${arrangeRedo.toString()}
+${updateUndoRedoButtons.toString()}
+
+document.addEventListener('keydown', (e) => {
+  if (!manualArrangeMode) return;
+  const isCtrl = e.ctrlKey || e.metaKey;
+  if (!isCtrl) return;
+  if (e.key === 'z' || e.key === 'Z') {
+    if (e.shiftKey) { e.preventDefault(); arrangeRedo(); }
+    else { e.preventDefault(); arrangeUndo(); }
+  } else if (e.key === 'y' || e.key === 'Y') {
+    e.preventDefault(); arrangeRedo();
+  }
+});
 
 window.onload = function() { renderTree(); resetZoom(); };
 <\/script>
@@ -2810,6 +2978,9 @@ window.onload = function() { renderTree(); resetZoom(); };
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
+// เปิด/ปิด debug log สำหรับวินิจฉัยปัญหาจุดหมุน — เพิ่ม ?debug=waypoint ต่อท้าย URL เพื่อเปิดใช้งาน
+window.__wpDebug = new URLSearchParams(window.location.search).get('debug') === 'waypoint';
+
 window.onload = function() {
   updateUILanguage(); // Initialize English default
   updateFormDropdowns();
@@ -2817,6 +2988,19 @@ window.onload = function() {
   renderTree();
   resetZoom();
 };
+
+// คีย์ลัด Ctrl+Z (ย้อนกลับ) / Ctrl+Y หรือ Ctrl+Shift+Z (ทำซ้ำ) เฉพาะตอนอยู่ในโหมดจัดเรียงด้วยตนเอง
+document.addEventListener('keydown', (e) => {
+  if (!manualArrangeMode) return;
+  const isCtrl = e.ctrlKey || e.metaKey;
+  if (!isCtrl) return;
+  if (e.key === 'z' || e.key === 'Z') {
+    if (e.shiftKey) { e.preventDefault(); arrangeRedo(); }
+    else { e.preventDefault(); arrangeUndo(); }
+  } else if (e.key === 'y' || e.key === 'Y') {
+    e.preventDefault(); arrangeRedo();
+  }
+});
 </script>
 </body>
 </html>
