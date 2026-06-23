@@ -45,6 +45,7 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
 .btn-lang:hover { background: #eff6ff; }
 
 /* Responsive — มือถือ (จอกว้างไม่เกิน 600px) */
+.form-group-wide { grid-column: span 2; }
 @media (max-width: 600px) {
   body { padding: 8px; }
   .container { padding: 12px; border-radius: var(--border-radius-md); }
@@ -55,6 +56,7 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
   .tabs-nav { flex-wrap: wrap; gap: 4px; overflow-x: auto; }
   .tab-btn { padding: 8px 12px; font-size: 13px; }
   .form-grid { grid-template-columns: 1fr; }
+  .form-group-wide { grid-column: span 1; }
   .form-actions { flex-wrap: wrap; }
 }
 
@@ -69,7 +71,7 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
 /* Form Styles */
 .form-container { background: #fafafa; border: 1px solid var(--color-border-secondary); padding: 20px; border-radius: var(--border-radius-lg); }
 .form-title { font-size: 16px; font-weight: 600; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 6px; color: var(--color-text-primary); }
-.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); gap: 15px; margin-bottom: 20px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-group label { font-size: 13px; font-weight: 600; color: var(--color-text-secondary); }
 .form-control { padding: 8px 12px; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); font-size: 14px; outline: none; transition: border-color 0.2s; background: white; color: var(--color-text-primary); min-height: 38px;}
@@ -261,15 +263,15 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
             <label for="member-phone" data-i18n="lbl_phone">Phone Number</label>
             <input type="text" id="member-phone" class="form-control" data-i18n-ph="ph_phone" placeholder="Enter phone number">
           </div>
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group form-group-wide">
             <label for="member-addr" data-i18n="lbl_address">Current Address</label>
             <input type="text" id="member-addr" class="form-control" data-i18n-ph="ph_address" placeholder="Enter address">
           </div>
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group form-group-wide">
             <label for="member-note" data-i18n="lbl_note">Additional Notes</label>
             <input type="text" id="member-note" class="form-control" data-i18n-ph="ph_note" placeholder="Other information">
           </div>
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group form-group-wide">
             <label for="member-case-status" data-i18n="lbl_case_status">สถานะในคดี</label>
             <div style="display:flex; gap:8px; align-items:center;">
               <input type="text" id="member-case-status" class="form-control" data-i18n-ph="ph_case_status" placeholder="เช่น ผู้ต้องหา, พยาน..." style="flex:1;">
@@ -290,7 +292,7 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
             </div>
           </div>
           <!-- ส่วนเพิ่มความสัมพันธ์ทางคดี / นอกครอบครัว -->
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group form-group-wide">
             <label data-i18n="lbl_extra_rel">ความสัมพันธ์อื่น</label>
             <div id="extra-relations-container"></div>
             <button type="button" class="btn-add-rel" onclick="addExtraRelationRow()"><i class="ti ti-plus"></i> <span data-i18n="btn_add_extra_rel">เพิ่มความสัมพันธ์</span></button>
@@ -315,15 +317,15 @@ body { background-color: #f1f5f9; color: var(--color-text-primary); margin: 0; p
             <label data-i18n="lbl_item_pid">Code (Object/Circumstance) *</label>
             <input type="text" id="item-pid" class="form-control" data-i18n-ph="ph_item_pid" placeholder="e.g. EV-001, OBJ-01" required>
           </div>
-          <div class="form-group" style="grid-column:span 2;">
+          <div class="form-group form-group-wide">
             <label data-i18n="lbl_item_name">Item Name *</label>
             <input type="text" id="item-name" class="form-control" data-i18n-ph="ph_item_name" placeholder="Object / Event name" required>
           </div>
-          <div class="form-group" style="grid-column:span 2;">
+          <div class="form-group form-group-wide">
             <label data-i18n="lbl_item_detail">Details</label>
             <input type="text" id="item-detail" class="form-control" data-i18n-ph="ph_item_detail" placeholder="Additional description">
           </div>
-          <div class="form-group" style="grid-column: span 2;">
+          <div class="form-group form-group-wide">
             <label for="item-case-status" data-i18n="lbl_item_case_status">สถานะในคดี</label>
             <div style="display:flex; gap:8px; align-items:center;">
               <input type="text" id="item-case-status" class="form-control" data-i18n-ph="ph_item_case_status" placeholder="เช่น พยานหลักฐาน, สถานที่เกิดเหตุ..." style="flex:1;">
