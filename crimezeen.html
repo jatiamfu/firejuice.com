@@ -2827,15 +2827,33 @@ function exportPDF() {
   if (!members.length) { alert(t('msg_no_data_export')); return; }
   renderTree(); const svgEl = document.querySelector('#tree-container svg'); if (!svgEl) return;
   const printWindow = window.open('', '_blank');
-  printWindow.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>crimezeen_pdf</title><style>body { margin: 0; padding: 20px; background: #ffffff; display: flex; flex-direction: column; align-items: center; } h2 { font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif; color: #1e293b; font-size: 18px; margin-bottom: 15px; } svg { display: block; max-width: 100%; height: auto; } .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; } .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; } .node-name { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; fill: #1e293b; } .node-detail { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 11px; fill: #475569; } .edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; } @media print { @page { size: auto; margin: 12mm 10mm; } body { padding: 0; } }</style></head><body><h2>${t('app_title')}</h2><div>${svgEl.outerHTML}</div><script>window.onload = function() { setTimeout(function() { window.print(); window.close(); }, 400); };<\/script></body></html>`);
+  printWindow.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>crimezeen_pdf</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap" rel="stylesheet"><style>body { margin: 0; padding: 20px; background: #ffffff; display: flex; flex-direction: column; align-items: center; } h2 { font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif; color: #1e293b; font-size: 18px; margin-bottom: 15px; } svg { display: block; max-width: 100%; height: auto; } .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; } .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; } .node-name { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; fill: #1e293b; } .node-detail { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 11px; fill: #475569; } .edge { stroke: #94a3b8; stroke-width: 1.5; fill: none; } @media print { @page { size: auto; margin: 12mm 10mm; } body { padding: 0; } }</style></head><body><h2>${t('app_title')}</h2><div>${svgEl.outerHTML}</div><script>window.onload = function() { setTimeout(function() { window.print(); window.close(); }, 800); };<\/script></body></html>`);
   printWindow.document.close();
 }
 
-function exportJPEG() {
+let fontCSSCache = '';
+async function exportJPEG() {
   if (!members.length) { alert(t('msg_no_data_export')); return; }
   renderTree();
   const svgEl = document.querySelector('#tree-container svg');
   if (!svgEl) return;
+
+  if (!fontCSSCache) {
+    try {
+      const cssRes = await fetch('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600&display=swap');
+      let cssText = await cssRes.text();
+      const urls = [...cssText.matchAll(/url\(([^)]+)\)/g)].map(m => m[1]);
+      for (const url of urls) {
+        const fontRes = await fetch(url.replace(/['"]/g, ''));
+        const fontBlob = await fontRes.blob();
+        const base64 = await new Promise(r => { const reader = new FileReader(); reader.onload = () => r(reader.result); reader.readAsDataURL(fontBlob); });
+        cssText = cssText.replace(url, base64);
+      }
+      fontCSSCache = cssText;
+    } catch (e) {
+      console.error('Font fetch error:', e);
+    }
+  }
 
   // Clone SVG and embed CSS styles inline for accurate rendering
   const svgClone = svgEl.cloneNode(true);
@@ -2850,7 +2868,7 @@ function exportJPEG() {
 
   // Inject essential CSS into SVG
   const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
-  style.textContent = `
+  style.textContent = (fontCSSCache || '') + `
     .node-male { fill: #e6f1fb; stroke: #378add; stroke-width: 1.5; }
     .node-female { fill: #fbeaf0; stroke: #d4537e; stroke-width: 1.5; }
     .node-name { font-family: 'Sarabun', 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; fill: #1e293b; }
